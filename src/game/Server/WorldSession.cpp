@@ -20,6 +20,8 @@
     \ingroup u2w
 */
 
+#include <zlib.h>
+
 #include "Server/WorldSocket.h"                                    // must be first to make ACE happy with ACE includes in it
 #include "Common.h"
 #include "Database/DatabaseEnv.h"
@@ -38,7 +40,6 @@
 #include "Auth/HMACSHA1.h"
 #include "Loot/LootMgr.h"
 
-#include <zlib/zlib.h>
 #include <boost/asio/ip/address_v4.hpp>
 
 #include <mutex>
@@ -69,7 +70,14 @@ static bool MapSessionFilterHelper(WorldSession* session, OpcodeHandler const& o
 bool MapSessionFilter::Process(WorldPacket const& packet) const
 {
     OpcodeHandler const& opHandle = opcodeTable[packet.GetOpcode()];
-    if (opHandle.packetProcessing == PROCESS_INPLACE)
+
+	if (opHandle.name == "CMSG_GROUP_INVITE")
+	{
+		sLog.outError("MapSessionFilter::Process: received  opcode %s (0x%.4X)",
+			packet.GetOpcodeName(),
+			packet.GetOpcode());
+	}
+	if (opHandle.packetProcessing == PROCESS_INPLACE)
         return true;
 
     // let's check if our opcode can be really processed in Map::Update()
@@ -81,7 +89,16 @@ bool MapSessionFilter::Process(WorldPacket const& packet) const
 bool WorldSessionFilter::Process(WorldPacket const& packet) const
 {
     OpcodeHandler const& opHandle = opcodeTable[packet.GetOpcode()];
-    // check if packet handler is supposed to be safe
+
+	if (opHandle.name == "CMSG_GROUP_INVITE")
+	{
+		sLog.outError("WorldSessionFilter::Process: received  opcode %s (0x%.4X)",
+			packet.GetOpcodeName(),
+			packet.GetOpcode());
+	}
+
+
+	// check if packet handler is supposed to be safe
     if (opHandle.packetProcessing == PROCESS_INPLACE)
         return true;
 
@@ -234,7 +251,12 @@ bool WorldSession::Update(PacketFilter& updater)
             switch (opHandle.status)
             {
                 case STATUS_LOGGEDIN:
-                    if (!_player)
+					if (opHandle.name == "CMSG_GROUP_INVITE")
+					{
+						sLog.outError("WorldSessionFilter::Process: received  opcode %s",
+							opHandle.name);
+					}
+					if (!_player)
                     {
                         // skip STATUS_LOGGEDIN opcode unexpected errors if player logout sometime ago - this can be network lag delayed packets
                         if (!m_playerRecentlyLogout)

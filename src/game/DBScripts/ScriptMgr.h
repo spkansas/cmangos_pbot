@@ -35,7 +35,7 @@ struct SpellEntry;
 enum ScriptCommand                                          // resSource, resTarget are the resulting Source/ Target after buddy search is done
 {
     SCRIPT_COMMAND_TALK                     = 0,            // resSource = WorldObject, resTarget = Unit/none
-                                                            // dataint = text entry from db_script_string -table. dataint2-4 optional for random selected texts.
+                                                            // dataint = text entry from dbscript_string -table. dataint2-4 optional for random selected texts.
     SCRIPT_COMMAND_EMOTE                    = 1,            // resSource = Unit, resTarget = Unit/none
                                                             // datalong1 = emote_id, dataint1-4 optional for random selected emotes
     SCRIPT_COMMAND_FIELD_SET                = 2,            // source = any, datalong = field_id, datalong2 = value
@@ -47,7 +47,7 @@ enum ScriptCommand                                          // resSource, resTar
     SCRIPT_COMMAND_QUEST_EXPLORED           = 7,            // one from source or target must be Player, another GO/Creature, datalong=quest_id, datalong2=distance or 0
     SCRIPT_COMMAND_KILL_CREDIT              = 8,            // source or target with Player, datalong = creature entry (or 0 for target-entry), datalong2 = bool (0=personal credit, 1=group credit)
     SCRIPT_COMMAND_RESPAWN_GAMEOBJECT       = 9,            // source = any, datalong=db_guid, datalong2=despawn_delay
-    SCRIPT_COMMAND_TEMP_SUMMON_CREATURE     = 10,           // source = any, datalong=creature entry, datalong2=despawn_delay, datalong3=pathId
+    SCRIPT_COMMAND_TEMP_SPAWN_CREATURE      = 10,           // source = any, datalong=creature entry, datalong2=despawn_delay, datalong3=pathId
                                                             // data_flags & SCRIPT_FLAG_COMMAND_ADDITIONAL = summon active
                                                             // dataint = (bool) setRun; 0 = off (default), 1 = on
     SCRIPT_COMMAND_OPEN_DOOR                = 11,           // datalong=db_guid (or not provided), datalong2=reset_delay
@@ -121,6 +121,7 @@ enum ScriptCommand                                          // resSource, resTar
     SCRIPT_COMMAND_UPDATE_TEMPLATE          = 44,           // resSource = Creature
                                                             // datalong = new Creature entry
                                                             // datalong2 = Alliance(0) Horde(1), other values throw error
+    SCRIPT_COMMAND_START_RELAY_SCRIPT       = 45,           // datalong = relayId, datalong2 = random template Id
 };
 
 #define MAX_TEXT_ID 4                                       // used for SCRIPT_COMMAND_TALK, SCRIPT_COMMAND_EMOTE, SCRIPT_COMMAND_CAST_SPELL, SCRIPT_COMMAND_TERMINATE_SCRIPT
@@ -206,7 +207,7 @@ struct ScriptInfo
             uint32 despawnDelay;                            // datalong2
         } respawnGo;
 
-        struct                                              // SCRIPT_COMMAND_TEMP_SUMMON_CREATURE (10)
+        struct                                              // SCRIPT_COMMAND_TEMP_SPAWN_CREATURE (10)
         {
             uint32 creatureEntry;                           // datalong
             uint32 despawnDelay;                            // datalong2
@@ -397,6 +398,12 @@ struct ScriptInfo
             uint32 newFactionTeam;                          // datalong2
         } updateTemplate;
 
+        struct                                              // SCRIPT_COMMAND_START_RELAY_SCRIPT
+        {
+            uint32 relayId;                                 // datalong
+            uint32 templateId;                              // datalong2
+        } relayScript;
+
         struct
         {
             uint32 data[3];
@@ -452,7 +459,7 @@ struct ScriptInfo
         switch (command)
         {
             case SCRIPT_COMMAND_MOVE_TO:
-            case SCRIPT_COMMAND_TEMP_SUMMON_CREATURE:
+            case SCRIPT_COMMAND_TEMP_SPAWN_CREATURE:
             case SCRIPT_COMMAND_CAST_SPELL:
             case SCRIPT_COMMAND_PLAY_SOUND:
             case SCRIPT_COMMAND_MOVEMENT:
@@ -524,9 +531,17 @@ extern ScriptMapMapName sEventScripts;
 extern ScriptMapMapName sGossipScripts;
 extern ScriptMapMapName sCreatureDeathScripts;
 extern ScriptMapMapName sCreatureMovementScripts;
+extern ScriptMapMapName sRelayScripts;
 
 class ScriptMgr
 {
+    enum RandomTemplates
+    {
+        STRING_TEMPLATE = 0,
+        RELAY_TEMPLATE = 1,
+        MAX_TYPE // must always be last
+    };
+
     public:
         ScriptMgr();
         ~ScriptMgr() {};
@@ -540,12 +555,21 @@ class ScriptMgr
         void LoadGossipScripts();
         void LoadCreatureDeathScripts();
         void LoadCreatureMovementScripts();
+        void LoadRelayScripts();
 
         void LoadDbScriptStrings();
-        void LoadDbScriptStringTemplates(std::set<int32>& ids);
+        void LoadDbScriptRandomTemplates();
+        void CheckRandomStringTemplates(std::set<int32>& ids);
+        void CheckRandomRelayTemplates();
 
-        bool CheckScriptStringTemplateId(uint32 id) const { return m_stringTemplates.find(id) != m_stringTemplates.end(); }
-        void GetScriptStringTemplate(uint32 id, std::vector<int32>& stringTemplate) { stringTemplate = m_stringTemplates[id]; }
+        bool CheckScriptStringTemplateId(uint32 id) const { return m_scriptTemplates[STRING_TEMPLATE].find(id) != m_scriptTemplates[STRING_TEMPLATE].end(); }
+        bool CheckScriptRelayTemplateId(uint32 id) const { return m_scriptTemplates[RELAY_TEMPLATE].find(id) != m_scriptTemplates[RELAY_TEMPLATE].end(); }
+        typedef std::vector<std::pair<int32, uint32>> ScriptTemplateVector;
+        void GetScriptStringTemplate(uint32 id, ScriptTemplateVector& stringTemplate) { stringTemplate = m_scriptTemplates[STRING_TEMPLATE][id]; }
+        void GetScriptRelayTemplate(uint32 id, ScriptTemplateVector& stringTemplate) { stringTemplate = m_scriptTemplates[RELAY_TEMPLATE][id]; }
+        int32 GetRandomScriptTemplateId(uint32 id, uint8 templateType);
+        int32 GetRandomScriptStringFromTemplate(uint32 id);
+        int32 GetRandomRelayDbscriptFromTemplate(uint32 id);
 
         uint32 IncreaseScheduledScriptsCount() { return (uint32)++m_scheduledScripts; }
         uint32 DecreaseScheduledScriptCount() { return (uint32)--m_scheduledScripts; }
@@ -562,12 +586,12 @@ class ScriptMgr
         typedef std::vector<std::string> ScriptNameMap;
         typedef std::unordered_map<uint32, uint32> AreaTriggerScriptMap;
         typedef std::unordered_map<uint32, uint32> EventIdScriptMap;
-        typedef std::unordered_map<uint32, std::vector<int32>> ScriptStringTemplateMap;
+        typedef std::unordered_map<uint32, ScriptTemplateVector> ScriptTemplateMap;
 
         AreaTriggerScriptMap    m_AreaTriggerScripts;
         EventIdScriptMap        m_EventIdScripts;
 
-        ScriptStringTemplateMap m_stringTemplates;
+        ScriptTemplateMap       m_scriptTemplates[MAX_TYPE];
         ScriptNameMap           m_scriptNames;
         MANGOS_LIBRARY_HANDLE   m_hScriptLib;
 

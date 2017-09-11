@@ -88,7 +88,7 @@ enum EventAI_ActionType
     ACTION_T_RANDOM_SOUND               = 9,                // SoundId1, SoundId2, SoundId3 (-1 in any field means no output if randomed that field)
     ACTION_T_RANDOM_EMOTE               = 10,               // EmoteId1, EmoteId2, EmoteId3 (-1 in any field means no output if randomed that field)
     ACTION_T_CAST                       = 11,               // SpellId, Target, CastFlags
-    ACTION_T_SUMMON                     = 12,               // CreatureID, Target, Duration in ms
+    ACTION_T_SPAWN                      = 12,               // CreatureID, Target, Duration in ms
     ACTION_T_THREAT_SINGLE_PCT          = 13,               // Threat%, Target
     ACTION_T_THREAT_ALL_PCT             = 14,               // Threat%
     ACTION_T_QUEST_EVENT                = 15,               // QuestID, Target
@@ -121,7 +121,7 @@ enum EventAI_ActionType
     ACTION_T_SET_INVINCIBILITY_HP_LEVEL = 42,               // MinHpValue, format(0-flat,1-percent from max health)
     ACTION_T_MOUNT_TO_ENTRY_OR_MODEL    = 43,               // Creature_template entry(param1) OR ModelId (param2) (or 0 for both to unmount)
     ACTION_T_CHANCED_TEXT               = 44,               // Chance to display the text, TextId1, optionally TextId2. If more than just -TextId1 is defined, randomize. Negative values.
-    ACTION_T_THROW_AI_EVENT             = 45,               // EventType, Radius, unused
+    ACTION_T_THROW_AI_EVENT             = 45,               // EventType, Radius, Target
     ACTION_T_SET_THROW_MASK             = 46,               // EventTypeMask, unused, unused
     ACTION_T_SET_STAND_STATE            = 47,               // StandState, unused, unused
     ACTION_T_CHANGE_MOVEMENT            = 48,               // MovementType, WanderDistance if Movement Type 1 and PathId if Movement Type 2, unused
@@ -129,6 +129,10 @@ enum EventAI_ActionType
     ACTION_T_SET_REACT_STATE            = 50,               // React state, unused, unused
     ACTION_T_PAUSE_WAYPOINTS            = 51,               // DoPause 0: unpause waypoint 1: pause waypoint, unused, unused
     ACTION_T_INTERRUPT_SPELL            = 52,               // SpellType enum CurrentSpellTypes, unused, unused
+    ACTION_T_START_RELAY_SCRIPT         = 53,               // Relay script ID, target, unused
+    ACTION_T_TEXT_NEW                   = 54,               // Text ID, target, template Id
+    ACTION_T_ATTACK_START               = 55,               // Target, unused, unused
+    ACTION_T_DESPAWN_GUARDIANS          = 56,               // Guardian Entry ID (or 0 to despawn all guardians), unused, unused
 
     ACTION_T_END,
 };
@@ -155,10 +159,14 @@ enum Target
     TARGET_T_HOSTILE_RANDOM_NOT_TOP_PLAYER  = 9,            // Any random player from threat list except top threat
 
     // Summon targeting
-    TARGET_T_SUMMONER                       = 11,           // Owner of unit if exists
+    TARGET_T_SPAWNER                       = 11,           // Owner of unit if exists
 
     // Event specific targeting
     TARGET_T_EVENT_SPECIFIC                 = 12,           // Filled by specific event
+
+    // Player associations
+    TARGET_T_PLAYER_INVOKER                 = 13,           // Player who initiated hostile contact with this npc
+    TARGET_T_PLAYER_TAPPED                  = 14,           // Player who currently holds to score the kill credit from the npc
 };
 
 enum EventFlags
@@ -235,7 +243,7 @@ struct CreatureEventAI_Action
             uint32 target;
             uint32 castFlags;
         } cast;
-        // ACTION_T_SUMMON                                  = 12
+        // ACTION_T_SPAWN                                   = 12
         struct
         {
             uint32 creatureId;
@@ -258,6 +266,7 @@ struct CreatureEventAI_Action
         {
             uint32 questId;
             uint32 target;
+            uint32 rewardGroup;
         } quest_event;
         // ACTION_T_CAST_EVENT                              = 16
         struct
@@ -407,7 +416,7 @@ struct CreatureEventAI_Action
         {
             uint32 eventType;
             uint32 radius;
-            uint32 unused;
+            uint32 target;
         } throwEvent;
         // ACTION_T_SET_THROW_MASK                          = 46
         struct
@@ -445,11 +454,10 @@ struct CreatureEventAI_Action
             uint32 unused2;
         } setReactState;
         // ACTION_T_PAUSE_WAYPOINTS                         = 51
-        struct                                              
+        struct
         {
             uint32 doPause;                                 // bool: 1 = on; 0 = off
             uint32 unused1;
-            uint32 unused2;
         } pauseWaypoint;
         // ACTION_T_INTERRUPT_SPELL                         = 52
         struct
@@ -458,6 +466,34 @@ struct CreatureEventAI_Action
             uint32 unused1;
             uint32 unused2;
         } interruptSpell;
+        // ACTION_T_START_RELAY_SCRIPT                      = 51
+        struct
+        {
+            int32 relayId;                                 // dbscript_on_relay id
+            uint32 target;                                 // target
+            uint32 unused;
+        } relayScript;
+        // ACTION_T_TEXT_NEW                                = 54
+        struct
+        {
+            int32 textId;                                  // text id
+            uint32 target;                                 // target
+            uint32 templateId;                             // random template Id
+        } textNew;
+        // ACTION_T_ATTACK_START                            = 55
+        struct
+        {
+            uint32 target;                                 // target
+            uint32 unused;
+            uint32 unused2;
+        } attackStart;
+        // ACTION_T_DESPAWN_GUARDIANS                       = 56
+        struct
+        {
+            uint32 entryId;                                // guardian Entry
+            uint32 unused;
+            uint32 unused2;
+        } despawnGuardians;
         // RAW
         struct
         {

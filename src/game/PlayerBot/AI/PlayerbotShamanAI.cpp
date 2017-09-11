@@ -25,145 +25,106 @@ class PlayerbotAI;
 PlayerbotShamanAI::PlayerbotShamanAI(Player* const master, Player* const bot, PlayerbotAI* const ai) : PlayerbotClassAI(master, bot, ai)
 {
     // restoration
-    CHAIN_HEAL               = m_ai->initSpell(CHAIN_HEAL_1);
-    HEALING_WAVE             = m_ai->initSpell(HEALING_WAVE_1);
-    LESSER_HEALING_WAVE      = m_ai->initSpell(LESSER_HEALING_WAVE_1);
-    RIPTIDE                  = m_ai->initSpell(RIPTIDE_1);
-    ANCESTRAL_SPIRIT         = m_ai->initSpell(ANCESTRAL_SPIRIT_1);
-    EARTH_SHIELD             = m_ai->initSpell(EARTH_SHIELD_1);
-    WATER_SHIELD             = m_ai->initSpell(WATER_SHIELD_1);
-    EARTHLIVING_WEAPON       = m_ai->initSpell(EARTHLIVING_WEAPON_1);
-    TREMOR_TOTEM             = m_ai->initSpell(TREMOR_TOTEM_1); // totems
-    HEALING_STREAM_TOTEM     = m_ai->initSpell(HEALING_STREAM_TOTEM_1);
-    MANA_SPRING_TOTEM        = m_ai->initSpell(MANA_SPRING_TOTEM_1);
-    MANA_TIDE_TOTEM          = m_ai->initSpell(MANA_TIDE_TOTEM_1);
-    CURE_TOXINS              = m_ai->initSpell(CURE_TOXINS_1);
-    CLEANSE_SPIRIT           = m_ai->initSpell(CLEANSE_SPIRIT_1);
-    NATURES_SWIFTNESS_SHAMAN = m_ai->initSpell(NATURES_SWIFTNESS_SHAMAN_1);
-    TIDAL_FORCE              = m_ai->initSpell(TIDAL_FORCE_1);
+    CHAIN_HEAL               = GetAI()->initSpell(CHAIN_HEAL_1);
+    HEALING_WAVE             = GetAI()->initSpell(HEALING_WAVE_1);
+    LESSER_HEALING_WAVE      = GetAI()->initSpell(LESSER_HEALING_WAVE_1);
+    RIPTIDE                  = GetAI()->initSpell(RIPTIDE_1);
+    ANCESTRAL_SPIRIT         = GetAI()->initSpell(ANCESTRAL_SPIRIT_1);
+    EARTH_SHIELD             = GetAI()->initSpell(EARTH_SHIELD_1);
+    WATER_SHIELD             = GetAI()->initSpell(WATER_SHIELD_1);
+    EARTHLIVING_WEAPON       = GetAI()->initSpell(EARTHLIVING_WEAPON_1);
+    TREMOR_TOTEM             = GetAI()->initSpell(TREMOR_TOTEM_1); // totems
+    HEALING_STREAM_TOTEM     = GetAI()->initSpell(HEALING_STREAM_TOTEM_1);
+    MANA_SPRING_TOTEM        = GetAI()->initSpell(MANA_SPRING_TOTEM_1);
+    MANA_TIDE_TOTEM          = GetAI()->initSpell(MANA_TIDE_TOTEM_1);
+    CURE_TOXINS              = GetAI()->initSpell(CURE_TOXINS_1);
+    CLEANSE_SPIRIT           = GetAI()->initSpell(CLEANSE_SPIRIT_1);
+    NATURES_SWIFTNESS_SHAMAN = GetAI()->initSpell(NATURES_SWIFTNESS_SHAMAN_1);
+    TIDAL_FORCE              = GetAI()->initSpell(TIDAL_FORCE_1);
     // enhancement
     FOCUSED                  = 0; // Focused what?
-    STORMSTRIKE              = m_ai->initSpell(STORMSTRIKE_1);
-    LAVA_LASH                = m_ai->initSpell(LAVA_LASH_1);
-    SHAMANISTIC_RAGE         = m_ai->initSpell(SHAMANISTIC_RAGE_1);
-    BLOODLUST                = m_ai->initSpell(BLOODLUST_1);
-    HEROISM                  = m_ai->initSpell(HEROISM_1);
-    FERAL_SPIRIT             = m_ai->initSpell(FERAL_SPIRIT_1);
-    LIGHTNING_SHIELD         = m_ai->initSpell(LIGHTNING_SHIELD_1);
-    ROCKBITER_WEAPON         = m_ai->initSpell(ROCKBITER_WEAPON_1);
-    FLAMETONGUE_WEAPON       = m_ai->initSpell(FLAMETONGUE_WEAPON_1);
-    FROSTBRAND_WEAPON        = m_ai->initSpell(FROSTBRAND_WEAPON_1);
-    WINDFURY_WEAPON          = m_ai->initSpell(WINDFURY_WEAPON_1);
-    STONESKIN_TOTEM          = m_ai->initSpell(STONESKIN_TOTEM_1); // totems
-    STRENGTH_OF_EARTH_TOTEM  = m_ai->initSpell(STRENGTH_OF_EARTH_TOTEM_1);
-    FROST_RESISTANCE_TOTEM   = m_ai->initSpell(FROST_RESISTANCE_TOTEM_1);
-    FLAMETONGUE_TOTEM        = m_ai->initSpell(FLAMETONGUE_TOTEM_1);
-    FIRE_RESISTANCE_TOTEM    = m_ai->initSpell(FIRE_RESISTANCE_TOTEM_1);
-    GROUNDING_TOTEM          = m_ai->initSpell(GROUNDING_TOTEM_1);
-    NATURE_RESISTANCE_TOTEM  = m_ai->initSpell(NATURE_RESISTANCE_TOTEM_1);
-    WIND_FURY_TOTEM          = m_ai->initSpell(WINDFURY_TOTEM_1);
-    STONESKIN_TOTEM          = m_ai->initSpell(STONESKIN_TOTEM_1);
-    WRATH_OF_AIR_TOTEM       = m_ai->initSpell(WRATH_OF_AIR_TOTEM_1);
-    EARTH_ELEMENTAL_TOTEM    = m_ai->initSpell(EARTH_ELEMENTAL_TOTEM_1);
-    MAELSTROM_WEAPON         = m_ai->initSpell(MAELSTROM_WEAPON_1);
+    STORMSTRIKE              = GetAI()->initSpell(STORMSTRIKE_1);
+    LAVA_LASH                = GetAI()->initSpell(LAVA_LASH_1);
+    SHAMANISTIC_RAGE         = GetAI()->initSpell(SHAMANISTIC_RAGE_1);
+    BLOODLUST                = GetAI()->initSpell(BLOODLUST_1);
+    HEROISM                  = GetAI()->initSpell(HEROISM_1);
+    FERAL_SPIRIT             = GetAI()->initSpell(FERAL_SPIRIT_1);
+    LIGHTNING_SHIELD         = GetAI()->initSpell(LIGHTNING_SHIELD_1);
+    ROCKBITER_WEAPON         = GetAI()->initSpell(ROCKBITER_WEAPON_1);
+    FLAMETONGUE_WEAPON       = GetAI()->initSpell(FLAMETONGUE_WEAPON_1);
+    FROSTBRAND_WEAPON        = GetAI()->initSpell(FROSTBRAND_WEAPON_1);
+    WINDFURY_WEAPON          = GetAI()->initSpell(WINDFURY_WEAPON_1);
+    STONESKIN_TOTEM          = GetAI()->initSpell(STONESKIN_TOTEM_1); // totems
+    STRENGTH_OF_EARTH_TOTEM  = GetAI()->initSpell(STRENGTH_OF_EARTH_TOTEM_1);
+    FROST_RESISTANCE_TOTEM   = GetAI()->initSpell(FROST_RESISTANCE_TOTEM_1);
+    FLAMETONGUE_TOTEM        = GetAI()->initSpell(FLAMETONGUE_TOTEM_1);
+    FIRE_RESISTANCE_TOTEM    = GetAI()->initSpell(FIRE_RESISTANCE_TOTEM_1);
+    GROUNDING_TOTEM          = GetAI()->initSpell(GROUNDING_TOTEM_1);
+    NATURE_RESISTANCE_TOTEM  = GetAI()->initSpell(NATURE_RESISTANCE_TOTEM_1);
+    WIND_FURY_TOTEM          = GetAI()->initSpell(WINDFURY_TOTEM_1);
+    STONESKIN_TOTEM          = GetAI()->initSpell(STONESKIN_TOTEM_1);
+    WRATH_OF_AIR_TOTEM       = GetAI()->initSpell(WRATH_OF_AIR_TOTEM_1);
+    EARTH_ELEMENTAL_TOTEM    = GetAI()->initSpell(EARTH_ELEMENTAL_TOTEM_1);
+    MAELSTROM_WEAPON         = GetAI()->initSpell(MAELSTROM_WEAPON_1);
     // elemental
-    LIGHTNING_BOLT           = m_ai->initSpell(LIGHTNING_BOLT_1);
-    EARTH_SHOCK              = m_ai->initSpell(EARTH_SHOCK_1);
-    FLAME_SHOCK              = m_ai->initSpell(FLAME_SHOCK_1);
-    PURGE                    = m_ai->initSpell(PURGE_1);
+    LIGHTNING_BOLT           = GetAI()->initSpell(LIGHTNING_BOLT_1);
+    EARTH_SHOCK              = GetAI()->initSpell(EARTH_SHOCK_1);
+    FLAME_SHOCK              = GetAI()->initSpell(FLAME_SHOCK_1);
+    PURGE                    = GetAI()->initSpell(PURGE_1);
     WIND_SHOCK               = 0; //NPC spell
-    FROST_SHOCK              = m_ai->initSpell(FROST_SHOCK_1);
-    CHAIN_LIGHTNING          = m_ai->initSpell(CHAIN_LIGHTNING_1);
-    LAVA_BURST               = m_ai->initSpell(LAVA_BURST_1);
-    HEX                      = m_ai->initSpell(HEX_1);
-    STONECLAW_TOTEM          = m_ai->initSpell(STONECLAW_TOTEM_1); // totems
-    SEARING_TOTEM            = m_ai->initSpell(SEARING_TOTEM_1);
+    FROST_SHOCK              = GetAI()->initSpell(FROST_SHOCK_1);
+    CHAIN_LIGHTNING          = GetAI()->initSpell(CHAIN_LIGHTNING_1);
+    LAVA_BURST               = GetAI()->initSpell(LAVA_BURST_1);
+    HEX                      = GetAI()->initSpell(HEX_1);
+    STONECLAW_TOTEM          = GetAI()->initSpell(STONECLAW_TOTEM_1); // totems
+    SEARING_TOTEM            = GetAI()->initSpell(SEARING_TOTEM_1);
     FIRE_NOVA_TOTEM          = 0; // NPC only spell, check FIRE_NOVA_1
-    MAGMA_TOTEM              = m_ai->initSpell(MAGMA_TOTEM_1);
-    EARTHBIND_TOTEM          = m_ai->initSpell(EARTHBIND_TOTEM_1);
-    TOTEM_OF_WRATH           = m_ai->initSpell(TOTEM_OF_WRATH_1);
-    FIRE_ELEMENTAL_TOTEM     = m_ai->initSpell(FIRE_ELEMENTAL_TOTEM_1);
-    ELEMENTAL_MASTERY        = m_ai->initSpell(ELEMENTAL_MASTERY_1);
-    THUNDERSTORM             = m_ai->initSpell(THUNDERSTORM_1);
+    MAGMA_TOTEM              = GetAI()->initSpell(MAGMA_TOTEM_1);
+    EARTHBIND_TOTEM          = GetAI()->initSpell(EARTHBIND_TOTEM_1);
+    TOTEM_OF_WRATH           = GetAI()->initSpell(TOTEM_OF_WRATH_1);
+    FIRE_ELEMENTAL_TOTEM     = GetAI()->initSpell(FIRE_ELEMENTAL_TOTEM_1);
+    ELEMENTAL_MASTERY        = GetAI()->initSpell(ELEMENTAL_MASTERY_1);
+    THUNDERSTORM             = GetAI()->initSpell(THUNDERSTORM_1);
 
     RECENTLY_BANDAGED        = 11196; // first aid check
 
     // racial
-    GIFT_OF_THE_NAARU        = m_ai->initSpell(GIFT_OF_THE_NAARU_SHAMAN); // draenei
-    BLOOD_FURY               = m_ai->initSpell(BLOOD_FURY_SHAMAN); // orc
-    WAR_STOMP                = m_ai->initSpell(WAR_STOMP_ALL); // tauren
-    BERSERKING               = m_ai->initSpell(BERSERKING_ALL); // troll
+    GIFT_OF_THE_NAARU        = GetAI()->initSpell(GIFT_OF_THE_NAARU_SHAMAN); // draenei
+    BLOOD_FURY               = GetAI()->initSpell(BLOOD_FURY_SHAMAN); // orc
+    WAR_STOMP                = GetAI()->initSpell(WAR_STOMP_ALL); // tauren
+    BERSERKING               = GetAI()->initSpell(BERSERKING_ALL); // troll
 
     // totem buffs
-    STRENGTH_OF_EARTH_EFFECT    = m_ai->initSpell(STRENGTH_OF_EARTH_EFFECT_1);
-    FLAMETONGUE_EFFECT          = m_ai->initSpell(FLAMETONGUE_EFFECT_1);
-    MAGMA_TOTEM_EFFECT          = m_ai->initSpell(MAGMA_TOTEM_EFFECT_1);
-    STONECLAW_EFFECT            = m_ai->initSpell(STONECLAW_EFFECT_1);
-    FIRE_RESISTANCE_EFFECT      = m_ai->initSpell(FIRE_RESISTANCE_EFFECT_1);
-    FROST_RESISTANCE_EFFECT     = m_ai->initSpell(FROST_RESISTANCE_EFFECT_1);
-    GROUDNING_EFFECT            = m_ai->initSpell(GROUDNING_EFFECT_1);
-    NATURE_RESISTANCE_EFFECT    = m_ai->initSpell(NATURE_RESISTANCE_EFFECT_1);
-    STONESKIN_EFFECT            = m_ai->initSpell(STONESKIN_EFFECT_1);
-    WINDFURY_EFFECT             = m_ai->initSpell(WINDFURY_EFFECT_1);
-    WRATH_OF_AIR_EFFECT         = m_ai->initSpell(WRATH_OF_AIR_EFFECT_1);
-    CLEANSING_TOTEM_EFFECT      = m_ai->initSpell(CLEANSING_TOTEM_EFFECT_1);
-    HEALING_STREAM_EFFECT       = m_ai->initSpell(HEALING_STREAM_EFFECT_1);
-    MANA_SPRING_EFFECT          = m_ai->initSpell(MANA_SPRING_EFFECT_1);
-    TREMOR_TOTEM_EFFECT         = m_ai->initSpell(TREMOR_TOTEM_EFFECT_1);
-    TOTEM_OF_WRATH_EFFECT       = m_ai->initSpell(TOTEM_OF_WRATH_EFFECT_1);
-    STONECLAW_EFFECT            = m_ai->initSpell(STONECLAW_EFFECT_1);
-    EARTHBIND_EFFECT            = m_ai->initSpell(EARTHBIND_EFFECT_1);
+    STRENGTH_OF_EARTH_EFFECT    = GetAI()->initSpell(STRENGTH_OF_EARTH_EFFECT_1);
+    FLAMETONGUE_EFFECT          = GetAI()->initSpell(FLAMETONGUE_EFFECT_1);
+    MAGMA_TOTEM_EFFECT          = GetAI()->initSpell(MAGMA_TOTEM_EFFECT_1);
+    STONECLAW_EFFECT            = GetAI()->initSpell(STONECLAW_EFFECT_1);
+    FIRE_RESISTANCE_EFFECT      = GetAI()->initSpell(FIRE_RESISTANCE_EFFECT_1);
+    FROST_RESISTANCE_EFFECT     = GetAI()->initSpell(FROST_RESISTANCE_EFFECT_1);
+    GROUDNING_EFFECT            = GetAI()->initSpell(GROUDNING_EFFECT_1);
+    NATURE_RESISTANCE_EFFECT    = GetAI()->initSpell(NATURE_RESISTANCE_EFFECT_1);
+    STONESKIN_EFFECT            = GetAI()->initSpell(STONESKIN_EFFECT_1);
+    WINDFURY_EFFECT             = GetAI()->initSpell(WINDFURY_EFFECT_1);
+    WRATH_OF_AIR_EFFECT         = GetAI()->initSpell(WRATH_OF_AIR_EFFECT_1);
+    CLEANSING_TOTEM_EFFECT      = GetAI()->initSpell(CLEANSING_TOTEM_EFFECT_1);
+    HEALING_STREAM_EFFECT       = GetAI()->initSpell(HEALING_STREAM_EFFECT_1);
+    MANA_SPRING_EFFECT          = GetAI()->initSpell(MANA_SPRING_EFFECT_1);
+    TREMOR_TOTEM_EFFECT         = GetAI()->initSpell(TREMOR_TOTEM_EFFECT_1);
+    TOTEM_OF_WRATH_EFFECT       = GetAI()->initSpell(TOTEM_OF_WRATH_EFFECT_1);
+    STONECLAW_EFFECT            = GetAI()->initSpell(STONECLAW_EFFECT_1);
+    EARTHBIND_EFFECT            = GetAI()->initSpell(EARTHBIND_EFFECT_1);
 
     // Buffs that don't stack with totems
-    IMPROVED_ICY_TALONS     = m_ai->initSpell(IMPROVED_ICY_TALONS_1);
-    HORN_OF_WINTER          = m_ai->initSpell(HORN_OF_WINTER_1);
+    IMPROVED_ICY_TALONS     = GetAI()->initSpell(IMPROVED_ICY_TALONS_1);
+    HORN_OF_WINTER          = GetAI()->initSpell(HORN_OF_WINTER_1);
 }
 
 PlayerbotShamanAI::~PlayerbotShamanAI() {}
 
-CombatManeuverReturns PlayerbotShamanAI::DoFirstCombatManeuver(Unit* pTarget)
+CombatManeuverReturns PlayerbotShamanAI::DoNextManeuver_Heal_ClassSetup(Unit* pTarget)
 {
-    // There are NPCs in BGs and Open World PvP, so don't filter this on PvP scenarios (of course if PvP targets anyone but tank, all bets are off anyway)
-    // Wait until the tank says so, until any non-tank gains aggro or X seconds - whichever is shortest
-    if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_TEMP_WAIT_TANKAGGRO)
-    {
-        if (m_WaitUntil > m_ai->CurrentTime() && m_ai->GroupTankHoldsAggro())
-        {
-            if (PlayerbotAI::ORDERS_HEAL & m_ai->GetCombatOrder())
-               return HealPlayer(GetHealTarget());
-            else
-                return RETURN_NO_ACTION_OK; // wait it out
-        }
-        else
-        {
-            m_ai->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_TANKAGGRO);
-        }
-    }
-
-    if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_TEMP_WAIT_OOC)
-    {
-        if (m_WaitUntil > m_ai->CurrentTime() && !m_ai->IsGroupInCombat())
-            return RETURN_NO_ACTION_OK; // wait it out
-        else
-            m_ai->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_OOC);
-    }
-
-    switch (m_ai->GetScenarioType())
-    {
-        case PlayerbotAI::SCENARIO_PVP_DUEL:
-        case PlayerbotAI::SCENARIO_PVP_BG:
-        case PlayerbotAI::SCENARIO_PVP_ARENA:
-        case PlayerbotAI::SCENARIO_PVP_OPENWORLD:
-            return DoFirstCombatManeuverPVP(pTarget);
-        case PlayerbotAI::SCENARIO_PVE:
-        case PlayerbotAI::SCENARIO_PVE_ELITE:
-        case PlayerbotAI::SCENARIO_PVE_RAID:
-        default:
-            return DoFirstCombatManeuverPVE(pTarget);
-            break;
-    }
-
-    return RETURN_NO_ACTION_ERROR;
+	// No healing setup needed, so pass success
+	return RETURN_CONTINUE;
 }
 
 CombatManeuverReturns PlayerbotShamanAI::DoFirstCombatManeuverPVE(Unit* /*pTarget*/)
@@ -176,41 +137,21 @@ CombatManeuverReturns PlayerbotShamanAI::DoFirstCombatManeuverPVP(Unit* /*pTarge
     return RETURN_NO_ACTION_OK;
 }
 
-CombatManeuverReturns PlayerbotShamanAI::DoNextCombatManeuver(Unit *pTarget)
-{
-    switch (m_ai->GetScenarioType())
-    {
-        case PlayerbotAI::SCENARIO_PVP_DUEL:
-        case PlayerbotAI::SCENARIO_PVP_BG:
-        case PlayerbotAI::SCENARIO_PVP_ARENA:
-        case PlayerbotAI::SCENARIO_PVP_OPENWORLD:
-            return DoNextCombatManeuverPVP(pTarget);
-        case PlayerbotAI::SCENARIO_PVE:
-        case PlayerbotAI::SCENARIO_PVE_ELITE:
-        case PlayerbotAI::SCENARIO_PVE_RAID:
-        default:
-            return DoNextCombatManeuverPVE(pTarget);
-            break;
-    }
-
-    return RETURN_NO_ACTION_ERROR;
-}
-
 CombatManeuverReturns PlayerbotShamanAI::DoNextCombatManeuverPVE(Unit *pTarget)
 {
-    if (!m_ai)  return RETURN_NO_ACTION_ERROR;
+    if (!GetAI())  return RETURN_NO_ACTION_ERROR;
     if (!m_bot) return RETURN_NO_ACTION_ERROR;
 
     uint32 spec = m_bot->GetSpec();
 
     // Make sure healer stays put, don't even melee (aggro) if in range.
-    if (m_ai->IsHealer() && m_ai->GetCombatStyle() != PlayerbotAI::COMBAT_RANGED)
-        m_ai->SetCombatStyle(PlayerbotAI::COMBAT_RANGED);
-    else if (!m_ai->IsHealer() && m_ai->GetCombatStyle() != PlayerbotAI::COMBAT_MELEE)
-        m_ai->SetCombatStyle(PlayerbotAI::COMBAT_MELEE);
+    if (GetAI()->IsHealer() && GetAI()->GetCombatStyle() != PlayerbotAI::COMBAT_RANGED)
+        GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_RANGED);
+    else if (!GetAI()->IsHealer() && GetAI()->GetCombatStyle() != PlayerbotAI::COMBAT_MELEE)
+        GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_MELEE);
 
     // Heal
-    if (m_ai->IsHealer())
+    if (GetAI()->IsHealer())
     {
         if (HealPlayer(GetHealTarget()) & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
             return RETURN_CONTINUE;
@@ -230,17 +171,17 @@ CombatManeuverReturns PlayerbotShamanAI::DoNextCombatManeuverPVE(Unit *pTarget)
     switch (spec)
     {
         case SHAMAN_SPEC_ENHANCEMENT:
-            if (STORMSTRIKE > 0 && (!m_bot->HasSpellCooldown(STORMSTRIKE)) && m_ai->CastSpell(STORMSTRIKE, *pTarget))
+            if (STORMSTRIKE > 0 && (m_bot->IsSpellReady(STORMSTRIKE)) && GetAI()->CastSpell(STORMSTRIKE, *pTarget))
                 return RETURN_CONTINUE;
-            if (FLAME_SHOCK > 0 && (!pTarget->HasAura(FLAME_SHOCK)) && m_ai->CastSpell(FLAME_SHOCK, *pTarget))
+            if (FLAME_SHOCK > 0 && (!pTarget->HasAura(FLAME_SHOCK)) && GetAI()->CastSpell(FLAME_SHOCK, *pTarget))
                 return RETURN_CONTINUE;
-            if (EARTH_SHOCK > 0 && (!m_bot->HasSpellCooldown(EARTH_SHOCK)) && m_ai->CastSpell(EARTH_SHOCK, *pTarget))
+            if (EARTH_SHOCK > 0 && (m_bot->IsSpellReady(EARTH_SHOCK)) && GetAI()->CastSpell(EARTH_SHOCK, *pTarget))
                 return RETURN_CONTINUE;
-            if (LAVA_LASH > 0 && (!m_bot->HasSpellCooldown(LAVA_LASH)) && m_ai->CastSpell(LAVA_LASH, *pTarget))
+            if (LAVA_LASH > 0 && (m_bot->IsSpellReady(LAVA_LASH)) && GetAI()->CastSpell(LAVA_LASH, *pTarget))
                 return RETURN_CONTINUE;
-            if (MAELSTROM_WEAPON > 0 && LIGHTNING_BOLT > 0 && m_bot->HasAura(MAELSTROM_WEAPON) && m_ai->CastSpell(LIGHTNING_BOLT, *pTarget))
+            if (MAELSTROM_WEAPON > 0 && LIGHTNING_BOLT > 0 && m_bot->HasAura(MAELSTROM_WEAPON) && GetAI()->CastSpell(LIGHTNING_BOLT, *pTarget))
                 return RETURN_CONTINUE;
-            /*if (FOCUSED > 0 && m_ai->CastSpell(FOCUSED, *pTarget))
+            /*if (FOCUSED > 0 && GetAI()->CastSpell(FOCUSED, *pTarget))
                 return RETURN_CONTINUE;*/
             break;
 
@@ -248,21 +189,21 @@ CombatManeuverReturns PlayerbotShamanAI::DoNextCombatManeuverPVE(Unit *pTarget)
             // fall through to elemental
 
         case SHAMAN_SPEC_ELEMENTAL:
-            if (FLAME_SHOCK > 0 && (!pTarget->HasAura(FLAME_SHOCK)) && m_ai->CastSpell(FLAME_SHOCK, *pTarget))
+            if (FLAME_SHOCK > 0 && (!pTarget->HasAura(FLAME_SHOCK)) && GetAI()->CastSpell(FLAME_SHOCK, *pTarget))
                 return RETURN_CONTINUE;
-            if (LAVA_BURST > 0 && (pTarget->HasAura(FLAME_SHOCK)) && (!m_bot->HasSpellCooldown(LAVA_BURST)) && m_ai->CastSpell(LAVA_BURST, *pTarget))
+            if (LAVA_BURST > 0 && (pTarget->HasAura(FLAME_SHOCK)) && (m_bot->IsSpellReady(LAVA_BURST)) && GetAI()->CastSpell(LAVA_BURST, *pTarget))
                 return RETURN_CONTINUE;
-            if (LIGHTNING_BOLT > 0 && m_ai->CastSpell(LIGHTNING_BOLT, *pTarget))
+            if (LIGHTNING_BOLT > 0 && GetAI()->CastSpell(LIGHTNING_BOLT, *pTarget))
                 return RETURN_CONTINUE;
-            /*if (PURGE > 0 && m_ai->CastSpell(PURGE, *pTarget))
+            /*if (PURGE > 0 && GetAI()->CastSpell(PURGE, *pTarget))
                 return RETURN_CONTINUE;*/
-            /*if (WIND_SHOCK > 0 && m_ai->CastSpell(WIND_SHOCK, *pTarget))
+            /*if (WIND_SHOCK > 0 && GetAI()->CastSpell(WIND_SHOCK, *pTarget))
                 return RETURN_CONTINUE;*/
-            /*if (FROST_SHOCK > 0 && !pTarget->HasAura(FROST_SHOCK, EFFECT_INDEX_0) && m_ai->CastSpell(FROST_SHOCK, *pTarget))
+            /*if (FROST_SHOCK > 0 && !pTarget->HasAura(FROST_SHOCK, EFFECT_INDEX_0) && GetAI()->CastSpell(FROST_SHOCK, *pTarget))
                 return RETURN_CONTINUE;*/
-            /*if (CHAIN_LIGHTNING > 0 && m_ai->CastSpell(CHAIN_LIGHTNING, *pTarget))
+            /*if (CHAIN_LIGHTNING > 0 && GetAI()->CastSpell(CHAIN_LIGHTNING, *pTarget))
                 return RETURN_CONTINUE;*/
-            /*if (HEX > 0 && !pTarget->HasAura(HEX, EFFECT_INDEX_0) && m_ai->CastSpell(HEX))
+            /*if (HEX > 0 && !pTarget->HasAura(HEX, EFFECT_INDEX_0) && GetAI()->CastSpell(HEX))
                 return RETURN_CONTINUE;*/
     }
 
@@ -275,10 +216,10 @@ CombatManeuverReturns PlayerbotShamanAI::DoNextCombatManeuverPVP(Unit* pTarget)
     CheckShields();
     UseCooldowns();
 
-    Player* healTarget = (m_ai->GetScenarioType() == PlayerbotAI::SCENARIO_PVP_DUEL) ? GetHealTarget() : m_bot;
+    Player* healTarget = (GetAI()->GetScenarioType() == PlayerbotAI::SCENARIO_PVP_DUEL) ? GetHealTarget() : m_bot;
     if (HealPlayer(healTarget) & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
         return RETURN_CONTINUE;
-    if (m_ai->CastSpell(LIGHTNING_BOLT))
+    if (GetAI()->CastSpell(LIGHTNING_BOLT))
         return RETURN_CONTINUE;
 
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
@@ -292,7 +233,7 @@ CombatManeuverReturns PlayerbotShamanAI::HealPlayer(Player* target)
 
     if (!target->isAlive())
     {
-        if (ANCESTRAL_SPIRIT && m_ai->CastSpell(ANCESTRAL_SPIRIT, *target))
+        if (ANCESTRAL_SPIRIT && GetAI()->CastSpell(ANCESTRAL_SPIRIT, *target))
         {
             std::string msg = "Resurrecting ";
             msg += target->GetName();
@@ -303,7 +244,7 @@ CombatManeuverReturns PlayerbotShamanAI::HealPlayer(Player* target)
     }
 
     // Dispel if necessary
-    if (CURE_TOXINS > 0 && (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_NODISPEL) == 0)
+    if (CURE_TOXINS > 0 && (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_NODISPEL) == 0)
     {
         uint32 DISPEL = CLEANSE_SPIRIT > 0 ? CLEANSE_SPIRIT : CURE_TOXINS;
         uint32 dispelMask  = GetDispellMask(DISPEL_POISON);
@@ -317,7 +258,7 @@ CombatManeuverReturns PlayerbotShamanAI::HealPlayer(Player* target)
             {
                 if (holder->GetSpellProto()->Dispel == DISPEL_POISON)
                 {
-                    if (m_ai->CastSpell(DISPEL, *target))
+                    if (GetAI()->CastSpell(DISPEL, *target))
                         return RETURN_CONTINUE;
                     return RETURN_NO_ACTION_ERROR;
                 }
@@ -326,7 +267,7 @@ CombatManeuverReturns PlayerbotShamanAI::HealPlayer(Player* target)
             {
                 if (holder->GetSpellProto()->Dispel == DISPEL_DISEASE)
                 {
-                    if (m_ai->CastSpell(DISPEL, *target))
+                    if (GetAI()->CastSpell(DISPEL, *target))
                         return RETURN_CONTINUE;
                     return RETURN_NO_ACTION_ERROR;
                 }
@@ -335,7 +276,7 @@ CombatManeuverReturns PlayerbotShamanAI::HealPlayer(Player* target)
             {
                 if (holder->GetSpellProto()->Dispel == DISPEL_CURSE)
                 {
-                    if (m_ai->CastSpell(DISPEL, *target))
+                    if (GetAI()->CastSpell(DISPEL, *target))
                         return RETURN_CONTINUE;
                     return RETURN_NO_ACTION_ERROR;
                 }
@@ -348,13 +289,13 @@ CombatManeuverReturns PlayerbotShamanAI::HealPlayer(Player* target)
         return RETURN_NO_ACTION_OK;
 
     // Technically the best rotation is CHAIN + LHW + LHW, or RIPTIDE + LHW + LHW (proc Tidal Waves then two short LHW), subbing in HW for trouble (bad mana efficiency)
-    if (target->GetHealthPercent() < 30 && HEALING_WAVE > 0 && m_ai->CastSpell(HEALING_WAVE, *target))
+    if (target->GetHealthPercent() < 30 && HEALING_WAVE > 0 && GetAI()->CastSpell(HEALING_WAVE, *target))
         return RETURN_CONTINUE;
-    if (target->GetHealthPercent() < 50 && LESSER_HEALING_WAVE > 0 && m_ai->CastSpell(LESSER_HEALING_WAVE, *target))
+    if (target->GetHealthPercent() < 50 && LESSER_HEALING_WAVE > 0 && GetAI()->CastSpell(LESSER_HEALING_WAVE, *target))
         return RETURN_CONTINUE;
-    if (target->GetHealthPercent() < 60 && RIPTIDE > 0 && !target->HasAura(RIPTIDE, EFFECT_INDEX_0) && m_ai->CastSpell(RIPTIDE, *target))
+    if (target->GetHealthPercent() < 60 && RIPTIDE > 0 && !target->HasAura(RIPTIDE, EFFECT_INDEX_0) && GetAI()->CastSpell(RIPTIDE, *target))
         return RETURN_CONTINUE;
-    if (target->GetHealthPercent() < 80 && CHAIN_HEAL > 0 && m_ai->CastSpell(CHAIN_HEAL, *target))
+    if (target->GetHealthPercent() < 80 && CHAIN_HEAL > 0 && GetAI()->CastSpell(CHAIN_HEAL, *target))
         return RETURN_CONTINUE;
 
     return RETURN_NO_ACTION_UNKNOWN;
@@ -362,7 +303,7 @@ CombatManeuverReturns PlayerbotShamanAI::HealPlayer(Player* target)
 
 void PlayerbotShamanAI::DropTotems()
 {
-    if (!m_ai)  return;
+    if (!GetAI())  return;
     if (!m_bot) return;
 
     uint32 spec = m_bot->GetSpec();
@@ -375,35 +316,35 @@ void PlayerbotShamanAI::DropTotems()
     // Earth Totems
     if ((earth == nullptr) || (m_bot->GetDistance(earth) > 30))
     {
-        if (STRENGTH_OF_EARTH_TOTEM > 0 && m_ai->CastSpell(STRENGTH_OF_EARTH_TOTEM))
+        if (STRENGTH_OF_EARTH_TOTEM > 0 && GetAI()->CastSpell(STRENGTH_OF_EARTH_TOTEM))
             return;
     }
 
     // Fire Totems
     if ((fire == nullptr) || (m_bot->GetDistance(fire) > 30))
     {
-        if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_FROST && FROST_RESISTANCE_TOTEM > 0 && m_ai->CastSpell(FROST_RESISTANCE_TOTEM))
+        if (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_FROST && FROST_RESISTANCE_TOTEM > 0 && GetAI()->CastSpell(FROST_RESISTANCE_TOTEM))
             return;
-        else if (spec == SHAMAN_SPEC_ELEMENTAL && TOTEM_OF_WRATH > 0 && m_ai->CastSpell(TOTEM_OF_WRATH))
+        else if (spec == SHAMAN_SPEC_ELEMENTAL && TOTEM_OF_WRATH > 0 && GetAI()->CastSpell(TOTEM_OF_WRATH))
             return;
         // If the spec didn't take totem of wrath, use flametongue
-        else if ((spec != SHAMAN_SPEC_ELEMENTAL || TOTEM_OF_WRATH == 0) && FLAMETONGUE_TOTEM > 0 && m_ai->CastSpell(FLAMETONGUE_TOTEM))
+        else if ((spec != SHAMAN_SPEC_ELEMENTAL || TOTEM_OF_WRATH == 0) && FLAMETONGUE_TOTEM > 0 && GetAI()->CastSpell(FLAMETONGUE_TOTEM))
             return;
     }
 
     // Air totems
     if ((air == nullptr) || (m_bot->GetDistance(air) > 30))
     {
-        if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_NATURE && NATURE_RESISTANCE_TOTEM > 0 && m_ai->CastSpell(NATURE_RESISTANCE_TOTEM))
+        if (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_NATURE && NATURE_RESISTANCE_TOTEM > 0 && GetAI()->CastSpell(NATURE_RESISTANCE_TOTEM))
             return;
         else if (spec == SHAMAN_SPEC_ENHANCEMENT)
         {
-            if (WIND_FURY_TOTEM > 0 /*&& !m_bot->HasAura(IMPROVED_ICY_TALONS)*/ && m_ai->CastSpell(WIND_FURY_TOTEM))
+            if (WIND_FURY_TOTEM > 0 /*&& !m_bot->HasAura(IMPROVED_ICY_TALONS)*/ && GetAI()->CastSpell(WIND_FURY_TOTEM))
             return;
         }
         else
         {
-            if (WRATH_OF_AIR_TOTEM > 0 && m_ai->CastSpell(WRATH_OF_AIR_TOTEM))
+            if (WRATH_OF_AIR_TOTEM > 0 && GetAI()->CastSpell(WRATH_OF_AIR_TOTEM))
             return;
         }
     }
@@ -411,85 +352,85 @@ void PlayerbotShamanAI::DropTotems()
     // Water Totems
     if ((water == nullptr) || (m_bot->GetDistance(water) > 30))
     {
-        if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_FIRE && FIRE_RESISTANCE_TOTEM > 0 && m_ai->CastSpell(FIRE_RESISTANCE_TOTEM))
+        if (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_FIRE && FIRE_RESISTANCE_TOTEM > 0 && GetAI()->CastSpell(FIRE_RESISTANCE_TOTEM))
             return;
-        else if (MANA_SPRING_TOTEM > 0 && m_ai->CastSpell(MANA_SPRING_TOTEM))
+        else if (MANA_SPRING_TOTEM > 0 && GetAI()->CastSpell(MANA_SPRING_TOTEM))
             return;
     }
 
-    /*if (EARTH_ELEMENTAL_TOTEM > 0 && m_ai->CastSpell(EARTH_ELEMENTAL_TOTEM))
+    /*if (EARTH_ELEMENTAL_TOTEM > 0 && GetAI()->CastSpell(EARTH_ELEMENTAL_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (EARTHBIND_TOTEM > 0 && !pTarget->HasAura(EARTHBIND_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(STRENGTH_OF_EARTH_TOTEM, EFFECT_INDEX_0) && m_ai->CastSpell(EARTHBIND_TOTEM))
+    /*if (EARTHBIND_TOTEM > 0 && !pTarget->HasAura(EARTHBIND_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(STRENGTH_OF_EARTH_TOTEM, EFFECT_INDEX_0) && GetAI()->CastSpell(EARTHBIND_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (FIRE_ELEMENTAL_TOTEM > 0 && m_ai->CastSpell(FIRE_ELEMENTAL_TOTEM))
+    /*if (FIRE_ELEMENTAL_TOTEM > 0 && GetAI()->CastSpell(FIRE_ELEMENTAL_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (FIRE_NOVA_TOTEM > 0 && m_ai->CastSpell(FIRE_NOVA_TOTEM))
+    /*if (FIRE_NOVA_TOTEM > 0 && GetAI()->CastSpell(FIRE_NOVA_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (GROUNDING_TOTEM > 0 && !m_bot->HasAura(GROUNDING_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(WRATH_OF_AIR_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(WIND_FURY_TOTEM, EFFECT_INDEX_0) && m_ai->CastSpell(GROUNDING_TOTEM))
+    /*if (GROUNDING_TOTEM > 0 && !m_bot->HasAura(GROUNDING_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(WRATH_OF_AIR_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(WIND_FURY_TOTEM, EFFECT_INDEX_0) && GetAI()->CastSpell(GROUNDING_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (HEALING_STREAM_TOTEM > 0 && m_ai->GetHealthPercent() < 50 && !m_bot->HasAura(HEALING_STREAM_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(MANA_SPRING_TOTEM, EFFECT_INDEX_0) && m_ai->CastSpell(HEALING_STREAM_TOTEM))
+    /*if (HEALING_STREAM_TOTEM > 0 && GetAI()->GetHealthPercent() < 50 && !m_bot->HasAura(HEALING_STREAM_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(MANA_SPRING_TOTEM, EFFECT_INDEX_0) && GetAI()->CastSpell(HEALING_STREAM_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (MAGMA_TOTEM > 0 && (!m_bot->HasAura(TOTEM_OF_WRATH, EFFECT_INDEX_0)) && m_ai->CastSpell(MAGMA_TOTEM))
+    /*if (MAGMA_TOTEM > 0 && (!m_bot->HasAura(TOTEM_OF_WRATH, EFFECT_INDEX_0)) && GetAI()->CastSpell(MAGMA_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (SEARING_TOTEM > 0 && !pTarget->HasAura(SEARING_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(TOTEM_OF_WRATH, EFFECT_INDEX_0) && m_ai->CastSpell(SEARING_TOTEM))
+    /*if (SEARING_TOTEM > 0 && !pTarget->HasAura(SEARING_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(TOTEM_OF_WRATH, EFFECT_INDEX_0) && GetAI()->CastSpell(SEARING_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (STONECLAW_TOTEM > 0 && m_ai->GetHealthPercent() < 51 && !pTarget->HasAura(STONECLAW_TOTEM, EFFECT_INDEX_0) && !pTarget->HasAura(EARTHBIND_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(STRENGTH_OF_EARTH_TOTEM, EFFECT_INDEX_0) && m_ai->CastSpell(STONECLAW_TOTEM))
+    /*if (STONECLAW_TOTEM > 0 && GetAI()->GetHealthPercent() < 51 && !pTarget->HasAura(STONECLAW_TOTEM, EFFECT_INDEX_0) && !pTarget->HasAura(EARTHBIND_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(STRENGTH_OF_EARTH_TOTEM, EFFECT_INDEX_0) && GetAI()->CastSpell(STONECLAW_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (STONESKIN_TOTEM > 0 && !m_bot->HasAura(STONESKIN_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(STRENGTH_OF_EARTH_TOTEM, EFFECT_INDEX_0) && m_ai->CastSpell(STONESKIN_TOTEM))
+    /*if (STONESKIN_TOTEM > 0 && !m_bot->HasAura(STONESKIN_TOTEM, EFFECT_INDEX_0) && !m_bot->HasAura(STRENGTH_OF_EARTH_TOTEM, EFFECT_INDEX_0) && GetAI()->CastSpell(STONESKIN_TOTEM))
         return RETURN_CONTINUE;*/
-    /*if (TREMOR_TOTEM > 0 && !m_bot->HasAura(STRENGTH_OF_EARTH_TOTEM, EFFECT_INDEX_0) && m_ai->CastSpell(TREMOR_TOTEM))
+    /*if (TREMOR_TOTEM > 0 && !m_bot->HasAura(STRENGTH_OF_EARTH_TOTEM, EFFECT_INDEX_0) && GetAI()->CastSpell(TREMOR_TOTEM))
         return RETURN_CONTINUE;*/
 }
 
 void PlayerbotShamanAI::CheckShields()
 {
-    if (!m_ai)  return;
+    if (!GetAI())  return;
     if (!m_bot) return;
 
     uint32 spec = m_bot->GetSpec();
 
     if (spec == SHAMAN_SPEC_ENHANCEMENT && LIGHTNING_SHIELD > 0 && !m_bot->HasAura(LIGHTNING_SHIELD, EFFECT_INDEX_0))
-        m_ai->CastSpell(LIGHTNING_SHIELD, *m_bot);
+        GetAI()->CastSpell(LIGHTNING_SHIELD, *m_bot);
     else if ((spec == SHAMAN_SPEC_ELEMENTAL || spec == SHAMAN_SPEC_RESTORATION) && WATER_SHIELD > 0 && !m_bot->HasAura(WATER_SHIELD, EFFECT_INDEX_0))
-        m_ai->CastSpell(WATER_SHIELD, *m_bot);
+        GetAI()->CastSpell(WATER_SHIELD, *m_bot);
     if (EARTH_SHIELD > 0 && !GetMaster()->HasAura(EARTH_SHIELD, EFFECT_INDEX_0))
-        m_ai->CastSpell(EARTH_SHIELD, *(GetMaster()));
+        GetAI()->CastSpell(EARTH_SHIELD, *(GetMaster()));
 }
 
 void PlayerbotShamanAI::UseCooldowns()
 {
-    if (!m_ai)  return;
+    if (!GetAI())  return;
     if (!m_bot) return;
 
     uint32 spec = m_bot->GetSpec();
 
-    if (BLOODLUST > 0 && (!GetMaster()->HasAura(BLOODLUST, EFFECT_INDEX_0)) && m_ai->CastSpell(BLOODLUST))
+    if (BLOODLUST > 0 && (!GetMaster()->HasAura(BLOODLUST, EFFECT_INDEX_0)) && GetAI()->CastSpell(BLOODLUST))
         return;
-    else if (HEROISM > 0 && (!GetMaster()->HasAura(HEROISM, EFFECT_INDEX_0)) && m_ai->CastSpell(HEROISM))
+    else if (HEROISM > 0 && (!GetMaster()->HasAura(HEROISM, EFFECT_INDEX_0)) && GetAI()->CastSpell(HEROISM))
         return;
 
     switch (spec)
     {
         case SHAMAN_SPEC_ENHANCEMENT:
-            if (SHAMANISTIC_RAGE > 0 && m_ai->CastSpell(SHAMANISTIC_RAGE, *m_bot))
+            if (SHAMANISTIC_RAGE > 0 && GetAI()->CastSpell(SHAMANISTIC_RAGE, *m_bot))
                 return;
-            else if (FERAL_SPIRIT > 0 && m_ai->CastSpell(FERAL_SPIRIT))
+            else if (FERAL_SPIRIT > 0 && GetAI()->CastSpell(FERAL_SPIRIT))
                 return;
             break;
 
         case SHAMAN_SPEC_ELEMENTAL:
-            if (ELEMENTAL_MASTERY > 0 && m_ai->CastSpell(ELEMENTAL_MASTERY, *m_bot))
+            if (ELEMENTAL_MASTERY > 0 && GetAI()->CastSpell(ELEMENTAL_MASTERY, *m_bot))
                 return;
-            else if (THUNDERSTORM > 0 && m_ai->CastSpell(THUNDERSTORM, *m_bot))
+            else if (THUNDERSTORM > 0 && GetAI()->CastSpell(THUNDERSTORM, *m_bot))
                 return;
             break;
 
         case SHAMAN_SPEC_RESTORATION:
-            if (MANA_TIDE_TOTEM > 0 && m_ai->GetManaPercent() < 50 && m_ai->CastSpell(MANA_TIDE_TOTEM))
+            if (MANA_TIDE_TOTEM > 0 && GetAI()->GetManaPercent() < 50 && GetAI()->CastSpell(MANA_TIDE_TOTEM))
                 return;
-            else if (NATURES_SWIFTNESS_SHAMAN > 0 && m_ai->CastSpell(NATURES_SWIFTNESS_SHAMAN))
+            else if (NATURES_SWIFTNESS_SHAMAN > 0 && GetAI()->CastSpell(NATURES_SWIFTNESS_SHAMAN))
                 return;
-            else if (TIDAL_FORCE > 0 && m_ai->CastSpell(TIDAL_FORCE))
+            else if (TIDAL_FORCE > 0 && GetAI()->CastSpell(TIDAL_FORCE))
                 return;
 
         default:
@@ -499,7 +440,7 @@ void PlayerbotShamanAI::UseCooldowns()
 
 void PlayerbotShamanAI::DoNonCombatActions()
 {
-    if (!m_ai)   return;
+    if (!GetAI())   return;
     if (!m_bot)  return;
 
     if (!m_bot->isAlive() || m_bot->IsInDuel()) return;
@@ -510,37 +451,37 @@ void PlayerbotShamanAI::DoNonCombatActions()
 /*
        // buff myself weapon
        if (ROCKBITER_WEAPON > 0)
-            (!m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && m_ai->CastSpell(ROCKBITER_WEAPON,*m_bot) );
+            (!m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && GetAI()->CastSpell(ROCKBITER_WEAPON,*m_bot) );
        else if (EARTHLIVING_WEAPON > 0)
-            (!m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_ai->CastSpell(WINDFURY_WEAPON,*m_bot) );
+            (!m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && GetAI()->CastSpell(WINDFURY_WEAPON,*m_bot) );
        else if (WINDFURY_WEAPON > 0)
-            (!m_bot->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_ai->CastSpell(WINDFURY_WEAPON,*m_bot) );
+            (!m_bot->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && GetAI()->CastSpell(WINDFURY_WEAPON,*m_bot) );
        else if (FLAMETONGUE_WEAPON > 0)
-            (!m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_ai->CastSpell(FLAMETONGUE_WEAPON,*m_bot) );
+            (!m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && GetAI()->CastSpell(FLAMETONGUE_WEAPON,*m_bot) );
        else if (FROSTBRAND_WEAPON > 0)
-            (!m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_ai->CastSpell(FROSTBRAND_WEAPON,*m_bot) );
+            (!m_bot->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_bot->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && GetAI()->CastSpell(FROSTBRAND_WEAPON,*m_bot) );
  */
     // Mainhand
     Item* weapon;
     weapon = m_bot->GetItemByPos(EQUIPMENT_SLOT_MAINHAND);
     if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && spec == SHAMAN_SPEC_RESTORATION)
-        m_ai->CastSpell(EARTHLIVING_WEAPON, *m_bot);
+        GetAI()->CastSpell(EARTHLIVING_WEAPON, *m_bot);
     else if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && spec == SHAMAN_SPEC_ELEMENTAL)
-        m_ai->CastSpell(FLAMETONGUE_WEAPON, *m_bot);
+        GetAI()->CastSpell(FLAMETONGUE_WEAPON, *m_bot);
     else if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && spec == SHAMAN_SPEC_ENHANCEMENT)
-        m_ai->CastSpell(WINDFURY_WEAPON, *m_bot);
+        GetAI()->CastSpell(WINDFURY_WEAPON, *m_bot);
 
     //Offhand
     weapon = m_bot->GetItemByPos(EQUIPMENT_SLOT_OFFHAND);
     if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && spec == SHAMAN_SPEC_ENHANCEMENT)
-        m_ai->CastSpell(FLAMETONGUE_WEAPON, *m_bot);
+        GetAI()->CastSpell(FLAMETONGUE_WEAPON, *m_bot);
 
     // Revive
     if (HealPlayer(GetResurrectionTarget()) & RETURN_CONTINUE)
         return;
 
     // Heal
-    if (m_ai->IsHealer())
+    if (GetAI()->IsHealer())
     {
         if (HealPlayer(GetHealTarget()) & RETURN_CONTINUE)
             return;// RETURN_CONTINUE;
@@ -560,9 +501,9 @@ void PlayerbotShamanAI::DoNonCombatActions()
 
 bool PlayerbotShamanAI::CastHoTOnTank()
 {
-    if (!m_ai) return false;
+    if (!GetAI()) return false;
 
-    if ((PlayerbotAI::ORDERS_HEAL & m_ai->GetCombatOrder()) == 0) return false;
+    if ((PlayerbotAI::ORDERS_HEAL & GetAI()->GetCombatOrder()) == 0) return false;
 
     // Shaman: Healing Stream Totem, Earthliving Weapon, and Riptide (with talents)
     // None of these are cast before Pulling

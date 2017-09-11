@@ -26,6 +26,7 @@
 #include "Common.h"
 #include "Timer.h"
 #include "Globals/SharedDefines.h"
+#include "Entities/Object.h"
 
 #include <set>
 #include <list>
@@ -174,6 +175,7 @@ enum eConfigUInt32Values
     CONFIG_UINT32_ARENA_RATING_DISCARD_TIMER,
     CONFIG_UINT32_ARENA_AUTO_DISTRIBUTE_INTERVAL_DAYS,
     CONFIG_UINT32_ARENA_SEASON_ID,
+    CONFIG_UINT32_ARENA_FIRST_RESET_DAY,
     CONFIG_UINT32_ARENA_SEASON_PREVIOUS_ID,
     CONFIG_UINT32_GROUP_OFFLINE_LEADER_DELAY,
     CONFIG_UINT32_CLIENTCACHE_VERSION,
@@ -595,7 +597,6 @@ class World
         char const* GetDBVersion() const { return m_DBVersion.c_str(); }
         char const* GetCreatureEventAIVersion() const { return m_CreatureEventAIVersion.c_str(); }
 
-
         /**
         * \brief: force all client to request player data
         * \param: ObjectGuid guid : guid of the specified player
@@ -607,6 +608,8 @@ class World
         **/
         void InvalidatePlayerDataToAllClient(ObjectGuid guid) const;
 
+        static TimePoint GetCurrentClockTime() { return m_currentTime; }
+
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters
@@ -615,6 +618,10 @@ class World
         void InitDailyQuestResetTime();
         void InitWeeklyQuestResetTime();
         void SetMonthlyQuestResetTime(bool initialize = true);
+
+        void GenerateEventGroupEvents(bool daily, bool weekly, bool deleteColumns);
+        void LoadEventGroupChosen();
+
         void ResetDailyQuests();
         void ResetWeeklyQuests();
         void ResetMonthlyQuests();
@@ -701,6 +708,11 @@ class World
 
         // List of Maps that should be force-loaded on startup
         std::set<uint32> m_configForceLoadMapIds;
+
+        // Vector of quests that were chosen for given group
+        std::vector<uint32> m_eventGroupChosen;
+
+        static TimePoint m_currentTime;
 };
 
 extern uint32 realmID;

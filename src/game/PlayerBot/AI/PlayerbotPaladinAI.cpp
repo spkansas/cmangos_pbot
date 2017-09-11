@@ -22,63 +22,63 @@ class PlayerbotAI;
 
 PlayerbotPaladinAI::PlayerbotPaladinAI(Player* const master, Player* const bot, PlayerbotAI* const ai) : PlayerbotClassAI(master, bot, ai)
 {
-    RETRIBUTION_AURA              = m_ai->initSpell(RETRIBUTION_AURA_1);
-    CRUSADER_AURA                 = m_ai->initSpell(CRUSADER_AURA_1);
-    CRUSADER_STRIKE               = m_ai->initSpell(CRUSADER_STRIKE_1);
-    SEAL_OF_COMMAND               = m_ai->initSpell(SEAL_OF_COMMAND_1);
-    SEAL_OF_RIGHTEOUSNESS         = m_ai->initSpell(SEAL_OF_RIGHTEOUSNESS_1);
-    SEAL_OF_CORRUPTION            = m_ai->initSpell(SEAL_OF_CORRUPTION_1);
-    SEAL_OF_JUSTICE               = m_ai->initSpell(SEAL_OF_JUSTICE_1);
-    SEAL_OF_LIGHT                 = m_ai->initSpell(SEAL_OF_LIGHT_1);
-    SEAL_OF_VENGEANCE             = m_ai->initSpell(SEAL_OF_VENGEANCE_1);
-    SEAL_OF_WISDOM                = m_ai->initSpell(SEAL_OF_WISDOM_1);
-    JUDGEMENT_OF_LIGHT            = m_ai->initSpell(JUDGEMENT_OF_LIGHT_1);
-    JUDGEMENT_OF_WISDOM           = m_ai->initSpell(JUDGEMENT_OF_WISDOM_1);
-    JUDGEMENT_OF_JUSTICE          = m_ai->initSpell(JUDGEMENT_OF_JUSTICE_1);
-    DIVINE_STORM                  = m_ai->initSpell(DIVINE_STORM_1);
-    BLESSING_OF_MIGHT             = m_ai->initSpell(BLESSING_OF_MIGHT_1);
-    GREATER_BLESSING_OF_MIGHT     = m_ai->initSpell(GREATER_BLESSING_OF_MIGHT_1);
-    HAMMER_OF_WRATH               = m_ai->initSpell(HAMMER_OF_WRATH_1);
-    FLASH_OF_LIGHT                = m_ai->initSpell(FLASH_OF_LIGHT_1); // Holy
-    HOLY_LIGHT                    = m_ai->initSpell(HOLY_LIGHT_1);
-    HOLY_SHOCK                    = m_ai->initSpell(HOLY_SHOCK_1);
-    HOLY_WRATH                    = m_ai->initSpell(HOLY_WRATH_1);
-    DIVINE_FAVOR                  = m_ai->initSpell(DIVINE_FAVOR_1);
-    CONCENTRATION_AURA            = m_ai->initSpell(CONCENTRATION_AURA_1);
-    BLESSING_OF_WISDOM            = m_ai->initSpell(BLESSING_OF_WISDOM_1);
-    GREATER_BLESSING_OF_WISDOM    = m_ai->initSpell(GREATER_BLESSING_OF_WISDOM_1);
-    CONSECRATION                  = m_ai->initSpell(CONSECRATION_1);
-    AVENGING_WRATH                = m_ai->initSpell(AVENGING_WRATH_1);
-    LAY_ON_HANDS                  = m_ai->initSpell(LAY_ON_HANDS_1);
-    EXORCISM                      = m_ai->initSpell(EXORCISM_1);
-    SACRED_SHIELD                 = m_ai->initSpell(SACRED_SHIELD_1);
-    DIVINE_PLEA                   = m_ai->initSpell(DIVINE_PLEA_1);
-    BLESSING_OF_KINGS             = m_ai->initSpell(BLESSING_OF_KINGS_1);
-    GREATER_BLESSING_OF_KINGS     = m_ai->initSpell(GREATER_BLESSING_OF_KINGS_1);
-    BLESSING_OF_SANCTUARY         = m_ai->initSpell(BLESSING_OF_SANCTUARY_1);
-    GREATER_BLESSING_OF_SANCTUARY = m_ai->initSpell(GREATER_BLESSING_OF_SANCTUARY_1);
-    HAMMER_OF_JUSTICE             = m_ai->initSpell(HAMMER_OF_JUSTICE_1);
-    RIGHTEOUS_FURY                = m_ai->initSpell(RIGHTEOUS_FURY_1);
-    RIGHTEOUS_DEFENSE             = m_ai->initSpell(RIGHTEOUS_DEFENSE_1);
-    SHADOW_RESISTANCE_AURA        = m_ai->initSpell(SHADOW_RESISTANCE_AURA_1);
-    DEVOTION_AURA                 = m_ai->initSpell(DEVOTION_AURA_1);
-    FIRE_RESISTANCE_AURA          = m_ai->initSpell(FIRE_RESISTANCE_AURA_1);
-    FROST_RESISTANCE_AURA         = m_ai->initSpell(FROST_RESISTANCE_AURA_1);
-    HAND_OF_PROTECTION            = m_ai->initSpell(HAND_OF_PROTECTION_1);
-    DIVINE_PROTECTION             = m_ai->initSpell(DIVINE_PROTECTION_1);
-    DIVINE_INTERVENTION           = m_ai->initSpell(DIVINE_INTERVENTION_1);
-    DIVINE_SACRIFICE              = m_ai->initSpell(DIVINE_SACRIFICE_1);
-    DIVINE_SHIELD                 = m_ai->initSpell(DIVINE_SHIELD_1);
-    HOLY_SHIELD                   = m_ai->initSpell(HOLY_SHIELD_1);
-    AVENGERS_SHIELD               = m_ai->initSpell(AVENGERS_SHIELD_1);
-    HAND_OF_SACRIFICE             = m_ai->initSpell(HAND_OF_SACRIFICE_1);
-    SHIELD_OF_RIGHTEOUSNESS       = m_ai->initSpell(SHIELD_OF_RIGHTEOUSNESS_1);
-    REDEMPTION                    = m_ai->initSpell(REDEMPTION_1);
-    PURIFY                        = m_ai->initSpell(PURIFY_1);
-    CLEANSE                       = m_ai->initSpell(CLEANSE_1);
-    HAND_OF_RECKONING             = m_ai->initSpell(HAND_OF_RECKONING_1);
-    ART_OF_WAR                    = m_ai->initSpell(ART_OF_WAR_1);
-    HAMMER_OF_THE_RIGHTEOUS       = m_ai->initSpell(HAMMER_OF_THE_RIGHTEOUS_1);
+    RETRIBUTION_AURA              = GetAI()->initSpell(RETRIBUTION_AURA_1);
+    CRUSADER_AURA                 = GetAI()->initSpell(CRUSADER_AURA_1);
+    CRUSADER_STRIKE               = GetAI()->initSpell(CRUSADER_STRIKE_1);
+    SEAL_OF_COMMAND               = GetAI()->initSpell(SEAL_OF_COMMAND_1);
+    SEAL_OF_RIGHTEOUSNESS         = GetAI()->initSpell(SEAL_OF_RIGHTEOUSNESS_1);
+    SEAL_OF_CORRUPTION            = GetAI()->initSpell(SEAL_OF_CORRUPTION_1);
+    SEAL_OF_JUSTICE               = GetAI()->initSpell(SEAL_OF_JUSTICE_1);
+    SEAL_OF_LIGHT                 = GetAI()->initSpell(SEAL_OF_LIGHT_1);
+    SEAL_OF_VENGEANCE             = GetAI()->initSpell(SEAL_OF_VENGEANCE_1);
+    SEAL_OF_WISDOM                = GetAI()->initSpell(SEAL_OF_WISDOM_1);
+    JUDGEMENT_OF_LIGHT            = GetAI()->initSpell(JUDGEMENT_OF_LIGHT_1);
+    JUDGEMENT_OF_WISDOM           = GetAI()->initSpell(JUDGEMENT_OF_WISDOM_1);
+    JUDGEMENT_OF_JUSTICE          = GetAI()->initSpell(JUDGEMENT_OF_JUSTICE_1);
+    DIVINE_STORM                  = GetAI()->initSpell(DIVINE_STORM_1);
+    BLESSING_OF_MIGHT             = GetAI()->initSpell(BLESSING_OF_MIGHT_1);
+    GREATER_BLESSING_OF_MIGHT     = GetAI()->initSpell(GREATER_BLESSING_OF_MIGHT_1);
+    HAMMER_OF_WRATH               = GetAI()->initSpell(HAMMER_OF_WRATH_1);
+    FLASH_OF_LIGHT                = GetAI()->initSpell(FLASH_OF_LIGHT_1); // Holy
+    HOLY_LIGHT                    = GetAI()->initSpell(HOLY_LIGHT_1);
+    HOLY_SHOCK                    = GetAI()->initSpell(HOLY_SHOCK_1);
+    HOLY_WRATH                    = GetAI()->initSpell(HOLY_WRATH_1);
+    DIVINE_FAVOR                  = GetAI()->initSpell(DIVINE_FAVOR_1);
+    CONCENTRATION_AURA            = GetAI()->initSpell(CONCENTRATION_AURA_1);
+    BLESSING_OF_WISDOM            = GetAI()->initSpell(BLESSING_OF_WISDOM_1);
+    GREATER_BLESSING_OF_WISDOM    = GetAI()->initSpell(GREATER_BLESSING_OF_WISDOM_1);
+    CONSECRATION                  = GetAI()->initSpell(CONSECRATION_1);
+    AVENGING_WRATH                = GetAI()->initSpell(AVENGING_WRATH_1);
+    LAY_ON_HANDS                  = GetAI()->initSpell(LAY_ON_HANDS_1);
+    EXORCISM                      = GetAI()->initSpell(EXORCISM_1);
+    SACRED_SHIELD                 = GetAI()->initSpell(SACRED_SHIELD_1);
+    DIVINE_PLEA                   = GetAI()->initSpell(DIVINE_PLEA_1);
+    BLESSING_OF_KINGS             = GetAI()->initSpell(BLESSING_OF_KINGS_1);
+    GREATER_BLESSING_OF_KINGS     = GetAI()->initSpell(GREATER_BLESSING_OF_KINGS_1);
+    BLESSING_OF_SANCTUARY         = GetAI()->initSpell(BLESSING_OF_SANCTUARY_1);
+    GREATER_BLESSING_OF_SANCTUARY = GetAI()->initSpell(GREATER_BLESSING_OF_SANCTUARY_1);
+    HAMMER_OF_JUSTICE             = GetAI()->initSpell(HAMMER_OF_JUSTICE_1);
+    RIGHTEOUS_FURY                = GetAI()->initSpell(RIGHTEOUS_FURY_1);
+    RIGHTEOUS_DEFENSE             = GetAI()->initSpell(RIGHTEOUS_DEFENSE_1);
+    SHADOW_RESISTANCE_AURA        = GetAI()->initSpell(SHADOW_RESISTANCE_AURA_1);
+    DEVOTION_AURA                 = GetAI()->initSpell(DEVOTION_AURA_1);
+    FIRE_RESISTANCE_AURA          = GetAI()->initSpell(FIRE_RESISTANCE_AURA_1);
+    FROST_RESISTANCE_AURA         = GetAI()->initSpell(FROST_RESISTANCE_AURA_1);
+    HAND_OF_PROTECTION            = GetAI()->initSpell(HAND_OF_PROTECTION_1);
+    DIVINE_PROTECTION             = GetAI()->initSpell(DIVINE_PROTECTION_1);
+    DIVINE_INTERVENTION           = GetAI()->initSpell(DIVINE_INTERVENTION_1);
+    DIVINE_SACRIFICE              = GetAI()->initSpell(DIVINE_SACRIFICE_1);
+    DIVINE_SHIELD                 = GetAI()->initSpell(DIVINE_SHIELD_1);
+    HOLY_SHIELD                   = GetAI()->initSpell(HOLY_SHIELD_1);
+    AVENGERS_SHIELD               = GetAI()->initSpell(AVENGERS_SHIELD_1);
+    HAND_OF_SACRIFICE             = GetAI()->initSpell(HAND_OF_SACRIFICE_1);
+    SHIELD_OF_RIGHTEOUSNESS       = GetAI()->initSpell(SHIELD_OF_RIGHTEOUSNESS_1);
+    REDEMPTION                    = GetAI()->initSpell(REDEMPTION_1);
+    PURIFY                        = GetAI()->initSpell(PURIFY_1);
+    CLEANSE                       = GetAI()->initSpell(CLEANSE_1);
+    HAND_OF_RECKONING             = GetAI()->initSpell(HAND_OF_RECKONING_1);
+    ART_OF_WAR                    = GetAI()->initSpell(ART_OF_WAR_1);
+    HAMMER_OF_THE_RIGHTEOUS       = GetAI()->initSpell(HAMMER_OF_THE_RIGHTEOUS_1);
 
     // Warrior auras
     DEFENSIVE_STANCE              = 71;   //Def Stance
@@ -90,79 +90,21 @@ PlayerbotPaladinAI::PlayerbotPaladinAI(Player* const master, Player* const bot, 
     RECENTLY_BANDAGED             = 11196; // first aid check
 
     // racial
-    ARCANE_TORRENT                = m_ai->initSpell(ARCANE_TORRENT_MANA_CLASSES);
-    GIFT_OF_THE_NAARU             = m_ai->initSpell(GIFT_OF_THE_NAARU_PALADIN); // draenei
-    STONEFORM                     = m_ai->initSpell(STONEFORM_ALL); // dwarf
-    EVERY_MAN_FOR_HIMSELF         = m_ai->initSpell(EVERY_MAN_FOR_HIMSELF_ALL); // human
+    ARCANE_TORRENT                = GetAI()->initSpell(ARCANE_TORRENT_MANA_CLASSES);
+    GIFT_OF_THE_NAARU             = GetAI()->initSpell(GIFT_OF_THE_NAARU_PALADIN); // draenei
+    STONEFORM                     = GetAI()->initSpell(STONEFORM_ALL); // dwarf
+    EVERY_MAN_FOR_HIMSELF         = GetAI()->initSpell(EVERY_MAN_FOR_HIMSELF_ALL); // human
 
     //The check doesn't work for now
-    //PRAYER_OF_SHADOW_PROTECTION   = m_ai->initSpell(PriestSpells::PRAYER_OF_SHADOW_PROTECTION_1);
+    //PRAYER_OF_SHADOW_PROTECTION   = GetAI()->initSpell(PriestSpells::PRAYER_OF_SHADOW_PROTECTION_1);
 }
 
 PlayerbotPaladinAI::~PlayerbotPaladinAI() {}
 
-CombatManeuverReturns PlayerbotPaladinAI::DoFirstCombatManeuver(Unit* pTarget)
+CombatManeuverReturns PlayerbotPaladinAI::DoNextManeuver_Heal_ClassSetup(Unit* pTarget)
 {
-    // There are NPCs in BGs and Open World PvP, so don't filter this on PvP scenarios (of course if PvP targets anyone but tank, all bets are off anyway)
-    // Wait until the tank says so, until any non-tank gains aggro or X seconds - whichever is shortest
-    if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_TEMP_WAIT_TANKAGGRO)
-    {
-        if (m_WaitUntil > m_ai->CurrentTime() && m_ai->GroupTankHoldsAggro())
-        {
-            if (PlayerbotAI::ORDERS_TANK & m_ai->GetCombatOrder())
-            {
-                if (m_bot->CanReachWithMeleeAttack(pTarget))
-                {
-                    // Set everyone's UpdateAI() waiting to 2 seconds
-                    m_ai->SetGroupIgnoreUpdateTime(2);
-                    // Clear their TEMP_WAIT_TANKAGGRO flag
-                    m_ai->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_TANKAGGRO);
-                    // Start attacking, force target on current target
-                    m_ai->Attack(m_ai->GetCurrentTarget());
-
-                    // While everyone else is waiting 2 second, we need to build up aggro, so don't return
-                }
-                else
-                {
-                    // TODO: add check if target is ranged
-                    return RETURN_NO_ACTION_OK; // wait for target to get nearer
-                }
-            }
-            else if (PlayerbotAI::ORDERS_HEAL & m_ai->GetCombatOrder())
-               return HealPlayer(GetHealTarget());
-            else
-                return RETURN_NO_ACTION_OK; // wait it out
-        }
-        else
-        {
-            m_ai->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_TANKAGGRO);
-        }
-    }
-
-    if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_TEMP_WAIT_OOC)
-    {
-        if (m_WaitUntil > m_ai->CurrentTime() && !m_ai->IsGroupInCombat())
-            return RETURN_NO_ACTION_OK; // wait it out
-        else
-            m_ai->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_OOC);
-    }
-
-    switch (m_ai->GetScenarioType())
-    {
-        case PlayerbotAI::SCENARIO_PVP_DUEL:
-        case PlayerbotAI::SCENARIO_PVP_BG:
-        case PlayerbotAI::SCENARIO_PVP_ARENA:
-        case PlayerbotAI::SCENARIO_PVP_OPENWORLD:
-            return DoFirstCombatManeuverPVP(pTarget);
-        case PlayerbotAI::SCENARIO_PVE:
-        case PlayerbotAI::SCENARIO_PVE_ELITE:
-        case PlayerbotAI::SCENARIO_PVE_RAID:
-        default:
-            return DoFirstCombatManeuverPVE(pTarget);
-            break;
-    }
-
-    return RETURN_NO_ACTION_ERROR;
+	// No healing setup needed, so pass success
+	return RETURN_CONTINUE;
 }
 
 CombatManeuverReturns PlayerbotPaladinAI::DoFirstCombatManeuverPVE(Unit* /*pTarget*/)
@@ -175,32 +117,9 @@ CombatManeuverReturns PlayerbotPaladinAI::DoFirstCombatManeuverPVP(Unit* /*pTarg
     return RETURN_NO_ACTION_OK;
 }
 
-CombatManeuverReturns PlayerbotPaladinAI::DoNextCombatManeuver(Unit *pTarget)
-{
-
-    if (CheckSeals())
-        return RETURN_CONTINUE;
-    switch (m_ai->GetScenarioType())
-    {
-        case PlayerbotAI::SCENARIO_PVP_DUEL:
-        case PlayerbotAI::SCENARIO_PVP_BG:
-        case PlayerbotAI::SCENARIO_PVP_ARENA:
-        case PlayerbotAI::SCENARIO_PVP_OPENWORLD:
-            return DoNextCombatManeuverPVP(pTarget);
-        case PlayerbotAI::SCENARIO_PVE:
-        case PlayerbotAI::SCENARIO_PVE_ELITE:
-        case PlayerbotAI::SCENARIO_PVE_RAID:
-        default:
-            return DoNextCombatManeuverPVE(pTarget);
-            break;
-    }
-
-    return RETURN_NO_ACTION_ERROR;
-}
-
 CombatManeuverReturns PlayerbotPaladinAI::DoNextCombatManeuverPVE(Unit *pTarget)
 {
-    if (!m_ai)  return RETURN_NO_ACTION_ERROR;
+    if (!GetAI())  return RETURN_NO_ACTION_ERROR;
     if (!m_bot) return RETURN_NO_ACTION_ERROR;
     if (!pTarget) return RETURN_NO_ACTION_INVALIDTARGET;
 
@@ -209,104 +128,104 @@ CombatManeuverReturns PlayerbotPaladinAI::DoNextCombatManeuverPVE(Unit *pTarget)
     std::ostringstream out;
 
     // Make sure healer stays put, don't even melee (aggro) if in range.
-    if (m_ai->IsHealer() && m_ai->GetCombatStyle() != PlayerbotAI::COMBAT_RANGED)
-        m_ai->SetCombatStyle(PlayerbotAI::COMBAT_RANGED);
-    else if (!m_ai->IsHealer() && m_ai->GetCombatStyle() != PlayerbotAI::COMBAT_MELEE)
-        m_ai->SetCombatStyle(PlayerbotAI::COMBAT_MELEE);
+    if (GetAI()->IsHealer() && GetAI()->GetCombatStyle() != PlayerbotAI::COMBAT_RANGED)
+		GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_RANGED);
+    else if (!GetAI()->IsHealer() && GetAI()->GetCombatStyle() != PlayerbotAI::COMBAT_MELEE)
+		GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_MELEE);
 
     // Heal
-    if (m_ai->IsHealer())
+    if (GetAI()->IsHealer())
     {
         if (HealPlayer(GetHealTarget()) & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
             return RETURN_CONTINUE;
     }
-    else if (m_ai->GetGroupHealer() && m_ai->GetGroupHealer()->isAlive())
+    else if (GetAI()->GetGroupHealer() && GetAI()->GetGroupHealer()->isAlive())
     {
         // Desirable? Debatable. We should have faith in the healer. On the other hand this low HP could be considered a crisis,
         // and DPS is not crucial so probably a good thing (which is why I put it in)
         // Of course, keep in mind we're not healing specced so it's unlikely to do much later on...
-        if (!m_ai->IsTank() && m_ai->GetHealthPercent() < 35 && HealPlayer(m_bot) & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
+        if (!GetAI()->IsTank() && GetAI()->GetHealthPercent() < 35 && HealPlayer(m_bot) & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
             return RETURN_CONTINUE;
     }
     else
     {
         // Is this desirable? Debatable.
         // TODO: In a group/raid with a healer you'd want this bot to focus on DPS (it's not specced/geared for healing either)
-        if (m_ai->GetHealthPercent() < 50 && HealPlayer(m_bot) & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
+        if (GetAI()->GetHealthPercent() < 50 && HealPlayer(m_bot) & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
             return RETURN_CONTINUE;
     }
 
     //Used to determine if this bot has highest threat
-    Unit *newTarget = m_ai->FindAttacker((PlayerbotAI::ATTACKERINFOTYPE) (PlayerbotAI::AIT_VICTIMSELF | PlayerbotAI::AIT_HIGHESTTHREAT), m_bot);
+    Unit *newTarget = GetAI()->FindAttacker((PlayerbotAI::ATTACKERINFOTYPE) (PlayerbotAI::AIT_VICTIMSELF | PlayerbotAI::AIT_HIGHESTTHREAT), m_bot);
     switch (spec)
     {
         case PALADIN_SPEC_HOLY:
-            if (m_ai->IsHealer())
+            if (GetAI()->IsHealer())
                 return RETURN_NO_ACTION_OK;
             // else: DPS (retribution, NEVER protection)
 
         case PALADIN_SPEC_RETRIBUTION:
-            if (HAMMER_OF_WRATH > 0 && pTarget->GetHealth() < pTarget->GetMaxHealth() * 0.20 && m_ai->CastSpell (HAMMER_OF_WRATH, *pTarget))
+            if (HAMMER_OF_WRATH > 0 && pTarget->GetHealth() < pTarget->GetMaxHealth() * 0.20 && GetAI()->CastSpell (HAMMER_OF_WRATH, *pTarget))
                 return RETURN_CONTINUE;
-            if (ART_OF_WAR > 0 && EXORCISM > 0 && !m_bot->HasSpellCooldown(EXORCISM) && m_bot->HasAura(ART_OF_WAR, EFFECT_INDEX_0) && m_ai->CastSpell (EXORCISM, *pTarget))
+            if (ART_OF_WAR > 0 && EXORCISM > 0 && m_bot->IsSpellReady(EXORCISM) && m_bot->HasAura(ART_OF_WAR, EFFECT_INDEX_0) && GetAI()->CastSpell (EXORCISM, *pTarget))
                 return RETURN_CONTINUE;
-            if (CRUSADER_STRIKE > 0 && !m_bot->HasSpellCooldown(CRUSADER_STRIKE) && m_ai->CastSpell (CRUSADER_STRIKE, *pTarget))
+            if (CRUSADER_STRIKE > 0 && m_bot->IsSpellReady(CRUSADER_STRIKE) && GetAI()->CastSpell (CRUSADER_STRIKE, *pTarget))
                 return RETURN_CONTINUE;
-            if (DIVINE_STORM > 0 && /*m_ai->GetAttackerCount() >= 3 && meleeReach*/ !m_bot->HasSpellCooldown(DIVINE_STORM) && m_ai->CastSpell (DIVINE_STORM, *pTarget))
+            if (DIVINE_STORM > 0 && /*GetAI()->GetAttackerCount() >= 3 && meleeReach*/ m_bot->IsSpellReady(DIVINE_STORM) && GetAI()->CastSpell (DIVINE_STORM, *pTarget))
                 return RETURN_CONTINUE;
-            if (JUDGEMENT_OF_LIGHT > 0 && m_ai->CastSpell (JUDGEMENT_OF_LIGHT, *pTarget))
+            if (JUDGEMENT_OF_LIGHT > 0 && GetAI()->CastSpell (JUDGEMENT_OF_LIGHT, *pTarget))
                 return RETURN_CONTINUE;
-            if (AVENGING_WRATH > 0 && m_ai->CastSpell (AVENGING_WRATH, *m_bot))
+            if (AVENGING_WRATH > 0 && GetAI()->CastSpell (AVENGING_WRATH, *m_bot))
                 return RETURN_CONTINUE;
-            /*if (HAMMER_OF_JUSTICE > 0 && !pTarget->HasAura(HAMMER_OF_JUSTICE, EFFECT_INDEX_0) && m_ai->CastSpell (HAMMER_OF_JUSTICE, *pTarget))
+            /*if (HAMMER_OF_JUSTICE > 0 && !pTarget->HasAura(HAMMER_OF_JUSTICE, EFFECT_INDEX_0) && GetAI()->CastSpell (HAMMER_OF_JUSTICE, *pTarget))
                 return RETURN_CONTINUE;*/
-            /*if (SACRED_SHIELD > 0 && pVictim == m_bot && m_ai->GetHealthPercent() < 70 && !m_bot->HasAura(SACRED_SHIELD, EFFECT_INDEX_0) && m_ai->CastSpell (SACRED_SHIELD, *m_bot))
+            /*if (SACRED_SHIELD > 0 && pVictim == m_bot && GetAI()->GetHealthPercent() < 70 && !m_bot->HasAura(SACRED_SHIELD, EFFECT_INDEX_0) && GetAI()->CastSpell (SACRED_SHIELD, *m_bot))
                 return RETURN_CONTINUE;*/
-            /*if (HOLY_WRATH > 0 && m_ai->GetAttackerCount() >= 3 && meleeReach && m_ai->CastSpell (HOLY_WRATH, *pTarget))
+            /*if (HOLY_WRATH > 0 && GetAI()->GetAttackerCount() >= 3 && meleeReach && GetAI()->CastSpell (HOLY_WRATH, *pTarget))
                 return RETURN_CONTINUE;*/
-            /*if (HAND_OF_SACRIFICE > 0 && pVictim == GetMaster() && !GetMaster()->HasAura(HAND_OF_SACRIFICE, EFFECT_INDEX_0) && m_ai->CastSpell (HAND_OF_SACRIFICE, *GetMaster()))
+            /*if (HAND_OF_SACRIFICE > 0 && pVictim == GetMaster() && !GetMaster()->HasAura(HAND_OF_SACRIFICE, EFFECT_INDEX_0) && GetAI()->CastSpell (HAND_OF_SACRIFICE, *GetMaster()))
                 return RETURN_CONTINUE;*/
-            /*if (DIVINE_PROTECTION > 0 && pVictim == m_bot && !m_bot->HasAura(FORBEARANCE, EFFECT_INDEX_0) && m_ai->GetHealthPercent() < 30 && m_ai->CastSpell (DIVINE_PROTECTION, *m_bot))
+            /*if (DIVINE_PROTECTION > 0 && pVictim == m_bot && !m_bot->HasAura(FORBEARANCE, EFFECT_INDEX_0) && GetAI()->GetHealthPercent() < 30 && GetAI()->CastSpell (DIVINE_PROTECTION, *m_bot))
                 return RETURN_CONTINUE;*/
-            /*if (RIGHTEOUS_DEFENSE > 0 && pVictim != m_bot && m_ai->GetHealthPercent() > 70 && m_ai->CastSpell (RIGHTEOUS_DEFENSE, *pTarget))
+            /*if (RIGHTEOUS_DEFENSE > 0 && pVictim != m_bot && GetAI()->GetHealthPercent() > 70 && GetAI()->CastSpell (RIGHTEOUS_DEFENSE, *pTarget))
                 return RETURN_CONTINUE;*/
-            /*if (DIVINE_PLEA > 0 && !m_bot->HasAura(DIVINE_PLEA, EFFECT_INDEX_0) && m_ai->CastSpell (DIVINE_PLEA, *m_bot))
+            /*if (DIVINE_PLEA > 0 && !m_bot->HasAura(DIVINE_PLEA, EFFECT_INDEX_0) && GetAI()->CastSpell (DIVINE_PLEA, *m_bot))
                 return RETURN_CONTINUE;*/
-            /*if (DIVINE_FAVOR > 0 && !m_bot->HasAura(DIVINE_FAVOR, EFFECT_INDEX_0) && m_ai->CastSpell (DIVINE_FAVOR, *m_bot))
+            /*if (DIVINE_FAVOR > 0 && !m_bot->HasAura(DIVINE_FAVOR, EFFECT_INDEX_0) && GetAI()->CastSpell (DIVINE_FAVOR, *m_bot))
                 return RETURN_CONTINUE;*/
             return RETURN_NO_ACTION_OK;
 
         case PALADIN_SPEC_PROTECTION:
             //Taunt if orders specify
-            if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_TANK && !newTarget && HAND_OF_RECKONING > 0 && !m_bot->HasSpellCooldown(HAND_OF_RECKONING) && m_ai->CastSpell(HAND_OF_RECKONING, *pTarget))
+            if (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_TANK && !newTarget && HAND_OF_RECKONING > 0 && m_bot->IsSpellReady(HAND_OF_RECKONING) && GetAI()->CastSpell(HAND_OF_RECKONING, *pTarget))
                 return RETURN_CONTINUE;
-            if (CONSECRATION > 0 && !m_bot->HasSpellCooldown(CONSECRATION) && m_ai->CastSpell(CONSECRATION, *pTarget))
+            if (CONSECRATION > 0 && m_bot->IsSpellReady(CONSECRATION) && GetAI()->CastSpell(CONSECRATION, *pTarget))
                 return RETURN_CONTINUE;
-            if (HOLY_SHIELD > 0 && !m_bot->HasAura(HOLY_SHIELD) && m_ai->CastSpell(HOLY_SHIELD, *m_bot))
+            if (HOLY_SHIELD > 0 && !m_bot->HasAura(HOLY_SHIELD) && GetAI()->CastSpell(HOLY_SHIELD, *m_bot))
                 return RETURN_CONTINUE;
-            if (AVENGERS_SHIELD > 0 && !m_bot->HasSpellCooldown(AVENGERS_SHIELD) && m_ai->CastSpell(AVENGERS_SHIELD, *pTarget))
+            if (AVENGERS_SHIELD > 0 && m_bot->IsSpellReady(AVENGERS_SHIELD) && GetAI()->CastSpell(AVENGERS_SHIELD, *pTarget))
                 return RETURN_CONTINUE;
-            if (HAMMER_OF_THE_RIGHTEOUS > 0 && !m_bot->HasSpellCooldown(HAMMER_OF_THE_RIGHTEOUS) && m_ai->CastSpell(HAMMER_OF_THE_RIGHTEOUS, *pTarget))
+            if (HAMMER_OF_THE_RIGHTEOUS > 0 && m_bot->IsSpellReady(HAMMER_OF_THE_RIGHTEOUS) && GetAI()->CastSpell(HAMMER_OF_THE_RIGHTEOUS, *pTarget))
                 return RETURN_CONTINUE;
-            if (SHIELD_OF_RIGHTEOUSNESS > 0 && !m_bot->HasSpellCooldown(SHIELD_OF_RIGHTEOUSNESS) && m_ai->CastSpell(SHIELD_OF_RIGHTEOUSNESS, *pTarget))
+            if (SHIELD_OF_RIGHTEOUSNESS > 0 && m_bot->IsSpellReady(SHIELD_OF_RIGHTEOUSNESS) && GetAI()->CastSpell(SHIELD_OF_RIGHTEOUSNESS, *pTarget))
                 return RETURN_CONTINUE;
-            if (JUDGEMENT_OF_LIGHT > 0 && m_ai->CastSpell (JUDGEMENT_OF_LIGHT, *pTarget))
+            if (JUDGEMENT_OF_LIGHT > 0 && GetAI()->CastSpell (JUDGEMENT_OF_LIGHT, *pTarget))
                 return RETURN_CONTINUE;
             return RETURN_NO_ACTION_OK;
     }
 
-    //if (DIVINE_SHIELD > 0 && m_ai->GetHealthPercent() < 30 && pVictim == m_bot && !m_bot->HasAura(FORBEARANCE, EFFECT_INDEX_0) && !m_bot->HasAura(DIVINE_SHIELD, EFFECT_INDEX_0))
-    //    m_ai->CastSpell(DIVINE_SHIELD, *m_bot);
+    //if (DIVINE_SHIELD > 0 && GetAI()->GetHealthPercent() < 30 && pVictim == m_bot && !m_bot->HasAura(FORBEARANCE, EFFECT_INDEX_0) && !m_bot->HasAura(DIVINE_SHIELD, EFFECT_INDEX_0))
+    //    GetAI()->CastSpell(DIVINE_SHIELD, *m_bot);
 
-    //if (DIVINE_SACRIFICE > 0 && m_ai->GetHealthPercent() > 50 && pVictim != m_bot && !m_bot->HasAura(DIVINE_SACRIFICE, EFFECT_INDEX_0))
-    //    m_ai->CastSpell(DIVINE_SACRIFICE, *m_bot);
+    //if (DIVINE_SACRIFICE > 0 && GetAI()->GetHealthPercent() > 50 && pVictim != m_bot && !m_bot->HasAura(DIVINE_SACRIFICE, EFFECT_INDEX_0))
+    //    GetAI()->CastSpell(DIVINE_SACRIFICE, *m_bot);
 
     return RETURN_NO_ACTION_OK;
 }
 
 CombatManeuverReturns PlayerbotPaladinAI::DoNextCombatManeuverPVP(Unit* pTarget)
 {
-    if (m_ai->CastSpell(HAMMER_OF_JUSTICE))
+    if (GetAI()->CastSpell(HAMMER_OF_JUSTICE))
         return RETURN_CONTINUE;
 
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
@@ -320,7 +239,7 @@ CombatManeuverReturns PlayerbotPaladinAI::HealPlayer(Player* target)
 
     if (!target->isAlive())
     {
-        if (REDEMPTION && m_ai->CastSpell(REDEMPTION, *target))
+        if (REDEMPTION && GetAI()->CastSpell(REDEMPTION, *target))
         {
             std::string msg = "Resurrecting ";
             msg += target->GetName();
@@ -330,7 +249,7 @@ CombatManeuverReturns PlayerbotPaladinAI::HealPlayer(Player* target)
         return RETURN_NO_ACTION_ERROR; // not error per se - possibly just OOM
     }
 
-    if (PURIFY > 0 && (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_NODISPEL) == 0)
+    if (PURIFY > 0 && (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_NODISPEL) == 0)
     {
         uint32 DISPEL = CLEANSE > 0 ? CLEANSE : PURIFY;
         uint32 dispelMask  = GetDispellMask(DISPEL_DISEASE);
@@ -344,7 +263,7 @@ CombatManeuverReturns PlayerbotPaladinAI::HealPlayer(Player* target)
             {
                 if (holder->GetSpellProto()->Dispel == DISPEL_DISEASE)
                 {
-                    if (m_ai->CastSpell(DISPEL, *target))
+                    if (GetAI()->CastSpell(DISPEL, *target))
                         return RETURN_CONTINUE;
                     return RETURN_NO_ACTION_ERROR;
                 }
@@ -353,7 +272,7 @@ CombatManeuverReturns PlayerbotPaladinAI::HealPlayer(Player* target)
             {
                 if (holder->GetSpellProto()->Dispel == DISPEL_POISON)
                 {
-                    if (m_ai->CastSpell(DISPEL, *target))
+                    if (GetAI()->CastSpell(DISPEL, *target))
                         return RETURN_CONTINUE;
                     return RETURN_NO_ACTION_ERROR;
                 }
@@ -362,7 +281,7 @@ CombatManeuverReturns PlayerbotPaladinAI::HealPlayer(Player* target)
             {
                 if (holder->GetSpellProto()->Dispel == DISPEL_MAGIC)
                 {
-                    if (m_ai->CastSpell(DISPEL, *target))
+                    if (GetAI()->CastSpell(DISPEL, *target))
                         return RETURN_CONTINUE;
                     return RETURN_NO_ACTION_ERROR;
                 }
@@ -376,24 +295,24 @@ CombatManeuverReturns PlayerbotPaladinAI::HealPlayer(Player* target)
     if (hp >= 90)
         return RETURN_NO_ACTION_OK;
 
-    if (hp < 25 && m_ai->CastSpell(LAY_ON_HANDS, *target))
+    if (hp < 25 && GetAI()->CastSpell(LAY_ON_HANDS, *target))
         return RETURN_CONTINUE;
 
     // You probably want to save this for tank/healer trouble
     if (hp < 30 && HAND_OF_PROTECTION > 0 && !target->HasAura(FORBEARANCE, EFFECT_INDEX_0)
         && !target->HasAura(HAND_OF_PROTECTION, EFFECT_INDEX_0) && !target->HasAura(DIVINE_PROTECTION, EFFECT_INDEX_0)
         && !target->HasAura(DIVINE_SHIELD, EFFECT_INDEX_0) && (GetTargetJob(target) & (JOB_HEAL | JOB_TANK))
-        && m_ai->CastSpell(HAND_OF_PROTECTION, *target))
+        && GetAI()->CastSpell(HAND_OF_PROTECTION, *target))
         return RETURN_CONTINUE;
 
     // Isn't this more of a group heal spell?
-    if (hp < 40 && m_ai->CastSpell(FLASH_OF_LIGHT, *target))
+    if (hp < 40 && GetAI()->CastSpell(FLASH_OF_LIGHT, *target))
         return RETURN_CONTINUE;
 
-    if (hp < 60 && m_ai->CastSpell(HOLY_SHOCK, *target))
+    if (hp < 60 && GetAI()->CastSpell(HOLY_SHOCK, *target))
         return RETURN_CONTINUE;
 
-    if (hp < 90 && m_ai->CastSpell(HOLY_LIGHT, *target))
+    if (hp < 90 && GetAI()->CastSpell(HOLY_LIGHT, *target))
         return RETURN_CONTINUE;
 
     return RETURN_NO_ACTION_UNKNOWN;
@@ -401,29 +320,29 @@ CombatManeuverReturns PlayerbotPaladinAI::HealPlayer(Player* target)
 
 void PlayerbotPaladinAI::CheckAuras()
 {
-    if (!m_ai)  return;
+    if (!GetAI())  return;
     if (!m_bot) return;
 
     uint32 spec = m_bot->GetSpec();
 
     // If we have resist orders, adjust accordingly
-    if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_FROST)
+    if (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_FROST)
     {
         if (!m_bot->HasAura(FROST_RESISTANCE_AURA) && FROST_RESISTANCE_AURA > 0 && !m_bot->HasAura(FROST_RESISTANCE_AURA))
-            m_ai->CastSpell(FROST_RESISTANCE_AURA);
+            GetAI()->CastSpell(FROST_RESISTANCE_AURA);
         return;
     }
-    else if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_FIRE)
+    else if (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_FIRE)
     {
         if (!m_bot->HasAura(FIRE_RESISTANCE_AURA) && FIRE_RESISTANCE_AURA > 0 && !m_bot->HasAura(FIRE_RESISTANCE_AURA))
-            m_ai->CastSpell(FIRE_RESISTANCE_AURA);
+            GetAI()->CastSpell(FIRE_RESISTANCE_AURA);
         return;
     }
-    else if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_SHADOW)
+    else if (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_RESIST_SHADOW)
     {
         // Shadow protection check is broken, they stack!
         if (!m_bot->HasAura(SHADOW_RESISTANCE_AURA) && SHADOW_RESISTANCE_AURA > 0 && !m_bot->HasAura(SHADOW_RESISTANCE_AURA)) // /*&& !m_bot->HasAura(PRAYER_OF_SHADOW_PROTECTION)*/ /*&& !m_bot->HasAura(PRAYER_OF_SHADOW_PROTECTION)*/
-            m_ai->CastSpell(SHADOW_RESISTANCE_AURA);
+            GetAI()->CastSpell(SHADOW_RESISTANCE_AURA);
         return;
     }
 
@@ -431,19 +350,19 @@ void PlayerbotPaladinAI::CheckAuras()
     if (spec == PALADIN_SPEC_HOLY)
     {
         if (CONCENTRATION_AURA > 0 && !m_bot->HasAura(CONCENTRATION_AURA))
-            m_ai->CastSpell(CONCENTRATION_AURA);
+            GetAI()->CastSpell(CONCENTRATION_AURA);
         return;
     }
     else if (spec == PALADIN_SPEC_PROTECTION)
     {
         if (DEVOTION_AURA > 0 && !m_bot->HasAura(DEVOTION_AURA))
-            m_ai->CastSpell(DEVOTION_AURA);
+            GetAI()->CastSpell(DEVOTION_AURA);
         return;
     }
     else if (spec == PALADIN_SPEC_RETRIBUTION)
     {
         if (RETRIBUTION_AURA > 0 && !m_bot->HasAura(RETRIBUTION_AURA))
-            m_ai->CastSpell(RETRIBUTION_AURA);
+            GetAI()->CastSpell(RETRIBUTION_AURA);
         return;
     }
 
@@ -451,7 +370,7 @@ void PlayerbotPaladinAI::CheckAuras()
 
 bool PlayerbotPaladinAI::CheckSeals()
 {
-    if (!m_ai)  return false;
+    if (!GetAI())  return false;
     if (!m_bot) return false;
 
     uint32 spec = m_bot->GetSpec();
@@ -459,19 +378,19 @@ bool PlayerbotPaladinAI::CheckSeals()
     switch (spec)
     {
         case PALADIN_SPEC_HOLY:
-            if (SEAL_OF_WISDOM > 0 && !m_bot->HasAura(SEAL_OF_WISDOM, EFFECT_INDEX_0) && m_ai->CastSpell(SEAL_OF_WISDOM, *m_bot))
+            if (SEAL_OF_WISDOM > 0 && !m_bot->HasAura(SEAL_OF_WISDOM, EFFECT_INDEX_0) && GetAI()->CastSpell(SEAL_OF_WISDOM, *m_bot))
                 return true;
             break;
 
         case PALADIN_SPEC_PROTECTION:
-            if (SEAL_OF_RIGHTEOUSNESS > 0 && !m_bot->HasAura(SEAL_OF_RIGHTEOUSNESS, EFFECT_INDEX_0) && m_ai->CastSpell(SEAL_OF_RIGHTEOUSNESS, *m_bot))
+            if (SEAL_OF_RIGHTEOUSNESS > 0 && !m_bot->HasAura(SEAL_OF_RIGHTEOUSNESS, EFFECT_INDEX_0) && GetAI()->CastSpell(SEAL_OF_RIGHTEOUSNESS, *m_bot))
                 return true;
             break;
 
         case PALADIN_SPEC_RETRIBUTION:
-            if (SEAL_OF_COMMAND > 0 && !m_bot->HasAura(SEAL_OF_COMMAND, EFFECT_INDEX_0) && m_ai->CastSpell(SEAL_OF_COMMAND, *m_bot))
+            if (SEAL_OF_COMMAND > 0 && !m_bot->HasAura(SEAL_OF_COMMAND, EFFECT_INDEX_0) && GetAI()->CastSpell(SEAL_OF_COMMAND, *m_bot))
                 return true;
-            else if (SEAL_OF_RIGHTEOUSNESS > 0 && !m_bot->HasAura(SEAL_OF_RIGHTEOUSNESS, EFFECT_INDEX_0) && !m_bot->HasAura(SEAL_OF_COMMAND, EFFECT_INDEX_0) && m_ai->CastSpell(SEAL_OF_RIGHTEOUSNESS, *m_bot))
+            else if (SEAL_OF_RIGHTEOUSNESS > 0 && !m_bot->HasAura(SEAL_OF_RIGHTEOUSNESS, EFFECT_INDEX_0) && !m_bot->HasAura(SEAL_OF_COMMAND, EFFECT_INDEX_0) && GetAI()->CastSpell(SEAL_OF_RIGHTEOUSNESS, *m_bot))
                 return true;
             break;
     }
@@ -480,7 +399,7 @@ bool PlayerbotPaladinAI::CheckSeals()
 
 void PlayerbotPaladinAI::DoNonCombatActions()
 {
-    if (!m_ai)   return;
+    if (!GetAI())   return;
     if (!m_bot)  return;
 
     if (!m_bot->isAlive() || m_bot->IsInDuel()) return;
@@ -488,8 +407,8 @@ void PlayerbotPaladinAI::DoNonCombatActions()
     CheckAuras();
 
     //Put up RF if tank
-    if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_TANK)
-        m_ai->SelfBuff(RIGHTEOUS_FURY);
+    if (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_TANK)
+        GetAI()->SelfBuff(RIGHTEOUS_FURY);
     //Disable RF if not tank
     else if (m_bot->HasAura(RIGHTEOUS_FURY))
         m_bot->RemoveAurasDueToSpell(RIGHTEOUS_FURY);
@@ -499,7 +418,7 @@ void PlayerbotPaladinAI::DoNonCombatActions()
         return;
 
     // Heal
-    if (m_ai->IsHealer())
+    if (GetAI()->IsHealer())
     {
         if (HealPlayer(GetHealTarget()) & RETURN_CONTINUE)
             return;// RETURN_CONTINUE;
@@ -519,7 +438,7 @@ void PlayerbotPaladinAI::DoNonCombatActions()
     // hp/mana check
     if (EatDrinkBandage())
         return;
-    // m_ai->TellMaster("DoNonCombatActions() - 10. past EatDrinkBandage()"); // debug
+    // GetAI()->TellMaster("DoNonCombatActions() - 10. past EatDrinkBandage()"); // debug
 }
 
 /**
@@ -654,9 +573,9 @@ bool PlayerbotPaladinAI::BuffHelper(PlayerbotAI* ai, uint32 spellId, Unit *targe
 // Match up with "Pull()" below
 bool PlayerbotPaladinAI::CanPull()
 {
-    if (HAND_OF_RECKONING && !m_bot->HasSpellCooldown(HAND_OF_RECKONING))
+    if (HAND_OF_RECKONING && m_bot->IsSpellReady(HAND_OF_RECKONING))
         return true;
-    if (EXORCISM && !m_bot->HasSpellCooldown(EXORCISM))
+    if (EXORCISM && m_bot->IsSpellReady(EXORCISM))
         return true;
 
     return false;
@@ -665,9 +584,9 @@ bool PlayerbotPaladinAI::CanPull()
 // Match up with "CanPull()" above
 bool PlayerbotPaladinAI::Pull()
 {
-    if (HAND_OF_RECKONING && m_ai->CastSpell(HAND_OF_RECKONING))
+    if (HAND_OF_RECKONING && GetAI()->CastSpell(HAND_OF_RECKONING))
         return true;
-    if (EXORCISM && m_ai->CastSpell(EXORCISM))
+    if (EXORCISM && GetAI()->CastSpell(EXORCISM))
         return true;
 
     return false;
@@ -675,9 +594,9 @@ bool PlayerbotPaladinAI::Pull()
 
 bool PlayerbotPaladinAI::CastHoTOnTank()
 {
-    if (!m_ai) return false;
+    if (!GetAI()) return false;
 
-    if ((PlayerbotAI::ORDERS_HEAL & m_ai->GetCombatOrder()) == 0) return false;
+    if ((PlayerbotAI::ORDERS_HEAL & GetAI()->GetCombatOrder()) == 0) return false;
 
     // Paladin: Sheath of Light (with talents), Flash of Light (with Infusion of Light talent and only on a target with the Sacred Shield buff),
     //          Holy Shock (with Tier 8 set bonus)

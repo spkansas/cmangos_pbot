@@ -1562,7 +1562,10 @@ enum m_FollowAutoGo
 
 class PlayerbotAI
 {
+	friend class PlayerbotClassAI;
+
 public:
+
     enum ScenarioType
     {
         SCENARIO_PVE,
@@ -1916,7 +1919,7 @@ public:
     void GetCombatTarget(Unit* forcedTarget = 0);
     void GetDuelTarget(Unit* forcedTarget);
     Unit* GetCurrentTarget() { return m_targetCombat; };
-    void DoNextCombatManeuver();
+    void DoManeuver_Combat_Exec();
     void DoCombatMovement();
     void SetIgnoreUpdateTime(uint8 t = 0) { m_ignoreAIUpdatesUntilTime = time(nullptr) + t; };
     time_t CurrentTime() { return time(nullptr); };

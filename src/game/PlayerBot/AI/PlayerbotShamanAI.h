@@ -135,8 +135,8 @@ public:
     virtual ~PlayerbotShamanAI();
 
     // all combat actions go here
-    CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
-    CombatManeuverReturns DoNextCombatManeuver(Unit* pTarget);
+ //   CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
+ //   CombatManeuverReturns DoManeuver_Combat_Exec(Unit* pTarget);
 
     // all non combat actions go here, ex buffs, heals, rezzes
     void DoNonCombatActions();
@@ -145,7 +145,19 @@ public:
     bool CastHoTOnTank();
 
 private:
-    CombatManeuverReturns DoFirstCombatManeuverPVE(Unit* pTarget);
+
+	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
+	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
+
+	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
+	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
+
+	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
+	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
+
+	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
+
+	CombatManeuverReturns DoFirstCombatManeuverPVE(Unit* pTarget);
     CombatManeuverReturns DoNextCombatManeuverPVE(Unit* pTarget);
     CombatManeuverReturns DoFirstCombatManeuverPVP(Unit* pTarget);
     CombatManeuverReturns DoNextCombatManeuverPVP(Unit* pTarget);

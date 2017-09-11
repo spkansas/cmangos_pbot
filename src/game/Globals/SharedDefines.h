@@ -1397,7 +1397,7 @@ enum DamageEffectType
     DOT                     = 2,
     HEAL                    = 3,
     NODAMAGE                = 4,                            //< used also in case when damage applied to health but not applied to spell channelInterruptFlags/etc
-    SELF_DAMAGE_ROGUE_FALL  = 5,                            //< used to avoid rogue loosing stealth on falling damage
+    SELF_DAMAGE_ROGUE_FALL  = 5,                            //< used to avoid rogue losing stealth on falling damage
     SELF_DAMAGE             = 6
 };
 
@@ -3055,6 +3055,7 @@ enum AreaLockStatus
     AREA_LOCKSTATUS_INSTANCE_IS_FULL            = 10,
     AREA_LOCKSTATUS_NOT_ALLOWED                 = 11,
     AREA_LOCKSTATUS_HAS_BIND                    = 12,
+    AREA_LOCKSTATUS_TOO_MANY_INSTANCE           = 13,
 };
 
 enum TrackedAuraType

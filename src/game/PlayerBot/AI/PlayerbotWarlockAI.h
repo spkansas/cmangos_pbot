@@ -22,13 +22,26 @@
 #include "../Base/PlayerbotClassAI.h"
 
 #define SOUL_SHARD 6265
-#define SPELLSTONE 5522
-#define GREATER_SPELLSTONE 13602
-#define MAJOR_SPELLSTONE 13603
-#define LESSER_FIRESTONE 1254
-#define FIRESTONE 13699
-#define GREATER_FIRESTONE 13700
-#define MAJOR_FIRESTONE 13701
+//#define SPELLSTONE 5522
+//#define GREATER_SPELLSTONE 13602
+//#define MAJOR_SPELLSTONE 13603
+#define SPELLSTONE 41191
+#define GREATER_SPELLSTONE 41192
+#define MAJOR_SPELLSTONE 41193
+#define MASTER_SPELLSTONE 41194
+#define DEMONIC_SPELLSTONE 41195
+#define GRAND_SPELLSTONE 41196
+//#define LESSER_FIRESTONE 1254
+//#define FIRESTONE 13699
+//#define GREATER_FIRESTONE 13700
+//#define MAJOR_FIRESTONE 13701
+#define LESSER_FIRESTONE 41170
+#define FIRESTONE 41169
+#define GREATER_FIRESTONE 41171
+#define MAJOR_FIRESTONE 41172
+#define MASTER_FIRESTONE 40773
+#define FEL_FIRESTONE 41173
+#define GRAND_FIRESTONE 41174
 #define MAX_SHARD_COUNT 10 // Maximum soul shard count bot should keep
 
 enum
@@ -41,9 +54,11 @@ enum
 
 enum StoneDisplayId
 {
-    FIRESTONE_DISPLAYID   = 24380,
-    SPELLSTONE_DISPLAYID  = 21610,
-    SOULSTONE_DISPLAYID   = 6009,
+	//FIRESTONE_DISPLAYID   = 24380,
+	FIRESTONE_DISPLAYID   = 7409,
+    // SPELLSTONE_DISPLAYID  = 21610,
+	SPELLSTONE_DISPLAYID = 13291,
+	SOULSTONE_DISPLAYID   = 6009,
     HEALTHSTONE_DISPLAYID = 8026
 };
 
@@ -161,8 +176,8 @@ public:
     virtual ~PlayerbotWarlockAI();
 
     // all combat actions go here
-    CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
-    CombatManeuverReturns DoNextCombatManeuver(Unit* pTarget);
+//    CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
+//    CombatManeuverReturns DoManeuver_Combat_Exec(Unit* pTarget);
 
     // all non combat actions go here, ex buffs, heals, rezzes
     void DoNonCombatActions();
@@ -171,6 +186,18 @@ public:
     //void BuffPlayer(Player *target);
 
 private:
+
+	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
+	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
+
+	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
+	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
+
+	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
+	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
+
+	//	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
+
     CombatManeuverReturns DoFirstCombatManeuverPVE(Unit* pTarget);
     CombatManeuverReturns DoNextCombatManeuverPVE(Unit* pTarget);
     CombatManeuverReturns DoFirstCombatManeuverPVP(Unit* pTarget);

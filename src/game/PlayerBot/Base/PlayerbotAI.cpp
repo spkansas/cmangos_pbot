@@ -2041,6 +2041,9 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
                     m_bot->GetSession()->HandleGroupDisbandOpcode(p);  // packet not used updated code
             return;
         }
+//	case CMSG_GROUP_INVITE:
+
+		//SendWhisper("I'm not allowed to trade you any of my items, but you are free to give me money or items.", *(m_bot->GetTrader()));
 
         // Handle Group invites (auto accept if master is in group, otherwise decline & send message
     case SMSG_GROUP_INVITE:
@@ -2697,13 +2700,13 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 
     default:
         {
-            /*const char* oc = LookupOpcodeName(packet.GetOpcode());
+            /* const char* oc = LookupOpcodeName(packet.GetOpcode());
 
             std::ostringstream out;
             out << "botout: " << oc;
             sLog.outError(out.str().c_str());
 
-            TellMaster(oc);*/
+            TellMaster(oc); */
         }
     }
 }
@@ -3279,7 +3282,7 @@ void PlayerbotAI::GetDuelTarget(Unit* forcedTarget)
     m_bot->Attack(m_targetCombat, true);
 }
 
-void PlayerbotAI::DoNextCombatManeuver()
+void PlayerbotAI::DoManeuver_Combat_Exec()
 {
     if (!GetClassAI())
         return; // error, error...
@@ -3318,7 +3321,7 @@ void PlayerbotAI::DoNextCombatManeuver()
     // new target -> DoFirstCombatManeuver
     if (m_targetChanged)
     {
-        switch (GetClassAI()->DoFirstCombatManeuver(m_targetCombat))
+        switch (GetClassAI()->DoManeuver_Combat_Start(m_targetCombat))
         {
             case RETURN_CONTINUE: // true needed for rogue stealth attack
                 break;
@@ -3333,13 +3336,16 @@ void PlayerbotAI::DoNextCombatManeuver()
         }
     }
 
-    // do normal combat movement
-    DoCombatMovement();
+    
+	GetClassAI()->DoManeuver_Combat_Move(m_targetCombat);
+		
+		// do normal combat movement
+    //DoCombatMovement();
 
     if (!m_targetChanged)
     {
         // if m_targetChanged = false
-        switch (GetClassAI()->DoNextCombatManeuver(m_targetCombat))
+        switch (GetClassAI()->DoManeuver_Combat_Exec(m_targetCombat))
         {
             case RETURN_NO_ACTION_UNKNOWN:
             case RETURN_NO_ACTION_OK:
@@ -3680,11 +3686,11 @@ bool PlayerbotAI::CastNeutralize()
     uint8 creatureType = 0;
     creatureType = pCreature->GetCreatureInfo()->CreatureType;
 
-    switch (m_bot->getClass())
+    /*switch (m_bot->getClass())
     {
         default:
             return false;
-    }
+    }*/
 
     // A spellId was found
     if (m_spellIdCommand != 0)
@@ -4655,8 +4661,8 @@ void PlayerbotAI::SetCombatOrderByStr(std::string str, Unit *target)
 
 void PlayerbotAI::SetCombatOrder(CombatOrderType co, Unit* target)
 {
-    uint32 gTempTarget;
-    std::string gname;
+    uint32 gTempTarget = 0;
+    std::string gname = "";
     if (target)
     {
         gTempTarget = target->GetGUIDLow();
@@ -4719,8 +4725,7 @@ void PlayerbotAI::SetCombatOrder(CombatOrderType co, Unit* target)
     if ((co & ORDERS_PRIMARY))
     {
         m_combatOrder = (CombatOrderType) (((uint32) m_combatOrder & (uint32) ORDERS_SECONDARY) | (uint32) co);
-        if (target)
-            CharacterDatabase.DirectPExecute("UPDATE playerbot_saved_data SET combat_order = '%u', primary_target = '%u', pname = '%s' WHERE guid = '%u'", (m_combatOrder & ~ORDERS_TEMP), gTempTarget, gname.c_str(), m_bot->GetGUIDLow());
+		CharacterDatabase.DirectPExecute("UPDATE playerbot_saved_data SET combat_order = '%u', primary_target = '%u', pname = '%s' WHERE guid = '%u'", (m_combatOrder & ~ORDERS_TEMP), gTempTarget, gname.c_str(), m_bot->GetGUIDLow());
     }
     else
     {
@@ -5244,7 +5249,7 @@ void PlayerbotAI::UpdateAI(const uint32 /*p_time*/)
                 if (m_DelayAttackInit + m_DelayAttack > CurrentTime())
                     return SetIgnoreUpdateTime(1); // short bursts of delay
 
-                return DoNextCombatManeuver();
+                return DoManeuver_Combat_Exec();
             }
             else // channelling a spell
                 return SetIgnoreUpdateTime(0);  // It's better to update AI more frequently during combat
@@ -5439,10 +5444,6 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
     if (spellId == 0)
         return false;
 
-    // check spell cooldown
-    if (m_bot->HasSpellCooldown(spellId))
-        return false;
-
     uint8 unk_flags = 0;
 
     // see Creature.cpp 1738 for reference
@@ -5453,6 +5454,10 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
         TellMaster("Missing spell entry in CastSpell for spellid %u.", spellId);
         return false;
     }
+
+    // check spell cooldown
+    if (!m_bot->IsSpellReady(*pSpellInfo))
+        return false;
 
     // set target
     ObjectGuid targetGUID = m_bot->GetSelectionGuid();
@@ -5592,15 +5597,15 @@ bool PlayerbotAI::CastPetSpell(uint32 spellId, Unit* target)
     if (!pet)
         return false;
 
-    if (pet->HasSpellCooldown(spellId))
-        return false;
-
     const SpellEntry* const pSpellInfo = sSpellTemplate.LookupEntry<SpellEntry>(spellId);
     if (!pSpellInfo)
     {
         TellMaster("Missing spell entry in CastPetSpell()");
         return false;
     }
+
+    if (!pet->IsSpellReady(*pSpellInfo))
+        return false;
 
     // set target
     Unit* pTarget;
@@ -9330,9 +9335,36 @@ void PlayerbotAI::_HandleCommandReset(std::string &text, Player &fromPlayer)
 
 void PlayerbotAI::_HandleCommandOrders(std::string &text, Player &fromPlayer)
 {
-    if (ExtractCommand("delay", text))
-    {
-        uint32 gdelay;
+    if 	(ExtractCommand("group", text))
+	{ 
+		ObjectGuid targetGUID = fromPlayer.GetSelectionGuid();
+		Unit *target = nullptr;
+
+		if (text == "" && !targetGUID)
+		{
+			return SendWhisper("|cffff0000Group orders expect a target either by selection or by giving target player in command string!", fromPlayer);
+		}
+
+		if (text != "")
+		{
+			ObjectGuid targ_guid = sObjectMgr.GetPlayerGuidByName(text.c_str());
+			targetGUID.Set(targ_guid.GetRawValue());
+		}
+
+		target = ObjectAccessor::GetUnit(fromPlayer, targetGUID);
+
+		if (!target)
+		{
+			return SendWhisper("|cffff0000Invalid target for combat order group!", fromPlayer);
+		}
+
+		m_bot->GetSession()->_HandleGroupInviteOpcodeCommon(m_bot, target->GetName());
+
+		return SendWhisper(target->GetName(), fromPlayer);
+	}
+	else if (ExtractCommand("delay", text))
+	{
+		uint32 gdelay;
         sscanf(text.c_str(), "%d", &gdelay);
         if (gdelay <= 10)
         {

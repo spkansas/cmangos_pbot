@@ -745,23 +745,43 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
         case MSG_MOVE_JUMP:
         case MSG_MOVE_FALL_LAND:
         return;*/
+	case CMSG_GROUP_ACCEPT:
+		{
+			WorldPacket p(packet);
+			p.rpos(0); // reset reader
+			const char* oc = LookupOpcodeName(packet.GetOpcode());
+			// ChatHandler ch(m_master);
+			// ch.SendSysMessage(oc);
 
+			std::ostringstream out;
+			out << "masterin: " << oc;
+			sLog.outError(out.str().c_str());
+
+			m_master->GetSession()->HandleGroupAcceptOpcode(p);
+		}
     default:
         {
-            /*const char* oc = LookupOpcodeName(packet.GetOpcode());
+            /* 
+			const char* oc = LookupOpcodeName(packet.GetOpcode());
             // ChatHandler ch(m_master);
             // ch.SendSysMessage(oc);
 
             std::ostringstream out;
-            out << "masterin: " << oc;
-            sLog.outError(out.str().c_str()); */
-        }
+            out << "masterin - default: " << oc;
+            sLog.outError(out.str().c_str()); 
+			*/
+        } 
     }
 }
 
-void PlayerbotMgr::HandleMasterOutgoingPacket(const WorldPacket& /*packet*/)
+void PlayerbotMgr::HandleMasterOutgoingPacket(const WorldPacket &packet)
 {
-    /*
+	const char* oc = LookupOpcodeName(packet.GetOpcode());
+
+	std::ostringstream out;
+	out << "masterout: " << oc;
+	sLog.outError(out.str().c_str());
+	/*
     switch (packet.GetOpcode())
     {
     // maybe our bots should only start looting after the master loots?
@@ -780,11 +800,7 @@ void PlayerbotMgr::HandleMasterOutgoingPacket(const WorldPacket& /*packet*/)
     return;
     default:
     {
-    const char* oc = LookupOpcodeName(packet.GetOpcode());
 
-    std::ostringstream out;
-    out << "masterout: " << oc;
-    sLog.outError(out.str().c_str());
     }
     }
     */

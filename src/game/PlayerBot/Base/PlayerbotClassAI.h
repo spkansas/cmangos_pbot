@@ -54,15 +54,59 @@ struct heal_priority
     bool operator<(const heal_priority& a) const { return type < a.type; }
 };
 
-class PlayerbotClassAI
+class PlayerbotClassAIData_LoadFailed : public std::runtime_error 
 {
 public:
+	PlayerbotClassAIData_LoadFailed() : std::runtime_error("PlayerbotClassAI database load failure") { }
+};
+
+
+class PlayerbotClassAIData
+{
+private:
+
+	Player		*m_master;
+	Player		*m_bot;
+
+	PlayerbotAI *m_ai;
+
+	time_t		 m_tTimeStart;
+	time_t		 m_tTimeWaitUntil;
+
+public:
+
+	PlayerbotClassAIData(Player * const master, Player * const bot, PlayerbotAI * const ai) : m_master(master), m_bot(bot), m_ai(ai) 
+	{
+		if (!DB_LoadData()) throw PlayerbotClassAIData_LoadFailed();
+	}
+	virtual ~PlayerbotClassAIData() {};
+
+	Player      * const GetMaster(void)	{ return m_master; }
+	Player      * const GetBot(void)	{ return m_bot; }
+	PlayerbotAI * const GetAI(void)		{ return m_ai; }
+
+protected:
+	
+	bool  DB_LoadData(void);
+	bool  DB_SaveData(void);
+
+};
+
+class PlayerbotClassAI
+{
+protected:
+
+	PlayerbotClassAIData *m_botdata;
+	
+public:
     PlayerbotClassAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
-    virtual ~PlayerbotClassAI();
+	~PlayerbotClassAI();
 
     // all combat actions go here
-    virtual CombatManeuverReturns DoFirstCombatManeuver(Unit*);
-    virtual CombatManeuverReturns DoNextCombatManeuver(Unit*);
+    virtual CombatManeuverReturns DoManeuver_Combat_Start(Unit *pTarget);
+	virtual CombatManeuverReturns DoManeuver_Combat_Move(Unit *pTarget);
+	virtual CombatManeuverReturns DoManeuver_Combat_Exec(Unit *pTarget);
+
     bool Pull() { DEBUG_LOG("[PlayerbotAI]: Warning: Using PlayerbotClassAI::Pull() rather than class specific function"); return false; }
     bool Neutralize() { DEBUG_LOG("[PlayerbotAI]: Warning: Using PlayerbotClassAI::Neutralize() rather than class specific function"); return false; }
 
@@ -71,21 +115,44 @@ public:
     bool EatDrinkBandage(bool bMana = true, unsigned char foodPercent = 50, unsigned char drinkPercent = 50, unsigned char bandagePercent = 70);
 
     // Utilities
-    Player* GetMaster() { return m_master; }
-    Player* GetPlayerBot() { return m_bot; }
-    PlayerbotAI* GetAI() { return m_ai; }
+    Player*			GetMaster()		{ return m_botdata->GetMaster(); }
+    Player*			GetPlayerBot()	{ return m_botdata->GetBot();}
+    PlayerbotAI*	GetAI()			{ return m_botdata->GetAI(); }
     bool CanPull();
     bool CastHoTOnTank();
-    time_t GetWaitUntil() { return m_WaitUntil; }
-    void SetWait(uint8 t) { m_WaitUntil = m_ai->CurrentTime() + t; }
-    void ClearWait() { m_WaitUntil = 0; }
-    //void SetWaitUntil(time_t t) { m_WaitUntil = t; }
+    time_t GetWaitUntil()			{ return m_WaitUntil; }
+    void SetWait(uint8 t)			{ m_WaitUntil = m_botdata->GetAI()->CurrentTime() + t; }
+    void ClearWait()				{ m_WaitUntil = 0; }
+    //void SetWaitUntil(time_t t)	{ m_WaitUntil = t; }
 
 protected:
-    virtual CombatManeuverReturns DoFirstCombatManeuverPVE(Unit*);
-    virtual CombatManeuverReturns DoNextCombatManeuverPVE(Unit*);
-    virtual CombatManeuverReturns DoFirstCombatManeuverPVP(Unit*);
-    virtual CombatManeuverReturns DoNextCombatManeuverPVP(Unit*);
+
+	// Class overriables
+	virtual CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
+	virtual CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
+
+	virtual CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
+	virtual CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
+
+	virtual CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
+//	virtual CombatManeuverReturns DoManeuver_Combat_Exec_Class_Buff(Unit *pTarget);
+//	virtual CombatManeuverReturns DoManeuver_Combat_Exec_Class_Cast(Unit *pTarget);
+	virtual CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
+
+	virtual CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
+	
+protected:
+
+	//	virtual CombatManeuverReturns DoNextManeuver_Combat_ClassSetup(Unit *pTarget) = 0;
+
+	virtual CombatManeuverReturns DoNextManeuver_Heal(Unit *pTarget);
+
+
+    virtual CombatManeuverReturns DoFirstCombatManeuverPVE(Unit *pTarget);
+    virtual CombatManeuverReturns DoNextCombatManeuverPVE(Unit *pTarget);
+
+    virtual CombatManeuverReturns DoFirstCombatManeuverPVP(Unit *pTarget);
+    virtual CombatManeuverReturns DoNextCombatManeuverPVP(Unit *pTarget);
 
     CombatManeuverReturns CastSpellNoRanged(uint32 nextAction, Unit *pTarget);
     CombatManeuverReturns CastSpellWand(uint32 nextAction, Unit *pTarget, uint32 SHOOT);
@@ -112,7 +179,7 @@ protected:
 
     Player* m_master;
     Player* m_bot;
-    PlayerbotAI* m_ai;
+ //   PlayerbotAI* m_ai;
 
     // first aid
     uint32 RECENTLY_BANDAGED;

@@ -311,6 +311,7 @@ bool ChatHandler::HandleReloadAllScriptsCommand(char* /*args*/)
     HandleReloadDBScriptsOnQuestEndCommand((char*)"a");
     HandleReloadDBScriptsOnQuestStartCommand((char*)"a");
     HandleReloadDBScriptsOnSpellCommand((char*)"a");
+    HandleReloadDBScriptsOnRelayCommand((char*)"a");
     SendGlobalSysMessage("DB tables `*_scripts` reloaded.");
     HandleReloadDbScriptStringCommand((char*)"a");
     return true;
@@ -873,9 +874,9 @@ bool ChatHandler::HandleReloadEventAIScriptsCommand(char* /*args*/)
 
 bool ChatHandler::HandleReloadDbScriptStringCommand(char* /*args*/)
 {
-    sLog.outString("Re-Loading Script strings from `db_script_string`...");
+    sLog.outString("Re-Loading Script strings from `dbscript_string`...");
     sScriptMgr.LoadDbScriptStrings();
-    SendGlobalSysMessage("DB table `db_script_string` reloaded.");
+    SendGlobalSysMessage("DB table `dbscript_string` reloaded.");
     return true;
 }
 
@@ -1016,6 +1017,26 @@ bool ChatHandler::HandleReloadDBScriptsOnCreatureDeathCommand(char* args)
 
     if (*args != 'a')
         SendGlobalSysMessage("DB table `dbscripts_on_creature_death` reloaded.");
+
+    return true;
+}
+
+bool ChatHandler::HandleReloadDBScriptsOnRelayCommand(char* args)
+{
+    if (sScriptMgr.IsScriptScheduled())
+    {
+        SendSysMessage("DB scripts used currently, please attempt reload later.");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    if (*args != 'a')
+        sLog.outString("Re-Loading Scripts from `dbscripts_on_relay`...");
+
+    sScriptMgr.LoadRelayScripts();
+
+    if (*args != 'a')
+        SendGlobalSysMessage("DB table `dbscripts_on_relay` reloaded.");
 
     return true;
 }
@@ -1624,7 +1645,64 @@ bool ChatHandler::HandleUnLearnCommand(char* args)
     return true;
 }
 
-bool ChatHandler::HandleCooldownCommand(char* args)
+bool ChatHandler::HandleCooldownListCommand(char* args)
+{
+    Unit* target = getSelectedUnit();
+    if (!target)
+    {
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+
+    target->PrintCooldownList(*this);
+    return true;
+}
+
+bool ChatHandler::HandleCooldownClearCommand(char* args)
+{
+    Unit* target = getSelectedUnit();
+    if (!target)
+    {
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    std::string tNameLink = "Unknown";
+    if (target->GetTypeId() == TYPEID_PLAYER)
+        tNameLink = GetNameLink(static_cast<Player*>(target));
+    else
+        tNameLink = target->GetNameStr();
+
+    if (!*args)
+    {
+        target->RemoveAllCooldowns();
+        PSendSysMessage(LANG_REMOVEALL_COOLDOWN, tNameLink.c_str());
+    }
+    else
+    {
+        // number or [name] Shift-click form |color|Hspell:spell_id|h[name]|h|r or Htalent form
+        uint32 spell_id = ExtractSpellIdFromLink(&args);
+        if (!spell_id)
+            return false;
+
+        SpellEntry const* spellEntry = sSpellTemplate.LookupEntry<SpellEntry>(spell_id);
+        if (!spellEntry)
+        {
+            PSendSysMessage(LANG_UNKNOWN_SPELL, target == m_session->GetPlayer() ? GetMangosString(LANG_YOU) : tNameLink.c_str());
+            SetSentErrorMessage(true);
+            return false;
+        }
+
+        target->RemoveSpellCooldown(*spellEntry);
+        PSendSysMessage(LANG_REMOVE_COOLDOWN, spell_id, target == m_session->GetPlayer() ? GetMangosString(LANG_YOU) : tNameLink.c_str());
+    }
+    return true;
+}
+
+bool ChatHandler::HandleCooldownClearClientSideCommand(char*)
 {
     Player* target = getSelectedPlayer();
     if (!target)
@@ -1636,28 +1714,25 @@ bool ChatHandler::HandleCooldownCommand(char* args)
 
     std::string tNameLink = GetNameLink(target);
 
-    if (!*args)
-    {
-        target->RemoveAllSpellCooldown();
-        PSendSysMessage(LANG_REMOVEALL_COOLDOWN, tNameLink.c_str());
-    }
-    else
-    {
-        // number or [name] Shift-click form |color|Hspell:spell_id|h[name]|h|r or Htalent form
-        uint32 spell_id = ExtractSpellIdFromLink(&args);
-        if (!spell_id)
-            return false;
+    target->RemoveAllCooldowns(true);
+    PSendSysMessage(LANG_REMOVEALL_COOLDOWN, tNameLink.c_str());
+    return true;
+}
 
-        if (!sSpellTemplate.LookupEntry<SpellEntry>(spell_id))
-        {
-            PSendSysMessage(LANG_UNKNOWN_SPELL, target == m_session->GetPlayer() ? GetMangosString(LANG_YOU) : tNameLink.c_str());
-            SetSentErrorMessage(true);
-            return false;
-        }
-
-        target->RemoveSpellCooldown(spell_id, true);
-        PSendSysMessage(LANG_REMOVE_COOLDOWN, spell_id, target == m_session->GetPlayer() ? GetMangosString(LANG_YOU) : tNameLink.c_str());
+bool ChatHandler::HandleCooldownClearArenaCommand(char*)
+{
+    Player* target = getSelectedPlayer();
+    if (!target)
+    {
+        SendSysMessage(LANG_PLAYER_NOT_FOUND);
+        SetSentErrorMessage(true);
+        return false;
     }
+
+    std::string tNameLink = GetNameLink(target);
+
+    target->RemoveArenaSpellCooldowns();
+    PSendSysMessage(LANG_REMOVEALL_COOLDOWN, tNameLink.c_str());
     return true;
 }
 
@@ -7235,7 +7310,7 @@ bool ChatHandler::HandleMmapTestHeight(char* args)
     float gx, gy, gz;
     unit->GetPosition(gx, gy, gz);
 
-    Creature* summoned = unit->SummonCreature(VISUAL_WAYPOINT, gx, gy, gz + 0.5f, 0, TEMPSUMMON_TIMED_DESPAWN, 20000);
+    Creature* summoned = unit->SummonCreature(VISUAL_WAYPOINT, gx, gy, gz + 0.5f, 0, TEMPSPAWN_TIMED_DESPAWN, 20000);
     summoned->CastSpell(summoned, 8599, TRIGGERED_NONE);
     uint32 tries = 1;
     uint32 successes = 0;
@@ -7245,7 +7320,7 @@ bool ChatHandler::HandleMmapTestHeight(char* args)
         unit->GetPosition(gx, gy, gz);
         if (unit->GetMap()->GetReachableRandomPosition(unit, gx, gy, gz, radius))
         {
-            unit->SummonCreature(VISUAL_WAYPOINT, gx, gy, gz, 0, TEMPSUMMON_TIMED_DESPAWN, 15000);
+            unit->SummonCreature(VISUAL_WAYPOINT, gx, gy, gz, 0, TEMPSPAWN_TIMED_DESPAWN, 15000);
             ++successes;
             if (successes >= 100)
                 break;

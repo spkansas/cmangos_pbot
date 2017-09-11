@@ -265,7 +265,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry /*= 0*/, uint32 petnumber
     SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
     SetName(fields[8].GetString());
 
-    SetByteValue(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SUPPORTABLE | UNIT_BYTE2_FLAG_AURAS);
+    SetByteValue(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_AURAS);
     SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 
     if (getPetType() == HUNTER_PET)
@@ -281,8 +281,11 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry /*= 0*/, uint32 petnumber
     if (owner->IsPvP())
         SetPvP(true);
 
-    if (owner->IsFFAPvP())
-        SetFFAPvP(true);
+    if (owner->IsPvPFreeForAll())
+        SetPvPFreeForAll(true);
+
+    if (owner->IsPvPSanctuary())
+        SetPvPSanctuary(true);
 
     SetCanModifyStats(true);
     InitStatsForLevel(petlevel);
@@ -927,7 +930,7 @@ bool Pet::CreateBaseAtCreature(Creature* creature)
     SetByteValue(UNIT_FIELD_BYTES_0, 3, POWER_FOCUS);
     SetSheath(SHEATH_STATE_MELEE);
 
-    SetByteValue(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SUPPORTABLE | UNIT_BYTE2_FLAG_AURAS);
+    SetByteValue(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_AURAS);
     SetByteFlag(UNIT_FIELD_BYTES_2, 2, UNIT_CAN_BE_RENAMED | UNIT_CAN_BE_ABANDONED);
 
     SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_RENAME);
@@ -1267,50 +1270,57 @@ uint32 Pet::GetCurrentFoodBenefitLevel(uint32 itemlevel) const
 
 void Pet::_LoadSpellCooldowns()
 {
-    m_CreatureSpellCooldowns.clear();
-    m_CreatureCategoryCooldowns.clear();
-
     QueryResult* result = CharacterDatabase.PQuery("SELECT spell,time FROM pet_spell_cooldown WHERE guid = '%u'", m_charmInfo->GetPetNumber());
+    ByteBuffer cdData;
+    uint32 cdCount = 0;
 
     if (result)
     {
-        time_t curTime = time(nullptr);
-
-        WorldPacket data(SMSG_SPELL_COOLDOWN, (8 + 1 + size_t(result->GetRowCount()) * 8));
-        data << ObjectGuid(GetObjectGuid());
-        data << uint8(0x0);                                 // flags (0x1, 0x2)
-
+        auto curTime = GetMap()->GetCurrentClockTime();
         do
         {
             Field* fields = result->Fetch();
 
-            uint32 spell_id = fields[0].GetUInt32();
-            time_t db_time  = (time_t)fields[1].GetUInt64();
+            uint32 spell_id   = fields[0].GetUInt32();
+            uint64 spell_time = fields[1].GetUInt64();
 
-            if (!sSpellTemplate.LookupEntry<SpellEntry>(spell_id))
+            SpellEntry const* spellEntry = sSpellTemplate.LookupEntry<SpellEntry>(spell_id);
+            if (!spellEntry)
             {
-                sLog.outError("Pet %u have unknown spell %u in `pet_spell_cooldown`, skipping.", m_charmInfo->GetPetNumber(), spell_id);
+                sLog.outError("%s has unknown spell %u in `character_spell_cooldown`, skipping.", GetGuidStr().c_str(), spell_id);
                 continue;
             }
 
+            TimePoint spellExpireTime = std::chrono::time_point_cast<std::chrono::milliseconds>(Clock::from_time_t(spell_time));
+            std::chrono::milliseconds spellRecTime = std::chrono::milliseconds::zero();
+            if (spellExpireTime > curTime)
+                spellRecTime = std::chrono::duration_cast<std::chrono::milliseconds>(spellExpireTime - curTime);
+
             // skip outdated cooldown
-            if (db_time <= curTime)
+            if (spellRecTime == std::chrono::milliseconds::zero())
                 continue;
 
-            data << uint32(spell_id);
-            data << uint32(uint32(db_time - curTime)*IN_MILLISECONDS);
+            cdData << uint32(spell_id);
+            cdData << uint32(uint32(spellRecTime.count()));
+            ++cdCount;
 
-            _AddCreatureSpellCooldown(spell_id, db_time);
-
-            DEBUG_LOG("Pet (Number: %u) spell %u cooldown loaded (%u secs).", m_charmInfo->GetPetNumber(), spell_id, uint32(db_time - curTime));
+            m_cooldownMap.AddCooldown(GetMap()->GetCurrentClockTime(), spell_id, uint32(spellRecTime.count()));
+#ifdef _DEBUG
+            uint32 spellCDDuration = std::chrono::duration_cast<std::chrono::seconds>(spellRecTime).count();
+            sLog.outDebug("Adding spell cooldown to %s, SpellID(%u), recDuration(%us).", GetGuidStr().c_str(), spell_id, spellCDDuration);
+#endif
         }
         while (result->NextRow());
 
         delete result;
 
-        if (!m_CreatureSpellCooldowns.empty() && GetOwner())
+        if (cdCount && GetOwner() && GetOwner()->GetTypeId() == TYPEID_PLAYER)
         {
-            ((Player*)GetOwner())->GetSession()->SendPacket(data);
+            WorldPacket data(SMSG_SPELL_COOLDOWN, 8 + 1 + cdData.size());
+            data << GetObjectGuid();
+            data << uint8(0x0);                                     // flags (0x1, 0x2)
+            data.append(cdData);
+            static_cast<Player*>(GetOwner())->GetSession()->SendPacket(data);
         }
     }
 }
@@ -1323,18 +1333,19 @@ void Pet::_SaveSpellCooldowns()
     SqlStatement stmt = CharacterDatabase.CreateStatement(delSpellCD, "DELETE FROM pet_spell_cooldown WHERE guid = ?");
     stmt.PExecute(m_charmInfo->GetPetNumber());
 
-    time_t curTime = time(nullptr);
+    TimePoint currTime = GetMap()->GetCurrentClockTime();
 
-    // remove oudated and save active
-    for (CreatureSpellCooldowns::iterator itr = m_CreatureSpellCooldowns.begin(); itr != m_CreatureSpellCooldowns.end();)
+    for (auto& cdItr : m_cooldownMap)
     {
-        if (itr->second <= curTime)
-            m_CreatureSpellCooldowns.erase(itr++);
-        else
+        auto& cdData = cdItr.second;
+        if (!cdData->IsPermanent())
         {
+            TimePoint sTime = currTime;
+            cdData->GetSpellCDExpireTime(sTime);
+            uint64 spellExpireTime = uint64(Clock::to_time_t(sTime));
+
             stmt = CharacterDatabase.CreateStatement(insSpellCD, "INSERT INTO pet_spell_cooldown (guid,spell,time) VALUES (?, ?, ?)");
-            stmt.PExecute(m_charmInfo->GetPetNumber(), itr->first, uint64(itr->second));
-            ++itr;
+            stmt.PExecute(m_charmInfo->GetPetNumber(), cdItr.first, spellExpireTime);
         }
     }
 }

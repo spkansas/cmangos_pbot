@@ -22,101 +22,56 @@
 class PlayerbotAI;
 PlayerbotRogueAI::PlayerbotRogueAI(Player* const master, Player* const bot, PlayerbotAI* const ai) : PlayerbotClassAI(master, bot, ai)
 {
-    SINISTER_STRIKE          = m_ai->initSpell(SINISTER_STRIKE_1);
-    BACKSTAB                 = m_ai->initSpell(BACKSTAB_1);
-    KICK                     = m_ai->initSpell(KICK_1);
-    FEINT                    = m_ai->initSpell(FEINT_1);
-    FAN_OF_KNIVES            = m_ai->initSpell(FAN_OF_KNIVES_1);
-    GOUGE                    = m_ai->initSpell(GOUGE_1);
-    SPRINT                   = m_ai->initSpell(SPRINT_1);
+    SINISTER_STRIKE          = GetAI()->initSpell(SINISTER_STRIKE_1);
+    BACKSTAB                 = GetAI()->initSpell(BACKSTAB_1);
+    KICK                     = GetAI()->initSpell(KICK_1);
+    FEINT                    = GetAI()->initSpell(FEINT_1);
+    FAN_OF_KNIVES            = GetAI()->initSpell(FAN_OF_KNIVES_1);
+    GOUGE                    = GetAI()->initSpell(GOUGE_1);
+    SPRINT                   = GetAI()->initSpell(SPRINT_1);
 
-    SHADOWSTEP               = m_ai->initSpell(SHADOWSTEP_1);
-    STEALTH                  = m_ai->initSpell(STEALTH_1);
-    VANISH                   = m_ai->initSpell(VANISH_1);
-    EVASION                  = m_ai->initSpell(EVASION_1);
-    CLOAK_OF_SHADOWS         = m_ai->initSpell(CLOAK_OF_SHADOWS_1);
-    HEMORRHAGE               = m_ai->initSpell(HEMORRHAGE_1);
-    GHOSTLY_STRIKE           = m_ai->initSpell(GHOSTLY_STRIKE_1);
-    SHADOW_DANCE             = m_ai->initSpell(SHADOW_DANCE_1);
-    BLIND                    = m_ai->initSpell(BLIND_1);
-    DISTRACT                 = m_ai->initSpell(DISTRACT_1);
-    PREPARATION              = m_ai->initSpell(PREPARATION_1);
-    PREMEDITATION            = m_ai->initSpell(PREMEDITATION_1);
-    PICK_POCKET              = m_ai->initSpell(PICK_POCKET_1);
+    SHADOWSTEP               = GetAI()->initSpell(SHADOWSTEP_1);
+    STEALTH                  = GetAI()->initSpell(STEALTH_1);
+    VANISH                   = GetAI()->initSpell(VANISH_1);
+    EVASION                  = GetAI()->initSpell(EVASION_1);
+    CLOAK_OF_SHADOWS         = GetAI()->initSpell(CLOAK_OF_SHADOWS_1);
+    HEMORRHAGE               = GetAI()->initSpell(HEMORRHAGE_1);
+    GHOSTLY_STRIKE           = GetAI()->initSpell(GHOSTLY_STRIKE_1);
+    SHADOW_DANCE             = GetAI()->initSpell(SHADOW_DANCE_1);
+    BLIND                    = GetAI()->initSpell(BLIND_1);
+    DISTRACT                 = GetAI()->initSpell(DISTRACT_1);
+    PREPARATION              = GetAI()->initSpell(PREPARATION_1);
+    PREMEDITATION            = GetAI()->initSpell(PREMEDITATION_1);
+    PICK_POCKET              = GetAI()->initSpell(PICK_POCKET_1);
 
-    EVISCERATE               = m_ai->initSpell(EVISCERATE_1);
-    KIDNEY_SHOT              = m_ai->initSpell(KIDNEY_SHOT_1);
-    SLICE_DICE               = m_ai->initSpell(SLICE_AND_DICE_1);
-    GARROTE                  = m_ai->initSpell(GARROTE_1);
-    EXPOSE_ARMOR             = m_ai->initSpell(EXPOSE_ARMOR_1);
-    RUPTURE                  = m_ai->initSpell(RUPTURE_1);
-    DISMANTLE                = m_ai->initSpell(DISMANTLE_1);
-    CHEAP_SHOT               = m_ai->initSpell(CHEAP_SHOT_1);
-    AMBUSH                   = m_ai->initSpell(AMBUSH_1);
-    MUTILATE                 = m_ai->initSpell(MUTILATE_1);
+    EVISCERATE               = GetAI()->initSpell(EVISCERATE_1);
+    KIDNEY_SHOT              = GetAI()->initSpell(KIDNEY_SHOT_1);
+    SLICE_DICE               = GetAI()->initSpell(SLICE_AND_DICE_1);
+    GARROTE                  = GetAI()->initSpell(GARROTE_1);
+    EXPOSE_ARMOR             = GetAI()->initSpell(EXPOSE_ARMOR_1);
+    RUPTURE                  = GetAI()->initSpell(RUPTURE_1);
+    DISMANTLE                = GetAI()->initSpell(DISMANTLE_1);
+    CHEAP_SHOT               = GetAI()->initSpell(CHEAP_SHOT_1);
+    AMBUSH                   = GetAI()->initSpell(AMBUSH_1);
+    MUTILATE                 = GetAI()->initSpell(MUTILATE_1);
 
     RECENTLY_BANDAGED   = 11196; // first aid check
     // racial
-    ARCANE_TORRENT           = m_ai->initSpell(ARCANE_TORRENT_ROGUE);
-    STONEFORM                = m_ai->initSpell(STONEFORM_ALL); // dwarf
-    ESCAPE_ARTIST            = m_ai->initSpell(ESCAPE_ARTIST_ALL); // gnome
-    EVERY_MAN_FOR_HIMSELF    = m_ai->initSpell(EVERY_MAN_FOR_HIMSELF_ALL); // human
-    SHADOWMELD               = m_ai->initSpell(SHADOWMELD_ALL);
-    BLOOD_FURY               = m_ai->initSpell(BLOOD_FURY_MELEE_CLASSES); // orc
-    BERSERKING               = m_ai->initSpell(BERSERKING_ALL); // troll
-    WILL_OF_THE_FORSAKEN     = m_ai->initSpell(WILL_OF_THE_FORSAKEN_ALL); // undead
+    ARCANE_TORRENT           = GetAI()->initSpell(ARCANE_TORRENT_ROGUE);
+    STONEFORM                = GetAI()->initSpell(STONEFORM_ALL); // dwarf
+    ESCAPE_ARTIST            = GetAI()->initSpell(ESCAPE_ARTIST_ALL); // gnome
+    EVERY_MAN_FOR_HIMSELF    = GetAI()->initSpell(EVERY_MAN_FOR_HIMSELF_ALL); // human
+    SHADOWMELD               = GetAI()->initSpell(SHADOWMELD_ALL);
+    BLOOD_FURY               = GetAI()->initSpell(BLOOD_FURY_MELEE_CLASSES); // orc
+    BERSERKING               = GetAI()->initSpell(BERSERKING_ALL); // troll
+    WILL_OF_THE_FORSAKEN     = GetAI()->initSpell(WILL_OF_THE_FORSAKEN_ALL); // undead
 }
 
 PlayerbotRogueAI::~PlayerbotRogueAI() {}
 
-CombatManeuverReturns PlayerbotRogueAI::DoFirstCombatManeuver(Unit* pTarget)
-{
-    // There are NPCs in BGs and Open World PvP, so don't filter this on PvP scenarios (of course if PvP targets anyone but tank, all bets are off anyway)
-    // Wait until the tank says so, until any non-tank gains aggro or X seconds - whichever is shortest
-    if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_TEMP_WAIT_TANKAGGRO)
-    {
-        if (m_WaitUntil > m_ai->CurrentTime() && m_ai->GroupTankHoldsAggro())
-        {
-            return RETURN_NO_ACTION_OK; // wait it out
-        }
-        else
-        {
-            m_ai->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_TANKAGGRO);
-        }
-    }
-
-    if (m_ai->GetCombatOrder() & PlayerbotAI::ORDERS_TEMP_WAIT_OOC)
-    {
-        if (m_WaitUntil > m_ai->CurrentTime() && !m_ai->IsGroupInCombat())
-            return RETURN_NO_ACTION_OK; // wait it out
-        else
-            m_ai->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_OOC);
-    }
-
-    if (!m_ai)  return RETURN_NO_ACTION_ERROR;
-    if (!m_bot) return RETURN_NO_ACTION_ERROR;
-
-    switch (m_ai->GetScenarioType())
-    {
-        case PlayerbotAI::SCENARIO_PVP_DUEL:
-        case PlayerbotAI::SCENARIO_PVP_BG:
-        case PlayerbotAI::SCENARIO_PVP_ARENA:
-        case PlayerbotAI::SCENARIO_PVP_OPENWORLD:
-            return DoFirstCombatManeuverPVP(pTarget);
-        case PlayerbotAI::SCENARIO_PVE:
-        case PlayerbotAI::SCENARIO_PVE_ELITE:
-        case PlayerbotAI::SCENARIO_PVE_RAID:
-        default:
-            return DoFirstCombatManeuverPVE(pTarget);
-            break;
-    }
-
-    return RETURN_NO_ACTION_ERROR;
-}
-
 CombatManeuverReturns PlayerbotRogueAI::DoFirstCombatManeuverPVE(Unit *pTarget)
 {
-    if (STEALTH > 0 && !m_bot->HasAura(STEALTH, EFFECT_INDEX_0) && m_ai->CastSpell(STEALTH, *m_bot))
+    if (STEALTH > 0 && !m_bot->HasAura(STEALTH, EFFECT_INDEX_0) && GetAI()->CastSpell(STEALTH, *m_bot))
     {
         m_bot->addUnitState(UNIT_STAT_CHASE); // ensure that the bot does not use MoveChase(), as this doesn't seem to work with STEALTH
         return RETURN_FINISHED_FIRST_MOVES; // DoNextCombatManeuver handles active stealth
@@ -134,7 +89,7 @@ CombatManeuverReturns PlayerbotRogueAI::DoFirstCombatManeuverPVE(Unit *pTarget)
 // TODO: blatant copy of PVE for now, please PVP-port it
 CombatManeuverReturns PlayerbotRogueAI::DoFirstCombatManeuverPVP(Unit *pTarget)
 {
-    if (STEALTH > 0 && !m_bot->HasAura(STEALTH, EFFECT_INDEX_0) && m_ai->CastSpell(STEALTH, *m_bot))
+    if (STEALTH > 0 && !m_bot->HasAura(STEALTH, EFFECT_INDEX_0) && GetAI()->CastSpell(STEALTH, *m_bot))
     {
         m_bot->addUnitState(UNIT_STAT_CHASE); // ensure that the bot does not use MoveChase(), as this doesn't seem to work with STEALTH
         return RETURN_FINISHED_FIRST_MOVES; // DoNextCombatManeuver handles active stealth
@@ -151,28 +106,8 @@ CombatManeuverReturns PlayerbotRogueAI::DoFirstCombatManeuverPVP(Unit *pTarget)
 
 CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuverPVE(Unit *pTarget)
 {
-    switch (m_ai->GetScenarioType())
-    {
-        case PlayerbotAI::SCENARIO_PVP_DUEL:
-        case PlayerbotAI::SCENARIO_PVP_BG:
-        case PlayerbotAI::SCENARIO_PVP_ARENA:
-        case PlayerbotAI::SCENARIO_PVP_OPENWORLD:
-            return DoNextCombatManeuverPVP(pTarget);
-        case PlayerbotAI::SCENARIO_PVE:
-        case PlayerbotAI::SCENARIO_PVE_ELITE:
-        case PlayerbotAI::SCENARIO_PVE_RAID:
-        default:
-            return DoNextCombatManeuverPVE(pTarget);
-            break;
-    }
-
-    return RETURN_NO_ACTION_ERROR;
-}
-
-CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuver(Unit *pTarget)
-{
     if (!pTarget) return RETURN_NO_ACTION_ERROR;
-    if (!m_ai)    return RETURN_NO_ACTION_ERROR;
+    if (!GetAI())    return RETURN_NO_ACTION_ERROR;
     if (!m_bot)   return RETURN_NO_ACTION_ERROR;
 
     Unit* pVictim = pTarget->getVictim();
@@ -182,13 +117,13 @@ CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuver(Unit *pTarget)
     /*if (pVictim)
        {
         if( pVictim!=m_bot && !m_bot->hasUnitState(UNIT_STAT_FOLLOW) && !pTarget->isInBackInMap(m_bot,10) ) {
-            m_ai->TellMaster( "getting behind target" );
+            GetAI()->TellMaster( "getting behind target" );
             m_bot->GetMotionMaster()->Clear( true );
             m_bot->GetMotionMaster()->MoveFollow( pTarget, 1, 2*M_PI );
         }
         else if( pVictim==m_bot && m_bot->hasUnitState(UNIT_STAT_FOLLOW) )
         {
-            m_ai->TellMaster( "chasing attacking target" );
+            GetAI()->TellMaster( "chasing attacking target" );
             m_bot->GetMotionMaster()->Clear( true );
             m_bot->GetMotionMaster()->MoveChase( pTarget );
         }
@@ -198,23 +133,23 @@ CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuver(Unit *pTarget)
     /*if (VANISH > 0 && GetMaster()->isDead()) { //Causes the server to crash :( removed for now.
         m_bot->AttackStop();
         m_bot->RemoveAllAttackers();
-        m_ai->CastSpell(VANISH);
+        GetAI()->CastSpell(VANISH);
         //m_bot->RemoveAllSpellCooldown();
-        m_ai->TellMaster("AttackStop, CombatStop, Vanish");
+        GetAI()->TellMaster("AttackStop, CombatStop, Vanish");
     }*/
 
     // decide what to do:
-    if (pVictim == m_bot && CLOAK_OF_SHADOWS > 0 && m_bot->HasAura(SPELL_AURA_PERIODIC_DAMAGE) && !m_bot->HasAura(CLOAK_OF_SHADOWS, EFFECT_INDEX_0) && m_ai->CastSpell(CLOAK_OF_SHADOWS))
+    if (pVictim == m_bot && CLOAK_OF_SHADOWS > 0 && m_bot->HasAura(SPELL_AURA_PERIODIC_DAMAGE) && !m_bot->HasAura(CLOAK_OF_SHADOWS, EFFECT_INDEX_0) && GetAI()->CastSpell(CLOAK_OF_SHADOWS))
     {
-        if (m_ai->GetManager()->m_confDebugWhisper)
-            m_ai->TellMaster("CoS!");
+        if (GetAI()->GetManager()->m_confDebugWhisper)
+            GetAI()->TellMaster("CoS!");
         return RETURN_CONTINUE;
     }
     else if (m_bot->HasAura(STEALTH, EFFECT_INDEX_0))
         SpellSequence = RogueStealth;
     else if (pTarget->IsNonMeleeSpellCasted(true))
         SpellSequence = RogueSpellPreventing;
-    else if (pVictim == m_bot && m_ai->GetHealthPercent() < 40)
+    else if (pVictim == m_bot && GetAI()->GetHealthPercent() < 40)
         SpellSequence = RogueThreat;
     else
         SpellSequence = RogueCombat;
@@ -227,15 +162,15 @@ CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuver(Unit *pTarget)
     switch (SpellSequence)
     {
         case RogueStealth:
-            if (PICK_POCKET > 0 && (pTarget->GetCreatureTypeMask() & CREATURE_TYPEMASK_HUMANOID_OR_UNDEAD) != 0 && m_ai->PickPocket(pTarget))
+            if (PICK_POCKET > 0 && (pTarget->GetCreatureTypeMask() & CREATURE_TYPEMASK_HUMANOID_OR_UNDEAD) != 0 && GetAI()->PickPocket(pTarget))
                 return RETURN_CONTINUE;
-            if (PREMEDITATION > 0 && m_ai->CastSpell(PREMEDITATION, *pTarget))
+            if (PREMEDITATION > 0 && GetAI()->CastSpell(PREMEDITATION, *pTarget))
                 return RETURN_CONTINUE;
-            if (AMBUSH > 0 && m_ai->CastSpell(AMBUSH, *pTarget))
+            if (AMBUSH > 0 && GetAI()->CastSpell(AMBUSH, *pTarget))
                 return RETURN_CONTINUE;
-            if (CHEAP_SHOT > 0 && !pTarget->HasAura(CHEAP_SHOT, EFFECT_INDEX_0) && m_ai->CastSpell(CHEAP_SHOT, *pTarget))
+            if (CHEAP_SHOT > 0 && !pTarget->HasAura(CHEAP_SHOT, EFFECT_INDEX_0) && GetAI()->CastSpell(CHEAP_SHOT, *pTarget))
                 return RETURN_CONTINUE;
-            if (GARROTE > 0 && m_ai->CastSpell(GARROTE, *pTarget))
+            if (GARROTE > 0 && GetAI()->CastSpell(GARROTE, *pTarget))
                 return RETURN_CONTINUE;
 
             // No appropriate action found, remove stealth
@@ -243,26 +178,26 @@ CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuver(Unit *pTarget)
             return RETURN_CONTINUE;
 
         case RogueThreat:
-            if (GOUGE > 0 && !pTarget->HasAura(GOUGE, EFFECT_INDEX_0) && m_ai->CastSpell(GOUGE, *pTarget))
+            if (GOUGE > 0 && !pTarget->HasAura(GOUGE, EFFECT_INDEX_0) && GetAI()->CastSpell(GOUGE, *pTarget))
                 return RETURN_CONTINUE;
-            if (EVASION > 0 && m_ai->GetHealthPercent() <= 35 && !m_bot->HasAura(EVASION, EFFECT_INDEX_0) && m_ai->CastSpell(EVASION))
+            if (EVASION > 0 && GetAI()->GetHealthPercent() <= 35 && !m_bot->HasAura(EVASION, EFFECT_INDEX_0) && GetAI()->CastSpell(EVASION))
                 return RETURN_CONTINUE;
-            if (BLIND > 0 && m_ai->GetHealthPercent() <= 30 && !pTarget->HasAura(BLIND, EFFECT_INDEX_0) && m_ai->CastSpell(BLIND, *pTarget))
+            if (BLIND > 0 && GetAI()->GetHealthPercent() <= 30 && !pTarget->HasAura(BLIND, EFFECT_INDEX_0) && GetAI()->CastSpell(BLIND, *pTarget))
                 return RETURN_CONTINUE;
-            if (FEINT > 0 && m_ai->GetHealthPercent() <= 25 && m_ai->CastSpell(FEINT))
+            if (FEINT > 0 && GetAI()->GetHealthPercent() <= 25 && GetAI()->CastSpell(FEINT))
                 return RETURN_CONTINUE;
-            if (VANISH > 0 && m_ai->GetHealthPercent() <= 20 && !m_bot->HasAura(FEINT, EFFECT_INDEX_0) && m_ai->CastSpell(VANISH))
+            if (VANISH > 0 && GetAI()->GetHealthPercent() <= 20 && !m_bot->HasAura(FEINT, EFFECT_INDEX_0) && GetAI()->CastSpell(VANISH))
                 return RETURN_CONTINUE;
-            if (PREPARATION > 0 && m_ai->CastSpell(PREPARATION))
+            if (PREPARATION > 0 && GetAI()->CastSpell(PREPARATION))
                 return RETURN_CONTINUE;
-            if (m_bot->getRace() == RACE_NIGHTELF && m_ai->GetHealthPercent() <= 15 && !m_bot->HasAura(SHADOWMELD, EFFECT_INDEX_0) && m_ai->CastSpell(SHADOWMELD, *m_bot))
+            if (m_bot->getRace() == RACE_NIGHTELF && GetAI()->GetHealthPercent() <= 15 && !m_bot->HasAura(SHADOWMELD, EFFECT_INDEX_0) && GetAI()->CastSpell(SHADOWMELD, *m_bot))
                 return RETURN_CONTINUE;
             break;
 
         case RogueSpellPreventing:
-            if (KIDNEY_SHOT > 0 && m_bot->GetComboPoints() >= 2 && m_ai->CastSpell(KIDNEY_SHOT, *pTarget))
+            if (KIDNEY_SHOT > 0 && m_bot->GetComboPoints() >= 2 && GetAI()->CastSpell(KIDNEY_SHOT, *pTarget))
                 return RETURN_CONTINUE;
-            else if (KICK > 0 && m_ai->CastSpell(KICK, *pTarget))
+            else if (KICK > 0 && GetAI()->CastSpell(KICK, *pTarget))
                 return RETURN_CONTINUE;
             // break; // No action? Go combat!
 
@@ -271,33 +206,33 @@ CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuver(Unit *pTarget)
             if (m_bot->GetComboPoints() >= 5)
             {
                 // wait for energy
-                if (m_ai->GetEnergyAmount() < 25 && (KIDNEY_SHOT || SLICE_DICE || EXPOSE_ARMOR))
+                if (GetAI()->GetEnergyAmount() < 25 && (KIDNEY_SHOT || SLICE_DICE || EXPOSE_ARMOR))
                     return RETURN_NO_ACTION_OK;
 
                 switch (pTarget->getClass())
                 {
                 case CLASS_SHAMAN:
-                    if (KIDNEY_SHOT > 0 && m_ai->CastSpell(KIDNEY_SHOT, *pTarget)) // 25 energy (checked above)
+                    if (KIDNEY_SHOT > 0 && GetAI()->CastSpell(KIDNEY_SHOT, *pTarget)) // 25 energy (checked above)
                         return RETURN_CONTINUE;
                     break;
 
                 case CLASS_WARLOCK:
                 case CLASS_HUNTER:
-                    if (SLICE_DICE > 0 && m_ai->CastSpell(SLICE_DICE, *pTarget)) // 25 energy (checked above)
+                    if (SLICE_DICE > 0 && GetAI()->CastSpell(SLICE_DICE, *pTarget)) // 25 energy (checked above)
                        return RETURN_CONTINUE;
                     break;
 
                 case CLASS_WARRIOR:
                 case CLASS_PALADIN:
                 case CLASS_DEATH_KNIGHT:
-                    if (EXPOSE_ARMOR > 0 && !pTarget->HasAura(EXPOSE_ARMOR, EFFECT_INDEX_0) && m_ai->CastSpell(EXPOSE_ARMOR, *pTarget)) // 25 energy (checked above)
+                    if (EXPOSE_ARMOR > 0 && !pTarget->HasAura(EXPOSE_ARMOR, EFFECT_INDEX_0) && GetAI()->CastSpell(EXPOSE_ARMOR, *pTarget)) // 25 energy (checked above)
                         return RETURN_CONTINUE;
                     break;
 
 
                 case CLASS_MAGE:
                 case CLASS_PRIEST:
-                    if (RUPTURE > 0 && m_ai->CastSpell(RUPTURE, *pTarget)) // 25 energy (checked above)
+                    if (RUPTURE > 0 && GetAI()->CastSpell(RUPTURE, *pTarget)) // 25 energy (checked above)
                         return RETURN_CONTINUE;
                     break;
 
@@ -309,49 +244,49 @@ CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuver(Unit *pTarget)
 
                 // default combo action for rogue/druid or if other combo action is unavailable/failed
                 // wait for energy
-                if (m_ai->GetEnergyAmount() < 35 && EVISCERATE)
+                if (GetAI()->GetEnergyAmount() < 35 && EVISCERATE)
                     return RETURN_NO_ACTION_OK;
-                if (EVISCERATE > 0 && m_ai->CastSpell(EVISCERATE, *pTarget))
+                if (EVISCERATE > 0 && GetAI()->CastSpell(EVISCERATE, *pTarget))
                     return RETURN_CONTINUE;
 
                 // failed for some (non-energy related) reason, fall through to normal attacks to maximize DPS
             }
 
-            if (SHADOW_DANCE > 0 && !m_bot->HasAura(SHADOW_DANCE, EFFECT_INDEX_0) && m_ai->CastSpell(SHADOW_DANCE, *m_bot))
+            if (SHADOW_DANCE > 0 && !m_bot->HasAura(SHADOW_DANCE, EFFECT_INDEX_0) && GetAI()->CastSpell(SHADOW_DANCE, *m_bot))
                 return RETURN_CONTINUE;
-            if (CHEAP_SHOT > 0 && m_bot->HasAura(SHADOW_DANCE, EFFECT_INDEX_0) && !pTarget->HasAura(CHEAP_SHOT, EFFECT_INDEX_0) && m_ai->CastSpell(CHEAP_SHOT, *pTarget))
+            if (CHEAP_SHOT > 0 && m_bot->HasAura(SHADOW_DANCE, EFFECT_INDEX_0) && !pTarget->HasAura(CHEAP_SHOT, EFFECT_INDEX_0) && GetAI()->CastSpell(CHEAP_SHOT, *pTarget))
                 return RETURN_CONTINUE;
-            if (AMBUSH > 0 && m_bot->HasAura(SHADOW_DANCE, EFFECT_INDEX_0) && m_ai->CastSpell(AMBUSH, *pTarget))
+            if (AMBUSH > 0 && m_bot->HasAura(SHADOW_DANCE, EFFECT_INDEX_0) && GetAI()->CastSpell(AMBUSH, *pTarget))
                 return RETURN_CONTINUE;
-            if (GARROTE > 0 && m_bot->HasAura(SHADOW_DANCE, EFFECT_INDEX_0) && m_ai->CastSpell(GARROTE, *pTarget))
+            if (GARROTE > 0 && m_bot->HasAura(SHADOW_DANCE, EFFECT_INDEX_0) && GetAI()->CastSpell(GARROTE, *pTarget))
                 return RETURN_CONTINUE;
-            if (BACKSTAB > 0 && pTarget->isInBackInMap(m_bot, 1) && m_ai->CastSpell(BACKSTAB, *pTarget))
+            if (BACKSTAB > 0 && pTarget->isInBackInMap(m_bot, 1) && GetAI()->CastSpell(BACKSTAB, *pTarget))
                 return RETURN_CONTINUE;
-            if (MUTILATE > 0 && m_ai->CastSpell(MUTILATE, *pTarget))
+            if (MUTILATE > 0 && GetAI()->CastSpell(MUTILATE, *pTarget))
                 return RETURN_CONTINUE;
-            if (SINISTER_STRIKE > 0 && m_ai->CastSpell(SINISTER_STRIKE, *pTarget))
+            if (SINISTER_STRIKE > 0 && GetAI()->CastSpell(SINISTER_STRIKE, *pTarget))
                 return RETURN_CONTINUE;
-            if (GHOSTLY_STRIKE > 0 && m_ai->CastSpell(GHOSTLY_STRIKE, *pTarget))
+            if (GHOSTLY_STRIKE > 0 && GetAI()->CastSpell(GHOSTLY_STRIKE, *pTarget))
                 return RETURN_CONTINUE;
-            if (HEMORRHAGE > 0 && m_ai->CastSpell(HEMORRHAGE, *pTarget))
+            if (HEMORRHAGE > 0 && GetAI()->CastSpell(HEMORRHAGE, *pTarget))
                 return RETURN_CONTINUE;
-            if (DISMANTLE > 0 && !pTarget->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISARMED) && m_ai->CastSpell(DISMANTLE, *pTarget))
+            if (DISMANTLE > 0 && !pTarget->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISARMED) && GetAI()->CastSpell(DISMANTLE, *pTarget))
                 return RETURN_CONTINUE;
-            if (SHADOWSTEP > 0 && m_ai->CastSpell(SHADOWSTEP, *pTarget))
+            if (SHADOWSTEP > 0 && GetAI()->CastSpell(SHADOWSTEP, *pTarget))
                 return RETURN_CONTINUE;
-            if (m_bot->getRace() == RACE_BLOODELF && !pTarget->HasAura(ARCANE_TORRENT, EFFECT_INDEX_0) && m_ai->CastSpell(ARCANE_TORRENT, *pTarget))
+            if (m_bot->getRace() == RACE_BLOODELF && !pTarget->HasAura(ARCANE_TORRENT, EFFECT_INDEX_0) && GetAI()->CastSpell(ARCANE_TORRENT, *pTarget))
                 return RETURN_CONTINUE;
-            if (m_bot->getRace() == RACE_HUMAN && (m_bot->hasUnitState(UNIT_STAT_STUNNED) || m_bot->HasAuraType(SPELL_AURA_MOD_FEAR) || m_bot->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED) || m_bot->HasAuraType(SPELL_AURA_MOD_CHARM)) && m_ai->CastSpell(EVERY_MAN_FOR_HIMSELF, *m_bot))
+            if (m_bot->getRace() == RACE_HUMAN && (m_bot->hasUnitState(UNIT_STAT_STUNNED) || m_bot->HasAuraType(SPELL_AURA_MOD_FEAR) || m_bot->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED) || m_bot->HasAuraType(SPELL_AURA_MOD_CHARM)) && GetAI()->CastSpell(EVERY_MAN_FOR_HIMSELF, *m_bot))
                 return RETURN_CONTINUE;
-            if (m_bot->getRace() == RACE_UNDEAD && (m_bot->HasAuraType(SPELL_AURA_MOD_FEAR) || m_bot->HasAuraType(SPELL_AURA_MOD_CHARM)) && m_ai->CastSpell(WILL_OF_THE_FORSAKEN, *m_bot))
+            if (m_bot->getRace() == RACE_UNDEAD && (m_bot->HasAuraType(SPELL_AURA_MOD_FEAR) || m_bot->HasAuraType(SPELL_AURA_MOD_CHARM)) && GetAI()->CastSpell(WILL_OF_THE_FORSAKEN, *m_bot))
                 return RETURN_CONTINUE;
-            if (m_bot->getRace() == RACE_DWARF && m_bot->HasAuraState(AURA_STATE_DEADLY_POISON) && m_ai->CastSpell(STONEFORM, *m_bot))
+            if (m_bot->getRace() == RACE_DWARF && m_bot->HasAuraState(AURA_STATE_DEADLY_POISON) && GetAI()->CastSpell(STONEFORM, *m_bot))
                 return RETURN_CONTINUE;
-            if (m_bot->getRace() == RACE_GNOME && (m_bot->hasUnitState(UNIT_STAT_STUNNED) || m_bot->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED)) && m_ai->CastSpell(ESCAPE_ARTIST, *m_bot))
+            if (m_bot->getRace() == RACE_GNOME && (m_bot->hasUnitState(UNIT_STAT_STUNNED) || m_bot->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED)) && GetAI()->CastSpell(ESCAPE_ARTIST, *m_bot))
                 return RETURN_CONTINUE;
-            else if (m_bot->getRace() == RACE_ORC && !m_bot->HasAura(BLOOD_FURY, EFFECT_INDEX_0) && m_ai->CastSpell(BLOOD_FURY, *m_bot))
+            else if (m_bot->getRace() == RACE_ORC && !m_bot->HasAura(BLOOD_FURY, EFFECT_INDEX_0) && GetAI()->CastSpell(BLOOD_FURY, *m_bot))
                 return RETURN_CONTINUE;
-            else if (m_bot->getRace() == RACE_TROLL && !m_bot->HasAura(BERSERKING, EFFECT_INDEX_0) && m_ai->CastSpell(BERSERKING, *m_bot))
+            else if (m_bot->getRace() == RACE_TROLL && !m_bot->HasAura(BERSERKING, EFFECT_INDEX_0) && GetAI()->CastSpell(BERSERKING, *m_bot))
                 return RETURN_CONTINUE;
             break;
     }
@@ -361,7 +296,7 @@ CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuver(Unit *pTarget)
 
 CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuverPVP(Unit* pTarget)
 {
-    //if (m_ai->CastSpell(SINISTER_STRIKE))
+    //if (GetAI()->CastSpell(SINISTER_STRIKE))
     //    return RETURN_CONTINUE;
 
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
@@ -369,7 +304,7 @@ CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuverPVP(Unit* pTarget)
 
 void PlayerbotRogueAI::DoNonCombatActions()
 {
-    if (!m_ai)  return;
+    if (!GetAI())  return;
     if (!m_bot) return;
 
     // remove stealth
@@ -386,30 +321,30 @@ void PlayerbotRogueAI::DoNonCombatActions()
     weapon = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND);
     if (weapon && weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0)
     {
-        poison = m_ai->FindConsumable(INSTANT_POISON_DISPLAYID);
+        poison = GetAI()->FindConsumable(INSTANT_POISON_DISPLAYID);
         if (!poison)
-            poison = m_ai->FindConsumable(WOUND_POISON_DISPLAYID);
+            poison = GetAI()->FindConsumable(WOUND_POISON_DISPLAYID);
         if (!poison)
-            poison = m_ai->FindConsumable(DEADLY_POISON_DISPLAYID);
+            poison = GetAI()->FindConsumable(DEADLY_POISON_DISPLAYID);
         if (poison)
         {
-            m_ai->UseItem(poison, EQUIPMENT_SLOT_MAINHAND);
-            m_ai->SetIgnoreUpdateTime(5);
+            GetAI()->UseItem(poison, EQUIPMENT_SLOT_MAINHAND);
+            GetAI()->SetIgnoreUpdateTime(5);
         }
     }
     //... and offhand
     weapon = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
     if (weapon && weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0)
     {
-        poison = m_ai->FindConsumable(DEADLY_POISON_DISPLAYID);
+        poison = GetAI()->FindConsumable(DEADLY_POISON_DISPLAYID);
         if (!poison)
-            poison = m_ai->FindConsumable(WOUND_POISON_DISPLAYID);
+            poison = GetAI()->FindConsumable(WOUND_POISON_DISPLAYID);
         if (!poison)
-            poison = m_ai->FindConsumable(INSTANT_POISON_DISPLAYID);
+            poison = GetAI()->FindConsumable(INSTANT_POISON_DISPLAYID);
         if (poison)
         {
-            m_ai->UseItem(poison, EQUIPMENT_SLOT_OFFHAND);
-            m_ai->SetIgnoreUpdateTime(5);
+            GetAI()->UseItem(poison, EQUIPMENT_SLOT_OFFHAND);
+            GetAI()->SetIgnoreUpdateTime(5);
         }
     }
 } // end DoNonCombatActions

@@ -73,135 +73,166 @@ void WorldSession::HandleGroupInviteOpcode(WorldPacket& recv_data)
     recv_data >> membername;
     recv_data.read_skip<uint32>();                          // roles mask?
 
-    // attempt add selected player
+	// cheating
+	if (!normalizePlayerName(membername))
+	{
+		SendPartyResult(PARTY_OP_INVITE, membername, ERR_BAD_PLAYER_NAME_S);
+		return;
+	}
 
-    // cheating
-    if (!normalizePlayerName(membername))
-    {
-        SendPartyResult(PARTY_OP_INVITE, membername, ERR_BAD_PLAYER_NAME_S);
-        return;
-    }
+	// Call common function
+	_HandleGroupInviteOpcodeCommon(GetPlayer(), membername);
 
-    Player* initiator = GetPlayer();
-    Player* recipient = sObjectMgr.GetPlayer(membername.c_str());
-
-    // no player
-    if (!recipient)
-    {
-        SendPartyResult(PARTY_OP_INVITE, membername, ERR_BAD_PLAYER_NAME_S);
-        return;
-    }
-
-    // can't group with
-    if (!sWorld.getConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_GROUP) && initiator->GetTeam() != recipient->GetTeam())
-    {
-        SendPartyResult(PARTY_OP_INVITE, membername, ERR_PLAYER_WRONG_FACTION);
-        return;
-    }
-
-    if (initiator->GetInstanceId() != 0 && recipient->GetInstanceId() != 0 && initiator->GetInstanceId() != recipient->GetInstanceId() && initiator->GetMapId() == recipient->GetMapId())
-    {
-        SendPartyResult(PARTY_OP_INVITE, membername, ERR_TARGET_NOT_IN_INSTANCE_S);
-        return;
-    }
-
-    // just ignore us
-    if (recipient->GetSocial()->HasIgnore(initiator->GetObjectGuid()))
-    {
-        SendPartyResult(PARTY_OP_INVITE, membername, ERR_IGNORING_YOU_S);
-        return;
-    }
-
-    Group* initiatorGroup = initiator->GetGroup();
-    if (initiatorGroup && initiatorGroup->isBGGroup())
-        initiatorGroup = initiator->GetOriginalGroup();
-    if (!initiatorGroup)
-        initiatorGroup = initiator->GetGroupInvite();
-
-    if (initiatorGroup && initiatorGroup->isRaidGroup() && !recipient->GetAllowLowLevelRaid() && (recipient->getLevel() < sWorld.getConfig(CONFIG_UINT32_MIN_LEVEL_FOR_RAID)))
-    {
-        SendPartyResult(PARTY_OP_INVITE, "", ERR_RAID_DISALLOWED_BY_LEVEL);
-        return;
-    }
-
-    // player already invited
-    if (recipient->GetGroupInvite())
-    {
-        SendPartyResult(PARTY_OP_INVITE, membername, ERR_ALREADY_IN_GROUP_S);
-        return;
-    }
-
-    Group* recipientGroup = recipient->GetGroup();
-    if (recipientGroup && recipientGroup->isBGGroup())
-        recipientGroup = recipient->GetOriginalGroup();
-
-    // player already in another group
-    if (recipientGroup)
-    {
-        SendPartyResult(PARTY_OP_INVITE, membername, ERR_ALREADY_IN_GROUP_S);
-
-        // tell the player that they were invited but it failed as they were already in a group
-        SendGroupInvite(recipient, true);
-
-        return;
-    }
-
-    if (initiatorGroup)
-    {
-        // not have permissions for invite
-        if (!initiatorGroup->IsLeader(initiator->GetObjectGuid()) && !initiatorGroup->IsAssistant(initiator->GetObjectGuid()))
-        {
-            if (initiatorGroup->IsCreated())
-                SendPartyResult(PARTY_OP_INVITE, "", ERR_NOT_LEADER);
-            return;
-        }
-        // not have place
-        if (initiatorGroup->IsFull())
-        {
-            SendPartyResult(PARTY_OP_INVITE, "", ERR_GROUP_FULL);
-            return;
-        }
-    }
-
-    // ok, but group not exist, start a new group
-    // but don't create and save the group to the DB until
-    // at least one person joins
-    if (!initiatorGroup)
-    {
-        initiatorGroup = new Group();
-        // new group: if can't add then delete
-        if (!initiatorGroup->AddLeaderInvite(initiator))
-        {
-            delete initiatorGroup;
-            return;
-        }
-        if (!initiatorGroup->AddInvite(recipient))
-        {
-            delete initiatorGroup;
-            return;
-        }
-    }
-    else
-    {
-        // already existing group: if can't add then just leave
-        if (!initiatorGroup->AddInvite(recipient))
-        {
-            return;
-        }
-    }
-
-    SendGroupInvite(recipient);
-    SendPartyResult(PARTY_OP_INVITE, membername, ERR_PARTY_RESULT_OK);
 }
+
+void WorldSession::_HandleGroupInviteOpcodeCommon(Player *initiator, std::string receipient_name)
+{
+	Player	*recipient;
+	Group	*initiatorGroup, 
+			*recipientGroup;
+	
+	// Empty
+	if (receipient_name.empty())
+	{
+		SendPartyResult(PARTY_OP_INVITE, "", ERR_BAD_PLAYER_NAME_S);
+		return;
+	}
+
+	recipient = sObjectMgr.GetPlayer(receipient_name.c_str());
+
+	// Cannot find player from name
+	if (!recipient)
+	{
+		SendPartyResult(PARTY_OP_INVITE, receipient_name, ERR_BAD_PLAYER_NAME_S);
+		return;
+	}
+
+	// Player already invited
+	if (recipient->GetGroupInvite())
+	{
+		SendPartyResult(PARTY_OP_INVITE, receipient_name, ERR_ALREADY_IN_GROUP_S);
+		return;
+	}
+
+	// Is ignoring us
+	if (recipient->GetSocial()->HasIgnore(initiator->GetObjectGuid()))
+	{
+		SendPartyResult(PARTY_OP_INVITE, receipient_name, ERR_IGNORING_YOU_S);
+		return;
+	}
+
+	recipientGroup = recipient->GetGroup();
+
+	if (recipientGroup && recipientGroup->isBGGroup())
+		recipientGroup = recipient->GetOriginalGroup();
+
+	// player already in another group
+	if (recipientGroup)
+	{
+		SendPartyResult(PARTY_OP_INVITE, receipient_name, ERR_ALREADY_IN_GROUP_S);
+
+		// tell the player that they were invited but it failed as they were already in a group
+		SendGroupInvite(recipient, true);
+
+		return;
+	}
+
+	// Can't group with
+	if (!sWorld.getConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_GROUP) && initiator->GetTeam() != recipient->GetTeam())
+	{
+		SendPartyResult(PARTY_OP_INVITE, receipient_name, ERR_PLAYER_WRONG_FACTION);
+		return;
+	}
+
+	if (initiator->GetInstanceId() != 0 && recipient->GetInstanceId() != 0 && initiator->GetInstanceId() != recipient->GetInstanceId() && initiator->GetMapId() == recipient->GetMapId())
+	{
+		SendPartyResult(PARTY_OP_INVITE, receipient_name, ERR_TARGET_NOT_IN_INSTANCE_S);
+		return;
+	}
+
+	initiatorGroup = initiator->GetGroup();
+
+	if (initiatorGroup && initiatorGroup->isBGGroup())
+		initiatorGroup = initiator->GetOriginalGroup();
+
+	if (!initiatorGroup)
+		initiatorGroup = initiator->GetGroupInvite();
+
+	if (initiatorGroup && initiatorGroup->isRaidGroup() && !recipient->GetAllowLowLevelRaid() && (recipient->getLevel() < sWorld.getConfig(CONFIG_UINT32_MIN_LEVEL_FOR_RAID)))
+	{
+		SendPartyResult(PARTY_OP_INVITE, "", ERR_RAID_DISALLOWED_BY_LEVEL);
+		return;
+	}
+
+	if (initiatorGroup)
+	{
+		// not have permissions for invite
+		if (!initiatorGroup->IsLeader(initiator->GetObjectGuid()) && !initiatorGroup->IsAssistant(initiator->GetObjectGuid()))
+		{
+			if (initiatorGroup->IsCreated())
+				SendPartyResult(PARTY_OP_INVITE, "", ERR_NOT_LEADER);
+			return;
+		}
+
+		// not have place
+		if (initiatorGroup->IsFull())
+		{
+			SendPartyResult(PARTY_OP_INVITE, "", ERR_GROUP_FULL);
+			return;
+		}
+
+		// already existing group: if can't add then just leave
+		if (!initiatorGroup->AddInvite(recipient))
+		{
+			return;
+		}
+	}
+	else
+	{
+		initiatorGroup = new Group();
+
+		// new group: if can't add then delete
+		if (!initiatorGroup->AddLeaderInvite(initiator))
+		{
+			delete initiatorGroup;
+			return;
+		}
+		if (!initiatorGroup->AddInvite(recipient))
+		{
+			delete initiatorGroup;
+			return;
+		}
+	}
+
+	SendGroupInvite(recipient);
+	SendPartyResult(PARTY_OP_INVITE, recipient->GetName(), ERR_PARTY_RESULT_OK);
+}
+
 
 void WorldSession::HandleGroupAcceptOpcode(WorldPacket& recv_data)
 {
     // Playerbot mod
     //recv_data.read_skip<uint32>();                          // roles mask?
+	if (GetPlayer()->GetPlayerbotAI())
+	{
+		std::string out;
+		out.append("WorldSession::HandleGroupAcceptOpcode: ");
+		out.append(GetPlayer()->GetGuidStr().c_str());
+		sLog.outError(out.c_str());
+
+	//	GetPlayer()->GetPlayerbotAI()->TellMaster(out);
+
+		sLog.outError("WorldSession::HandleGroupAcceptOpcode: %s received an group accept.",
+			GetPlayer()->GetGuidStr().c_str());
+	}
 
     Group* group = GetPlayer()->GetGroupInvite();
-    if (!group)
-        return;
+	if (!group)
+	{
+		sLog.outError("WorldSession::HandleGroupAcceptOpcode: %s received an group accept but no group object exists.",
+			GetPlayer()->GetGuidStr().c_str()); 
+		return;
+	}
 
     if (group->GetLeaderGuid() == GetPlayer()->GetObjectGuid())
     {
