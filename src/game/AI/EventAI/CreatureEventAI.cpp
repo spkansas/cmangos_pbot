@@ -179,6 +179,7 @@ bool CreatureEventAI::IsTimerBasedEvent(EventAI_Type type) const
         case EVENT_T_RANGE:
         case EVENT_T_ENERGY:
         case EVENT_T_SELECT_ATTACKING_TARGET:
+        case EVENT_T_FACING_TARGET:
             return true;
         default:
             return false;
@@ -481,6 +482,23 @@ bool CreatureEventAI::ProcessEvent(CreatureEventAIHolder& pHolder, Unit* pAction
             LOG_PROCESS_EVENT;
             // Repeat Timers
             pHolder.UpdateRepeatTimer(m_creature, event.percent_range.repeatMin, event.percent_range.repeatMax);
+            break;
+        }
+        case EVENT_T_FACING_TARGET:
+        {
+            if (!m_creature->isInCombat() || !m_creature->getVictim())
+                return false;
+
+            // Creature expected in back of target (melee range)
+            if (event.facingTarget.backOrFront == 0 && !m_creature->getVictim()->isInBackInMap(m_creature, 5.0f))
+                return false;
+            // Creature expected in front of target (melee range)
+            else if (event.facingTarget.backOrFront == 1 && !m_creature->getVictim()->isInFrontInMap(m_creature, 5.0f))
+                return false;
+
+            LOG_PROCESS_EVENT;
+            // Repeat Timers
+            pHolder.UpdateRepeatTimer(m_creature, event.facingTarget.repeatMin, event.facingTarget.repeatMax);
             break;
         }
         default:
@@ -1128,10 +1146,10 @@ void CreatureEventAI::ProcessAction(CreatureEventAI_Action const& action, uint32
                 uint32 relayId = sScriptMgr.GetRandomRelayDbscriptFromTemplate(uint32(-action.relayScript.relayId));
                 if (relayId == 0)
                     break;
-                m_creature->GetMap()->ScriptsStart(sRelayScripts, relayId, target, nullptr);
+                m_creature->GetMap()->ScriptsStart(sRelayScripts, relayId, target, m_creature);
             }
             else
-                m_creature->GetMap()->ScriptsStart(sRelayScripts, action.relayScript.relayId, target, nullptr);
+                m_creature->GetMap()->ScriptsStart(sRelayScripts, action.relayScript.relayId, target, m_creature);
             break;
         }
         case ACTION_T_TEXT_NEW:

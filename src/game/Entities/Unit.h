@@ -1521,6 +1521,8 @@ class Unit : public WorldObject
         void SetPvP(bool state);
         bool IsPvPFreeForAll() const { return HasByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP); }
         void SetPvPFreeForAll(bool state);
+        bool IsPvPContested() const;
+        void SetPvPContested(bool state);
         bool IsPvPSanctuary() const { return HasByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY); }
         void SetPvPSanctuary(bool state);
         uint32 GetCreatureType() const;
@@ -1864,11 +1866,15 @@ class Unit : public WorldObject
         Unit* GetOwner(bool recursive = false) const;
         Unit* GetMaster() const;
 
-        // Beneficiary: master or self
+        // Beneficiary: master or self (serverside)
         Unit const* GetBeneficiary() const;
         Unit* GetBeneficiary();
         Player const* GetBeneficiaryPlayer() const;
         Player* GetBeneficiaryPlayer();
+
+        // Controlling player: limited recursive master/beneficiary (clientside)
+        Player const* GetControllingPlayer() const;
+
         Unit* GetSpawner() const; // serverside only logic used to determine spawner of unit
 
         Unit* GetSummoner() const;
@@ -2005,6 +2011,7 @@ class Unit : public WorldObject
         ShapeshiftForm GetShapeshiftForm() const { return ShapeshiftForm(GetByteValue(UNIT_FIELD_BYTES_2, 3)); }
         void  SetShapeshiftForm(ShapeshiftForm form) { SetByteValue(UNIT_FIELD_BYTES_2, 3, form); }
 
+        bool IsShapeShifted() const;
         bool IsInFeralForm() const
         {
             ShapeshiftForm form = GetShapeshiftForm();
