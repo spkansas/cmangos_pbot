@@ -136,7 +136,7 @@ protected:
 
     time_t               m_WaitUntil;
 
-	uint32				 buff_array[10][3];
+	uint32				 buff_array[10][3] = {{0}};
 
 	void (*m_ActionBeforeCast)(Player *) = NULL;
 
@@ -144,6 +144,8 @@ public:
 
     PlayerbotClassAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
 	~PlayerbotClassAI();
+
+public:
 
     // all combat actions go here
     virtual CombatManeuverReturns DoManeuver_Combat_Start(Unit *pTarget);

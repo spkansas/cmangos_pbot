@@ -60,10 +60,6 @@ bool PlayerbotClassAIData::DB_SaveData(void)
 
 PlayerbotClassAI::PlayerbotClassAI(Player* const master, Player* const bot, PlayerbotAI* const ai)
 {
-	buff_array[0][0] = { NULL };
-	buff_array[0][1] = { NULL };
-	buff_array[0][2] = { NULL };
-
     m_MinHealthPercentTank = 80;
     m_MinHealthPercentHealer = 60;
     m_MinHealthPercentDPS = 30;
