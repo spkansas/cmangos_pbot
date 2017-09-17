@@ -50,6 +50,10 @@ INSERT INTO scripted_areatrigger VALUES
 (4112,'at_naxxramas'),
 (4113,'at_naxxramas'),
 (4288,'at_dark_portal'),
+(4422,'at_area_52'),
+(4466,'at_area_52'),
+(4471,'at_area_52'),
+(4472,'at_area_52'),
 (4479,'at_haramad_teleport'),
 (4485,'at_dark_portal'),
 (4524,'at_shattered_halls'),
@@ -383,6 +387,7 @@ UPDATE creature_template SET ScriptName='npc_bonker_togglevolt' WHERE entry=2558
 UPDATE creature_template SET ScriptName='npc_jenny' WHERE entry=25969;
 UPDATE creature_template SET ScriptName='npc_seaforium_depth_charge' WHERE entry=25401;
 UPDATE creature_template SET ScriptName='npc_mootoo_the_younger' WHERE entry=25504;
+UPDATE creature_template SET ScriptName='npc_storm_totem' WHERE entry=26048;
 
 /* BURNING STEPPES */
 UPDATE creature_template SET ScriptName='npc_ragged_john' WHERE entry=9563;
