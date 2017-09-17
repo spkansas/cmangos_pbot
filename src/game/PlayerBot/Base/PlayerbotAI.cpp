@@ -5643,96 +5643,115 @@ bool PlayerbotAI::CastPetSpell(uint32 spellId, Unit* target)
 // Perform sanity checks and cast spell
 bool PlayerbotAI::Buff(uint32 spellId, Unit* target, void (*beforeCast)(Player *))
 {
-    //DEBUG_LOG("**** PlayerbotAI::Buff ****");
-    uint8 i;
-    bool hasEqualOrGreaterAuraEffect[MAX_EFFECT_INDEX];
+	int32			bonus;
+	uint8			i;
+	bool			hasEqualOrGreaterAuraEffect[MAX_EFFECT_INDEX];
+	bool			isThorns;
 
-    if (spellId == 0)
-        return false;
-    //DEBUG_LOG("[PlayerbotAI::Buff] spellId = %u", spellId);
+	DEBUG_LOG("**** PlayerbotAI::Buff ****");
+	if (spellId == 0) return false;
+	DEBUG_LOG("[PlayerbotAI::Buff] spellId = %u", spellId);
 
-    if (!target)
-        return false;
-    //DEBUG_LOG("[PlayerbotAI::Buff] target = %s", target->GetName());
+	if (!target) return false;
+	DEBUG_LOG("[PlayerbotAI::Buff] target = %s", target->GetName());
 
-    SpellEntry const * spellProto = sSpellTemplate.LookupEntry<SpellEntry>(spellId);
-    if (!spellProto)
-        return false;
-    //DEBUG_LOG("[PlayerbotAI::Buff] sSpellStore.LookupEntry(spellId) .... Success!");
+	SpellEntry const* spellProto = sSpellTemplate.LookupEntry<SpellEntry>(spellId);
+	if (!spellProto) return false;
+	DEBUG_LOG("[PlayerbotAI::Buff] sSpellTemplate.LookupEntry<SpellEntry>(spellId) .... Success!");
 
-    // Select appropriate spell rank for target's level
-    spellProto = sSpellMgr.SelectAuraRankForLevel(spellProto, target->getLevel());
-    if (!spellProto)
-        return false;
-    //DEBUG_LOG("[PlayerbotAI::Buff] sSpellMgr.SelectAuraRankForLevel(spellProto, target->getLevel()) .... Success!");
+	// Select appropriate spell rank for target's level
+	spellProto = sSpellMgr.SelectAuraRankForLevel(spellProto, target->getLevel());
+	if (!spellProto) return false;
+	DEBUG_LOG("[PlayerbotAI::Buff] sSpellMgr.SelectAuraRankForLevel(spellProto, target->getLevel()) .... Success!");
 
-    // Target already has aura from spellId, skip for speed. May need to add exceptions
-    if (target->HasAura(spellId))
-        return false;
+	isThorns = (strncmp(spellProto->SpellName[0], "Thorns", 5) == 0);
+	DEBUG_LOG("[PlayerbotAI::Buff] isThorns = %s", (isThorns ? "True" : "False"));
 
-    //DEBUG_LOG("[PlayerbotAI::Buff] BEGIN Aura Check Loop!");
+	// Target already has aura from spellId, skip for speed. May need to add exceptions
+	if (target->HasAura(spellId)) return false;
+	DEBUG_LOG("[PlayerbotAI::Buff] BEGIN Aura Check Loop!");
 
-    // Loop through effects
-    for (i = 0; i < MAX_EFFECT_INDEX; ++i)
-    {
-        //DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Effect Index = %u", i);
+	// Loop through effects
+	for (i = 0; i < MAX_EFFECT_INDEX; ++i)
+	{
+		DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Effect Index = %u", i);
 
-        //DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Initialize hasEqualOrGreaterAuraEffect[%u] to false", i);
-        hasEqualOrGreaterAuraEffect[i] = false;
+		DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Initialize hasEqualOrGreaterAuraEffect[%u] to false", i);
+		hasEqualOrGreaterAuraEffect[i] = false;
 
-        if (spellProto->EffectApplyAuraName[i] == SPELL_AURA_NONE)
-        {
-            //DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: spellProto->EffectApplyAuraName[%u] == SPELL_AURA_NONE  -  Exiting Loop", i);
-            break;
-        }
+		if (spellProto->EffectApplyAuraName[i] == SPELL_AURA_NONE)
+		{
+			DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: spellProto->EffectApplyAuraName[%u] == SPELL_AURA_NONE  -  Exiting Loop", i);
+			break;
+		}
 
-        //DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Effect Index %u = %u", i, spellProto->EffectApplyAuraName[i]);
+		DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Effect Index %u = %u", i, spellProto->EffectApplyAuraName[i]);
 
-        int32 bonus = m_bot->CalculateSpellDamage(target, spellProto, SpellEffectIndex(i));
-        //DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Aura Effect Bonus = %d", bonus);
+		bonus = m_bot->CalculateSpellDamage(target, spellProto, SpellEffectIndex(i));
+		DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Aura Effect Bonus = %d", bonus);
 
-        Unit::AuraList const& auras = target->GetAurasByType(AuraType(spellProto->EffectApplyAuraName[i]));
-        // Iterate through the targets existing aura's
-        for (Unit::AuraList::const_iterator it = auras.begin(); it != auras.end() && !hasEqualOrGreaterAuraEffect[i]; ++it)
-        {
-            //DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: %d (*it)->GetModifier()->m_miscvalue (%d) vs spellProto->EffectMiscValue[%d] (%d)", it, (*it)->GetModifier()->m_miscvalue, i, spellProto->EffectMiscValue[i]);
-            if ((*it)->GetModifier()->m_miscvalue == spellProto->EffectMiscValue[i] &&
-                (*it)->GetSpellProto()->SpellIconID == spellProto->SpellIconID)
-            {
-                //DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP  m_amount (%d) vs bonus (%d)", (*it)->GetModifier()->m_amount, bonus);
-                if ((*it)->GetModifier()->m_amount >= bonus)
-                {
-                    //DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: Found equal or better!");
-                    hasEqualOrGreaterAuraEffect[i] = true;
-                }
-            }
-        }
-        //DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: Exit loop.");
-    }
-    //DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Exit loop.");
+		Unit::AuraList const& auras = target->GetAurasByType(AuraType(spellProto->EffectApplyAuraName[i]));
 
-    do
-    {
-        i--;
-        //DEBUG_LOG("[PlayerbotAI::Buff] hasEqualOrGreaterAura[%u] = %u", hasEqualOrGreaterAuraEffect[i], i);
-        if (!hasEqualOrGreaterAuraEffect[i])
-        {
-            //DEBUG_LOG("[PlayerbotAI::Buff] Determined to need buff.");
+		// Itterate through the targets existing aura's
+		for (Unit::AuraList::const_iterator it = auras.begin(); it != auras.end() && !hasEqualOrGreaterAuraEffect[i]; ++it)
+		{
+			DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: AuraList Index = %d", it);
 
-            // Druids may need to shapeshift before casting
-            if (beforeCast)
-            {
-                //DEBUG_LOG("[PlayerbotAI::Buff] Shape Shifing.");
-                (*beforeCast)(m_bot);
-            }
+			DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: (*it)->GetModifier()->m_miscvalue (%d) vs spellProto->EffectMiscValue[%d] (%d)",(*it)->GetModifier()->m_miscvalue,i,spellProto->EffectMiscValue[i]);
+			if ((*it)->GetModifier()->m_miscvalue == spellProto->EffectMiscValue[i])
+			{
+				DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP  m_amount (%d) vs bonus (%d)", (*it)->GetModifier()->m_amount, bonus);
+				if ((*it)->GetModifier()->m_amount >= bonus)
+				{
+					DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: Found equal or better - Checking Exceptions!");
 
-            //DEBUG_LOG("[PlayerbotAI::Buff] Casting Spell.");
-            return CastSpell(spellProto->Id, *target);
-        }
-    } while (i > 0);
+					// We now have to check for exceptions to this rule - meaning those that can stack anyways.
+					if (isThorns)
+					{
+						DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: Checking 'Thorns' Exceptions.");
+						if (strncmp((*it)->GetSpellProto()->SpellName[0], "Retribution Aura", 16) == 0)
+						{
+							DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: 'Thorns' Exception found - Retribution Aura!");
+							continue;
+						}
+						DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: No 'Thorns' exceptions found.");
+					}
 
-    //DEBUG_LOG("[PlayerbotAI::Buff] Target does not require buff.");
-    return false;
+					DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: No exceptions found - setting hasEqualOrGreaterAuraEffect[i] = true.");
+					hasEqualOrGreaterAuraEffect[i] = true;
+				}
+			}
+		}
+		DEBUG_LOG("[PlayerbotAI::Buff] ---> INNER LOOP: Exit loop.");
+	}
+
+	DEBUG_LOG("[PlayerbotAI::Buff] OUTER LOOP: Exit loop.");
+
+	do
+	{
+		i--;
+
+		DEBUG_LOG("[PlayerbotAI::Buff] hasEqualOrGreaterAura[%u] = %u", hasEqualOrGreaterAuraEffect[i], i);
+		if (!hasEqualOrGreaterAuraEffect[i])
+		{
+			DEBUG_LOG("[PlayerbotAI::Buff] Determined target requires buff.");
+
+			// Druids may need to shapeshift before casting
+			if (beforeCast)
+			{
+				DEBUG_LOG("[PlayerbotAI::Buff] beforeCast function about to be executed.");
+				(*beforeCast)(m_bot);
+				DEBUG_LOG("[PlayerbotAI::Buff] beforeCast function executed.");
+			}
+
+			DEBUG_LOG("[PlayerbotAI::Buff] Casting Spell.");
+			return CastSpell(spellProto->Id, *target);
+		}
+
+	} while (i > 0);
+
+	DEBUG_LOG("[PlayerbotAI::Buff] Target does not require buff.");
+	return false;
 }
 
 // Can be used for personal buffs like Mage Armor and Inner Fire

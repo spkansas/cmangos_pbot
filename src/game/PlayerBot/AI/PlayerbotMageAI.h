@@ -104,6 +104,8 @@ public:
 
 private:
 
+	bool PlayerbotClassAI_ClassAIInit(void);
+
 	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
 	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
 

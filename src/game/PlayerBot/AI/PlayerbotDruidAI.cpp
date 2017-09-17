@@ -22,111 +22,123 @@ class PlayerbotAI;
 
 PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, PlayerbotAI* const ai) : PlayerbotClassAI(master, bot, ai)
 {
-    MOONFIRE                      = GetAI()->initSpell(MOONFIRE_1); // attacks
-    STARFIRE                      = GetAI()->initSpell(STARFIRE_1);
-    STARFALL                      = GetAI()->initSpell(STARFALL_1);
-    WRATH                         = GetAI()->initSpell(WRATH_1);
-    ROOTS                         = GetAI()->initSpell(ENTANGLING_ROOTS_1);
-    INSECT_SWARM                  = GetAI()->initSpell(INSECT_SWARM_1);
-    FORCE_OF_NATURE               = GetAI()->initSpell(FORCE_OF_NATURE_1);
-    HURRICANE                     = GetAI()->initSpell(HURRICANE_1);
-    MARK_OF_THE_WILD              = GetAI()->initSpell(MARK_OF_THE_WILD_1); // buffs
-    GIFT_OF_THE_WILD              = GetAI()->initSpell(GIFT_OF_THE_WILD_1);
-    THORNS                        = GetAI()->initSpell(THORNS_1);
-    BARKSKIN                      = GetAI()->initSpell(BARKSKIN_1);
-    INNERVATE                     = GetAI()->initSpell(INNERVATE_1);
-    FAERIE_FIRE                   = GetAI()->initSpell(FAERIE_FIRE_1); // debuffs
-    FAERIE_FIRE_FERAL             = GetAI()->initSpell(FAERIE_FIRE_FERAL_1);
-    REJUVENATION                  = GetAI()->initSpell(REJUVENATION_1); // heals
-    REGROWTH                      = GetAI()->initSpell(REGROWTH_1);
-    WILD_GROWTH                   = GetAI()->initSpell(WILD_GROWTH_1);
-    LIFEBLOOM                     = GetAI()->initSpell(LIFEBLOOM_1);
-    NOURISH                       = GetAI()->initSpell(NOURISH_1);
-    HEALING_TOUCH                 = GetAI()->initSpell(HEALING_TOUCH_1);
-    SWIFTMEND                     = GetAI()->initSpell(SWIFTMEND_1);
-    TRANQUILITY                   = GetAI()->initSpell(TRANQUILITY_1);
-    REVIVE                        = GetAI()->initSpell(REVIVE_1);
-    REBIRTH                       = GetAI()->initSpell(REBIRTH_1);
-    REMOVE_CURSE                  = GetAI()->initSpell(REMOVE_CURSE_DRUID_1);
-    ABOLISH_POISON                = GetAI()->initSpell(ABOLISH_POISON_1);
-    // Druid Forms
-    MOONKIN_FORM                  = GetAI()->initSpell(MOONKIN_FORM_1);
-    DIRE_BEAR_FORM                = GetAI()->initSpell(DIRE_BEAR_FORM_1);
-    BEAR_FORM                     = GetAI()->initSpell(BEAR_FORM_1);
-    CAT_FORM                      = GetAI()->initSpell(CAT_FORM_1);
-    TREE_OF_LIFE                  = GetAI()->initSpell(TREE_OF_LIFE_1);
-    TRAVEL_FORM                   = GetAI()->initSpell(TRAVEL_FORM_1);
-    // Cat Attack type's
-    RAKE                          = GetAI()->initSpell(RAKE_1);
-    CLAW                          = GetAI()->initSpell(CLAW_1); // 45
-    COWER                         = GetAI()->initSpell(COWER_1); // 20
-    MANGLE                        = GetAI()->initSpell(MANGLE_1); // 45
-    TIGERS_FURY                   = GetAI()->initSpell(TIGERS_FURY_1);
-    MANGLE_CAT                    = GetAI()->initSpell(MANGLE_CAT_1); //40
-    // Cat Finishing Move's
-    RIP                           = GetAI()->initSpell(RIP_1); // 30
-    FEROCIOUS_BITE                = GetAI()->initSpell(FEROCIOUS_BITE_1); // 35
-    MAIM                          = GetAI()->initSpell(MAIM_1); // 35
-    SAVAGE_ROAR                   = GetAI()->initSpell(SAVAGE_ROAR_1); //25
-    // Bear/Dire Bear Attacks & Buffs
-    BASH                          = GetAI()->initSpell(BASH_1);
-    MAUL                          = GetAI()->initSpell(MAUL_1); // 15
-    SWIPE                         = GetAI()->initSpell(SWIPE_BEAR_1); // 20
-    DEMORALIZING_ROAR             = GetAI()->initSpell(DEMORALIZING_ROAR_1); // 10
-    CHALLENGING_ROAR              = GetAI()->initSpell(CHALLENGING_ROAR_1);
-    ENRAGE                        = GetAI()->initSpell(ENRAGE_1);
-    GROWL                         = GetAI()->initSpell(GROWL_1);
-    MANGLE_BEAR                   = GetAI()->initSpell(MANGLE_BEAR_1);
-    LACERATE                      = GetAI()->initSpell(LACERATE_1);
+	m_ActionBeforeCast = &(PlayerbotDruidAI::GoBuffForm);
 
-    RECENTLY_BANDAGED             = 11196; // first aid check
-
-    // racial
-    SHADOWMELD                    = GetAI()->initSpell(SHADOWMELD_ALL);
-    WAR_STOMP                     = GetAI()->initSpell(WAR_STOMP_ALL); // tauren
-
-    //Procs
-    ECLIPSE                       = GetAI()->initSpell(ECLIPSE_1);
-    ECLIPSE_SOLAR                 = GetAI()->initSpell(ECLIPSE_SOLAR_1);
-    ECLIPSE_LUNAR                 = GetAI()->initSpell(ECLIPSE_LUNAR_1);
+    // TODO: fail on non-postivie return
+    PlayerbotClassAI_ClassAIInit();
 }
 
-PlayerbotDruidAI::~PlayerbotDruidAI() {}
+
+PlayerbotDruidAI::~PlayerbotDruidAI() 
+{
+}
+
+
+bool PlayerbotDruidAI::PlayerbotClassAI_ClassAIInit(void)
+{
+    MOONFIRE                      = m_botdata->GetAI()->initSpell(MOONFIRE_1); // attacks
+    STARFIRE                      = m_botdata->GetAI()->initSpell(STARFIRE_1);
+    STARFALL                      = m_botdata->GetAI()->initSpell(STARFALL_1);
+    WRATH                         = m_botdata->GetAI()->initSpell(WRATH_1);
+    ROOTS                         = m_botdata->GetAI()->initSpell(ENTANGLING_ROOTS_1);
+    INSECT_SWARM                  = m_botdata->GetAI()->initSpell(INSECT_SWARM_1);
+    FORCE_OF_NATURE               = m_botdata->GetAI()->initSpell(FORCE_OF_NATURE_1);
+    HURRICANE                     = m_botdata->GetAI()->initSpell(HURRICANE_1);
+    MARK_OF_THE_WILD              = m_botdata->GetAI()->initSpell(MARK_OF_THE_WILD_1); // buffs
+    GIFT_OF_THE_WILD              = m_botdata->GetAI()->initSpell(GIFT_OF_THE_WILD_1);
+    THORNS                        = m_botdata->GetAI()->initSpell(THORNS_1);
+    BARKSKIN                      = m_botdata->GetAI()->initSpell(BARKSKIN_1);
+    INNERVATE                     = m_botdata->GetAI()->initSpell(INNERVATE_1);
+    FAERIE_FIRE                   = m_botdata->GetAI()->initSpell(FAERIE_FIRE_1); // debuffs
+    FAERIE_FIRE_FERAL             = m_botdata->GetAI()->initSpell(FAERIE_FIRE_FERAL_1);
+    REJUVENATION                  = m_botdata->GetAI()->initSpell(REJUVENATION_1); // heals
+    REGROWTH                      = m_botdata->GetAI()->initSpell(REGROWTH_1);
+    WILD_GROWTH                   = m_botdata->GetAI()->initSpell(WILD_GROWTH_1);
+    LIFEBLOOM                     = m_botdata->GetAI()->initSpell(LIFEBLOOM_1);
+    NOURISH                       = m_botdata->GetAI()->initSpell(NOURISH_1);
+    HEALING_TOUCH                 = m_botdata->GetAI()->initSpell(HEALING_TOUCH_1);
+    SWIFTMEND                     = m_botdata->GetAI()->initSpell(SWIFTMEND_1);
+    TRANQUILITY                   = m_botdata->GetAI()->initSpell(TRANQUILITY_1);
+    REVIVE                        = m_botdata->GetAI()->initSpell(REVIVE_1);
+    REBIRTH                       = m_botdata->GetAI()->initSpell(REBIRTH_1);
+    REMOVE_CURSE                  = m_botdata->GetAI()->initSpell(REMOVE_CURSE_DRUID_1);
+    ABOLISH_POISON                = m_botdata->GetAI()->initSpell(ABOLISH_POISON_1);
+    // Druid Forms
+    MOONKIN_FORM                  = m_botdata->GetAI()->initSpell(MOONKIN_FORM_1);
+    DIRE_BEAR_FORM                = m_botdata->GetAI()->initSpell(DIRE_BEAR_FORM_1);
+    BEAR_FORM                     = m_botdata->GetAI()->initSpell(BEAR_FORM_1);
+    CAT_FORM                      = m_botdata->GetAI()->initSpell(CAT_FORM_1);
+    TREE_OF_LIFE                  = m_botdata->GetAI()->initSpell(TREE_OF_LIFE_1);
+    TRAVEL_FORM                   = m_botdata->GetAI()->initSpell(TRAVEL_FORM_1);
+    // Cat Attack type's
+    RAKE                          = m_botdata->GetAI()->initSpell(RAKE_1);
+    CLAW                          = m_botdata->GetAI()->initSpell(CLAW_1); // 45
+    COWER                         = m_botdata->GetAI()->initSpell(COWER_1); // 20
+    MANGLE                        = m_botdata->GetAI()->initSpell(MANGLE_1); // 45
+    TIGERS_FURY                   = m_botdata->GetAI()->initSpell(TIGERS_FURY_1);
+    MANGLE_CAT                    = m_botdata->GetAI()->initSpell(MANGLE_CAT_1); //40
+    // Cat Finishing Move's
+    RIP                           = m_botdata->GetAI()->initSpell(RIP_1); // 30
+    FEROCIOUS_BITE                = m_botdata->GetAI()->initSpell(FEROCIOUS_BITE_1); // 35
+    MAIM                          = m_botdata->GetAI()->initSpell(MAIM_1); // 35
+    SAVAGE_ROAR                   = m_botdata->GetAI()->initSpell(SAVAGE_ROAR_1); //25
+    // Bear/Dire Bear Attacks & Buffs
+    BASH                          = m_botdata->GetAI()->initSpell(BASH_1);
+    MAUL                          = m_botdata->GetAI()->initSpell(MAUL_1); // 15
+    SWIPE                         = m_botdata->GetAI()->initSpell(SWIPE_BEAR_1); // 20
+    DEMORALIZING_ROAR             = m_botdata->GetAI()->initSpell(DEMORALIZING_ROAR_1); // 10
+    CHALLENGING_ROAR              = m_botdata->GetAI()->initSpell(CHALLENGING_ROAR_1);
+    ENRAGE                        = m_botdata->GetAI()->initSpell(ENRAGE_1);
+    GROWL                         = m_botdata->GetAI()->initSpell(GROWL_1);
+    MANGLE_BEAR                   = m_botdata->GetAI()->initSpell(MANGLE_BEAR_1);
+    LACERATE                      = m_botdata->GetAI()->initSpell(LACERATE_1);
+
+    // racial
+    SHADOWMELD                    = m_botdata->GetAI()->initSpell(SHADOWMELD_ALL);
+    WAR_STOMP                     = m_botdata->GetAI()->initSpell(WAR_STOMP_ALL); // tauren
+
+    //Procs
+    ECLIPSE                       = m_botdata->GetAI()->initSpell(ECLIPSE_1);
+    ECLIPSE_SOLAR                 = m_botdata->GetAI()->initSpell(ECLIPSE_SOLAR_1);
+    ECLIPSE_LUNAR                 = m_botdata->GetAI()->initSpell(ECLIPSE_LUNAR_1);
+
+    return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
+}
 
 
 CombatManeuverReturns PlayerbotDruidAI::DoNextManeuver_Heal_ClassSetup(Unit* pTarget)
 {
-	if (!GetAI())  return RETURN_NO_ACTION_ERROR;
-	if (!m_bot) return RETURN_NO_ACTION_ERROR;
+	if (!m_botdata->GetAI())  return RETURN_NO_ACTION_ERROR;
+	if (!m_botdata->GetBot()) return RETURN_NO_ACTION_ERROR;
 
 	// (un)Shapeshifting is considered one step closer so will return true (and have the bot wait a bit for the GCD)
-	if (TREE_OF_LIFE > 0 && !m_bot->HasAura(TREE_OF_LIFE, EFFECT_INDEX_0))
-		if (CastSpell(TREE_OF_LIFE, m_bot))
+	if (TREE_OF_LIFE > 0 && !m_botdata->GetBot()->HasAura(TREE_OF_LIFE, EFFECT_INDEX_0))
+		if (CastSpell(TREE_OF_LIFE, m_botdata->GetBot()))
 			return RETURN_CONTINUE;
 
-	if (m_bot->HasAura(CAT_FORM, EFFECT_INDEX_0))
+	if (m_botdata->GetBot()->HasAura(CAT_FORM, EFFECT_INDEX_0))
 	{
-		m_bot->RemoveAurasDueToSpell(CAT_FORM_1);
-		//GetAI()->TellMaster("FormClearCat");
+		m_botdata->GetBot()->RemoveAurasDueToSpell(CAT_FORM_1);
+		//m_botdata->GetAI()->TellMaster("FormClearCat");
 		return RETURN_CONTINUE;
 	}
-	if (m_bot->HasAura(BEAR_FORM, EFFECT_INDEX_0))
+	if (m_botdata->GetBot()->HasAura(BEAR_FORM, EFFECT_INDEX_0))
 	{
-		m_bot->RemoveAurasDueToSpell(BEAR_FORM_1);
-		//GetAI()->TellMaster("FormClearBear");
+		m_botdata->GetBot()->RemoveAurasDueToSpell(BEAR_FORM_1);
+		//m_botdata->GetAI()->TellMaster("FormClearBear");
 		return RETURN_CONTINUE;
 	}
-	if (m_bot->HasAura(DIRE_BEAR_FORM, EFFECT_INDEX_0))
+	if (m_botdata->GetBot()->HasAura(DIRE_BEAR_FORM, EFFECT_INDEX_0))
 	{
-		m_bot->RemoveAurasDueToSpell(DIRE_BEAR_FORM_1);
-		//GetAI()->TellMaster("FormClearDireBear");
+		m_botdata->GetBot()->RemoveAurasDueToSpell(DIRE_BEAR_FORM_1);
+		//m_botdata->GetAI()->TellMaster("FormClearDireBear");
 		return RETURN_CONTINUE;
 	}
 	// spellcasting form, but disables healing spells so it's got to go
-	if (m_bot->HasAura(MOONKIN_FORM, EFFECT_INDEX_0))
+	if (m_botdata->GetBot()->HasAura(MOONKIN_FORM, EFFECT_INDEX_0))
 	{
-		m_bot->RemoveAurasDueToSpell(MOONKIN_FORM_1);
-		//GetAI()->TellMaster("FormClearMoonkin");
+		m_botdata->GetBot()->RemoveAurasDueToSpell(MOONKIN_FORM_1);
+		//m_botdata->GetAI()->TellMaster("FormClearMoonkin");
 		return RETURN_CONTINUE;
 	}
 
@@ -146,20 +158,20 @@ CombatManeuverReturns PlayerbotDruidAI::DoFirstCombatManeuverPVP(Unit* /*pTarget
 
 CombatManeuverReturns PlayerbotDruidAI::DoNextCombatManeuverPVE(Unit* pTarget)
 {
-    if (!GetAI())  return RETURN_NO_ACTION_ERROR;
-    if (!m_bot) return RETURN_NO_ACTION_ERROR;
+    if (!m_botdata->GetAI())  return RETURN_NO_ACTION_ERROR;
+    if (!m_botdata->GetBot()) return RETURN_NO_ACTION_ERROR;
 
-    //uint32 masterHP = GetMaster()->GetHealth() * 100 / GetMaster()->GetMaxHealth();
+    //uint32 masterHP = m_botdata->GetMaster()->GetHealth() * 100 / m_botdata->GetMaster()->GetMaxHealth();
 
-    uint32 spec = m_bot->GetSpec();
+    uint32 spec = m_botdata->GetBot()->GetSpec();
     if (spec == 0) // default to spellcasting or healing for healer
-        spec = (PlayerbotAI::ORDERS_HEAL & GetAI()->GetCombatOrder() ? DRUID_SPEC_RESTORATION : DRUID_SPEC_BALANCE);
+        spec = (PlayerbotAI::ORDERS_HEAL & m_botdata->GetAI()->GetCombatOrder() ? DRUID_SPEC_RESTORATION : DRUID_SPEC_BALANCE);
 
     // Make sure healer stays put, don't even melee (aggro) if in range.
-    if (GetAI()->IsHealer() && GetAI()->GetCombatStyle() != PlayerbotAI::COMBAT_RANGED)
-        GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_RANGED);
-    else if (!GetAI()->IsHealer() && GetAI()->GetCombatStyle() != PlayerbotAI::COMBAT_MELEE)
-        GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_MELEE);
+    if (m_botdata->GetAI()->IsHealer() && m_botdata->GetAI()->GetCombatStyle() != PlayerbotAI::COMBAT_RANGED)
+        m_botdata->GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_RANGED);
+    else if (!m_botdata->GetAI()->IsHealer() && m_botdata->GetAI()->GetCombatStyle() != PlayerbotAI::COMBAT_MELEE)
+        m_botdata->GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_MELEE);
 
     //Unit* pVictim = pTarget->getVictim();
     uint32 BEAR = (DIRE_BEAR_FORM > 0 ? DIRE_BEAR_FORM : BEAR_FORM);
@@ -183,57 +195,57 @@ CombatManeuverReturns PlayerbotDruidAI::DoNextCombatManeuverPVE(Unit* pTarget)
     }
 
     //Used to determine if this bot is highest on threat
-    Unit *newTarget = GetAI()->FindAttacker((PlayerbotAI::ATTACKERINFOTYPE) (PlayerbotAI::AIT_VICTIMSELF | PlayerbotAI::AIT_HIGHESTTHREAT), m_bot);
+    Unit *newTarget = m_botdata->GetAI()->FindAttacker((PlayerbotAI::ATTACKERINFOTYPE) (PlayerbotAI::AIT_VICTIMSELF | PlayerbotAI::AIT_HIGHESTTHREAT), m_botdata->GetBot());
     if (newTarget) // TODO: && party has a tank
     {
-        if (HealPlayer(m_bot) == RETURN_CONTINUE)
+        if (HealPlayer(m_botdata->GetBot()) == RETURN_CONTINUE)
             return RETURN_CONTINUE;
 
         // TODO: Heal tank
 
         // We have aggro, don't need to heal self or tank, wait for aggro to subside
-        //if (GetAI()->IsHealer()) // Commented out: not necessary because of below. Leave code here in case below ever changes.
+        //if (m_botdata->GetAI()->IsHealer()) // Commented out: not necessary because of below. Leave code here in case below ever changes.
         //    return RETURN_NO_ACTION_OK;
 
         // We have no shoot spell; Assume auto-attack is on
         return RETURN_NO_ACTION_OK;
     }
 
-    if (GetAI()->IsHealer())
+    if (m_botdata->GetAI()->IsHealer())
        return DoNextManeuver_Heal(pTarget);
 
     switch (spec)
     {
         case DRUID_SPEC_FERAL:
-            if (BEAR > 0 && m_bot->HasAura(BEAR))
+            if (BEAR > 0 && m_botdata->GetBot()->HasAura(BEAR))
                 return _DoNextPVECombatManeuverBear(pTarget);
-            if (CAT_FORM > 0 && m_bot->HasAura(CAT_FORM))
+            if (CAT_FORM > 0 && m_botdata->GetBot()->HasAura(CAT_FORM))
                 return _DoNextPVECombatManeuverCat(pTarget);
             // NO break - failover to DRUID_SPEC_BALANCE
 
         case DRUID_SPEC_RESTORATION: // There is no Resto DAMAGE rotation. If you insist, go Balance...
         case DRUID_SPEC_BALANCE:
-            if (m_bot->HasAura(BEAR) || m_bot->HasAura(CAT_FORM) || m_bot->HasAura(TREE_OF_LIFE))
+            if (m_botdata->GetBot()->HasAura(BEAR) || m_botdata->GetBot()->HasAura(CAT_FORM) || m_botdata->GetBot()->HasAura(TREE_OF_LIFE))
                 return RETURN_NO_ACTION_UNKNOWN; // Didn't shift out of inappropriate form
 
             return _DoNextPVECombatManeuverSpellDPS(pTarget);
 
         /*if (BASH > 0 && !pTarget->HasAura(BASH, EFFECT_INDEX_0) && DruidSpellCombat < 5 && CastSpell(BASH, pTarget))
             return RETURN_CONTINUE;
-        if (CHALLENGING_ROAR > 0 && pVictim != m_bot && !pTarget->HasAura(CHALLENGING_ROAR, EFFECT_INDEX_0) && !pTarget->HasAura(GROWL, EFFECT_INDEX_0) && CastSpell(CHALLENGING_ROAR, pTarget))
+        if (CHALLENGING_ROAR > 0 && pVictim != m_botdata->GetBot() && !pTarget->HasAura(CHALLENGING_ROAR, EFFECT_INDEX_0) && !pTarget->HasAura(GROWL, EFFECT_INDEX_0) && CastSpell(CHALLENGING_ROAR, pTarget))
             return RETURN_CONTINUE;
         if (ROOTS > 0 && !pTarget->HasAura(ROOTS, EFFECT_INDEX_0) && CastSpell(ROOTS, pTarget))
             return RETURN_CONTINUE;
-        if (HURRICANE > 0 && ai->In_Reach(target,HURRICANE) && GetAI()->GetAttackerCount() >= 5 && CastSpell(HURRICANE, pTarget))
+        if (HURRICANE > 0 && ai->In_Reach(target,HURRICANE) && m_botdata->GetAI()->GetAttackerCount() >= 5 && CastSpell(HURRICANE, pTarget))
         {
-            GetAI()->SetIgnoreUpdateTime(10);
+            m_botdata->GetAI()->SetIgnoreUpdateTime(10);
             return RETURN_CONTINUE;
         }
-        if (STARFALL > 0 && ai->In_Reach(target,STARFALL) && !m_bot->HasAura(STARFALL, EFFECT_INDEX_0) && GetAI()->GetAttackerCount() >= 3 && CastSpell(STARFALL, pTarget))
+        if (STARFALL > 0 && ai->In_Reach(target,STARFALL) && !m_botdata->GetBot()->HasAura(STARFALL, EFFECT_INDEX_0) && m_botdata->GetAI()->GetAttackerCount() >= 3 && CastSpell(STARFALL, pTarget))
             return RETURN_CONTINUE;
-        if (BARKSKIN > 0 && pVictim == m_bot && GetAI()->GetHealthPercent() < 75 && !m_bot->HasAura(BARKSKIN, EFFECT_INDEX_0) && CastSpell(BARKSKIN, m_bot))
+        if (BARKSKIN > 0 && pVictim == m_botdata->GetBot() && m_botdata->GetAI()->GetHealthPercent() < 75 && !m_botdata->GetBot()->HasAura(BARKSKIN, EFFECT_INDEX_0) && CastSpell(BARKSKIN, m_botdata->GetBot()))
             return RETURN_CONTINUE;
-        if (INNERVATE > 0 && ai->In_Reach(m_bot,INNERVATE) && !m_bot->HasAura(INNERVATE, EFFECT_INDEX_0) && CastSpell(INNERVATE, m_bot))
+        if (INNERVATE > 0 && ai->In_Reach(m_botdata->GetBot(),INNERVATE) && !m_botdata->GetBot()->HasAura(INNERVATE, EFFECT_INDEX_0) && CastSpell(INNERVATE, m_botdata->GetBot()))
             return RETURN_CONTINUE;
         */
     }
@@ -243,7 +255,7 @@ CombatManeuverReturns PlayerbotDruidAI::DoNextCombatManeuverPVE(Unit* pTarget)
 
 CombatManeuverReturns PlayerbotDruidAI::DoNextCombatManeuverPVP(Unit* pTarget)
 {
-    if (GetAI()->CastSpell(MOONFIRE))
+    if (m_botdata->GetAI()->CastSpell(MOONFIRE))
         return RETURN_CONTINUE;
 
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
@@ -251,35 +263,35 @@ CombatManeuverReturns PlayerbotDruidAI::DoNextCombatManeuverPVP(Unit* pTarget)
 
 CombatManeuverReturns PlayerbotDruidAI::_DoNextPVECombatManeuverBear(Unit* pTarget)
 {
-    if (!GetAI())  return RETURN_NO_ACTION_ERROR;
-    if (!m_bot) return RETURN_NO_ACTION_ERROR;
+    if (!m_botdata->GetAI())  return RETURN_NO_ACTION_ERROR;
+    if (!m_botdata->GetBot()) return RETURN_NO_ACTION_ERROR;
 
-    if (!m_bot->HasAura( (DIRE_BEAR_FORM > 0 ? DIRE_BEAR_FORM : BEAR_FORM) )) return RETURN_NO_ACTION_ERROR;
+    if (!m_botdata->GetBot()->HasAura( (DIRE_BEAR_FORM > 0 ? DIRE_BEAR_FORM : BEAR_FORM) )) return RETURN_NO_ACTION_ERROR;
 
     // Used to determine if this bot is highest on threat
-    Unit* newTarget = GetAI()->FindAttacker((PlayerbotAI::ATTACKERINFOTYPE) (PlayerbotAI::AIT_VICTIMSELF | PlayerbotAI::AIT_HIGHESTTHREAT), m_bot);
+    Unit* newTarget = m_botdata->GetAI()->FindAttacker((PlayerbotAI::ATTACKERINFOTYPE) (PlayerbotAI::AIT_VICTIMSELF | PlayerbotAI::AIT_HIGHESTTHREAT), m_botdata->GetBot());
     Unit* pVictim = pTarget->getVictim();
 
     // Face enemy, make sure you're attacking
-    if (!m_bot->HasInArc(M_PI_F, pTarget))
+    if (!m_botdata->GetBot()->HasInArc(M_PI_F, pTarget))
     {
-        m_bot->SetFacingTo(m_bot->GetAngle(pTarget));
+        m_botdata->GetBot()->SetFacingTo(m_botdata->GetBot()->GetAngle(pTarget));
         if (pVictim)
             pVictim->Attack(pTarget, true);
     }
 
-    if (PlayerbotAI::ORDERS_TANK & GetAI()->GetCombatOrder() && !newTarget && GROWL > 0 && m_bot->IsSpellReady(GROWL))
+    if (PlayerbotAI::ORDERS_TANK & m_botdata->GetAI()->GetCombatOrder() && !newTarget && GROWL > 0 && m_botdata->GetBot()->IsSpellReady(GROWL))
         if (CastSpell(GROWL, pTarget))
             return RETURN_CONTINUE;
 
-    if (FAERIE_FIRE_FERAL > 0 && GetAI()->In_Reach(pTarget,FAERIE_FIRE_FERAL) && !pTarget->HasAura(FAERIE_FIRE_FERAL, EFFECT_INDEX_0))
+    if (FAERIE_FIRE_FERAL > 0 && m_botdata->GetAI()->In_Reach(pTarget,FAERIE_FIRE_FERAL) && !pTarget->HasAura(FAERIE_FIRE_FERAL, EFFECT_INDEX_0))
         if (CastSpell(FAERIE_FIRE_FERAL, pTarget))
             return RETURN_CONTINUE;
 
-    if (SWIPE > 0 && GetAI()->In_Reach(pTarget,SWIPE) && GetAI()->GetAttackerCount() >= 2 && CastSpell(SWIPE, pTarget))
+    if (SWIPE > 0 && m_botdata->GetAI()->In_Reach(pTarget,SWIPE) && m_botdata->GetAI()->GetAttackerCount() >= 2 && CastSpell(SWIPE, pTarget))
         return RETURN_CONTINUE;
 
-    if (ENRAGE > 0 && m_bot->IsSpellReady(ENRAGE) && CastSpell(ENRAGE, m_bot))
+    if (ENRAGE > 0 && m_botdata->GetBot()->IsSpellReady(ENRAGE) && CastSpell(ENRAGE, m_botdata->GetBot()))
         return RETURN_CONTINUE;
 
     if (DEMORALIZING_ROAR > 0 && !pTarget->HasAura(DEMORALIZING_ROAR, EFFECT_INDEX_0) && CastSpell(DEMORALIZING_ROAR, pTarget))
@@ -299,28 +311,28 @@ CombatManeuverReturns PlayerbotDruidAI::_DoNextPVECombatManeuverBear(Unit* pTarg
 
 CombatManeuverReturns PlayerbotDruidAI::_DoNextPVECombatManeuverCat(Unit* pTarget)
 {
-    if (!GetAI())  return RETURN_NO_ACTION_ERROR;
-    if (!m_bot) return RETURN_NO_ACTION_ERROR;
+    if (!m_botdata->GetAI())  return RETURN_NO_ACTION_ERROR;
+    if (!m_botdata->GetBot()) return RETURN_NO_ACTION_ERROR;
 
-    if (!m_bot->HasAura(CAT_FORM)) return RETURN_NO_ACTION_UNKNOWN;
+    if (!m_botdata->GetBot()->HasAura(CAT_FORM)) return RETURN_NO_ACTION_UNKNOWN;
 
     //Used to determine if this bot is highest on threat
-    Unit *newTarget = GetAI()->FindAttacker((PlayerbotAI::ATTACKERINFOTYPE) (PlayerbotAI::AIT_VICTIMSELF | PlayerbotAI::AIT_HIGHESTTHREAT), m_bot);
+    Unit *newTarget = m_botdata->GetAI()->FindAttacker((PlayerbotAI::ATTACKERINFOTYPE) (PlayerbotAI::AIT_VICTIMSELF | PlayerbotAI::AIT_HIGHESTTHREAT), m_botdata->GetBot());
     Unit* pVictim = pTarget->getVictim();
 
     // Face enemy, make sure you're attacking
-    if (!m_bot->HasInArc(M_PI_F, pTarget))
+    if (!m_botdata->GetBot()->HasInArc(M_PI_F, pTarget))
     {
-        m_bot->SetFacingTo(m_bot->GetAngle(pTarget));
+        m_botdata->GetBot()->SetFacingTo(m_botdata->GetBot()->GetAngle(pTarget));
         if (pVictim)
             pVictim->Attack(pTarget, true);
     }
 
     // Attempt to do a finishing move
-    if (m_bot->GetComboPoints() >= 5)
+    if (m_botdata->GetBot()->GetComboPoints() >= 5)
     {
         // 25 Energy
-        if (SAVAGE_ROAR > 0 && !m_bot->HasAura(SAVAGE_ROAR))
+        if (SAVAGE_ROAR > 0 && !m_botdata->GetBot()->HasAura(SAVAGE_ROAR))
         {
             if (CastSpell(SAVAGE_ROAR, pTarget))
                 return RETURN_CONTINUE;
@@ -339,13 +351,13 @@ CombatManeuverReturns PlayerbotDruidAI::_DoNextPVECombatManeuverCat(Unit* pTarge
         }
     } // End 5 ComboPoints
 
-    if (newTarget && COWER > 0 && m_bot->IsSpellReady(COWER) && CastSpell(COWER, pTarget))
+    if (newTarget && COWER > 0 && m_botdata->GetBot()->IsSpellReady(COWER) && CastSpell(COWER, pTarget))
         return RETURN_CONTINUE;
 
-    if (FAERIE_FIRE_FERAL > 0 && GetAI()->In_Reach(pTarget,FAERIE_FIRE_FERAL) && !pTarget->HasAura(FAERIE_FIRE_FERAL, EFFECT_INDEX_0) && CastSpell(FAERIE_FIRE_FERAL, pTarget))
+    if (FAERIE_FIRE_FERAL > 0 && m_botdata->GetAI()->In_Reach(pTarget,FAERIE_FIRE_FERAL) && !pTarget->HasAura(FAERIE_FIRE_FERAL, EFFECT_INDEX_0) && CastSpell(FAERIE_FIRE_FERAL, pTarget))
         return RETURN_CONTINUE;
 
-    if (TIGERS_FURY > 0 && m_bot->IsSpellReady(TIGERS_FURY) && CastSpell(TIGERS_FURY))
+    if (TIGERS_FURY > 0 && m_botdata->GetBot()->IsSpellReady(TIGERS_FURY) && CastSpell(TIGERS_FURY))
         return RETURN_CONTINUE;
 
     if (MANGLE_CAT > 0 && !pTarget->HasAura(MANGLE_CAT) && CastSpell(MANGLE_CAT))
@@ -362,42 +374,42 @@ CombatManeuverReturns PlayerbotDruidAI::_DoNextPVECombatManeuverCat(Unit* pTarge
 
 CombatManeuverReturns PlayerbotDruidAI::_DoNextPVECombatManeuverSpellDPS(Unit* pTarget)
 {
-    if (!GetAI())  return RETURN_NO_ACTION_ERROR;
-    if (!m_bot) return RETURN_NO_ACTION_ERROR;
+    if (!m_botdata->GetAI())  return RETURN_NO_ACTION_ERROR;
+    if (!m_botdata->GetBot()) return RETURN_NO_ACTION_ERROR;
 
     uint32 NATURE = (STARFIRE > 0 ? STARFIRE : WRATH);
 
-    if (FAERIE_FIRE > 0 && GetAI()->In_Reach(pTarget,FAERIE_FIRE) && !pTarget->HasAura(FAERIE_FIRE, EFFECT_INDEX_0) && CastSpell(FAERIE_FIRE, pTarget))
+    if (FAERIE_FIRE > 0 && m_botdata->GetAI()->In_Reach(pTarget,FAERIE_FIRE) && !pTarget->HasAura(FAERIE_FIRE, EFFECT_INDEX_0) && CastSpell(FAERIE_FIRE, pTarget))
         return RETURN_CONTINUE;
 
-    if (MOONFIRE > 0 && GetAI()->In_Reach(pTarget,MOONFIRE) && !pTarget->HasAura(MOONFIRE, EFFECT_INDEX_0) && CastSpell(MOONFIRE, pTarget))
+    if (MOONFIRE > 0 && m_botdata->GetAI()->In_Reach(pTarget,MOONFIRE) && !pTarget->HasAura(MOONFIRE, EFFECT_INDEX_0) && CastSpell(MOONFIRE, pTarget))
         return RETURN_CONTINUE;
 
-    if (INSECT_SWARM > 0 && GetAI()->In_Reach(pTarget,INSECT_SWARM) && !pTarget->HasAura(INSECT_SWARM, EFFECT_INDEX_0) && CastSpell(INSECT_SWARM, pTarget))
-        return RETURN_CONTINUE;
-
-    // TODO: Doesn't work, I can't seem to nail the aura/effect index that would make this work properly
-    if (ECLIPSE_SOLAR > 0 && WRATH > 0 && GetAI()->In_Reach(pTarget,WRATH) && m_bot->HasAura(ECLIPSE_SOLAR) && CastSpell(WRATH, pTarget))
+    if (INSECT_SWARM > 0 && m_botdata->GetAI()->In_Reach(pTarget,INSECT_SWARM) && !pTarget->HasAura(INSECT_SWARM, EFFECT_INDEX_0) && CastSpell(INSECT_SWARM, pTarget))
         return RETURN_CONTINUE;
 
     // TODO: Doesn't work, I can't seem to nail the aura/effect index that would make this work properly
-    if (ECLIPSE_LUNAR > 0 && GetAI()->In_Reach(pTarget,STARFIRE) && STARFIRE > 0 && m_bot->HasAura(ECLIPSE_LUNAR) && CastSpell(STARFIRE, pTarget))
+    if (ECLIPSE_SOLAR > 0 && WRATH > 0 && m_botdata->GetAI()->In_Reach(pTarget,WRATH) && m_botdata->GetBot()->HasAura(ECLIPSE_SOLAR) && CastSpell(WRATH, pTarget))
         return RETURN_CONTINUE;
 
-    if (FORCE_OF_NATURE > 0 && GetAI()->In_Reach(pTarget,FORCE_OF_NATURE) && CastSpell(FORCE_OF_NATURE))
+    // TODO: Doesn't work, I can't seem to nail the aura/effect index that would make this work properly
+    if (ECLIPSE_LUNAR > 0 && m_botdata->GetAI()->In_Reach(pTarget,STARFIRE) && STARFIRE > 0 && m_botdata->GetBot()->HasAura(ECLIPSE_LUNAR) && CastSpell(STARFIRE, pTarget))
+        return RETURN_CONTINUE;
+
+    if (FORCE_OF_NATURE > 0 && m_botdata->GetAI()->In_Reach(pTarget,FORCE_OF_NATURE) && CastSpell(FORCE_OF_NATURE))
         return RETURN_CONTINUE;
 
     if (NATURE > 0 && CastSpell(NATURE, pTarget))
         return RETURN_CONTINUE;
 
     // Face enemy, make sure you're attacking
-    if (!m_bot->HasInArc(M_PI_F, pTarget))
+    if (!m_botdata->GetBot()->HasInArc(M_PI_F, pTarget))
     {
-        m_bot->SetFacingTo(m_bot->GetAngle(pTarget));
-        if (GetAI()->GetCombatStyle() == PlayerbotAI::COMBAT_MELEE)
-            m_bot->Attack(pTarget, true);
+        m_botdata->GetBot()->SetFacingTo(m_botdata->GetBot()->GetAngle(pTarget));
+        if (m_botdata->GetAI()->GetCombatStyle() == PlayerbotAI::COMBAT_MELEE)
+            m_botdata->GetBot()->Attack(pTarget, true);
         else
-            m_bot->AttackStop();
+            m_botdata->GetBot()->AttackStop();
     }
 
     return RETURN_NO_ACTION_UNKNOWN;
@@ -412,24 +424,24 @@ CombatManeuverReturns PlayerbotDruidAI::HealPlayer(Player* target)
 
     if (!target->isAlive())
     {
-        if (m_bot->isInCombat())
+        if (m_botdata->GetBot()->isInCombat())
         {
             // TODO: Add check for cooldown
-            if (REBIRTH && GetAI()->In_Reach(target,REBIRTH) && GetAI()->CastSpell(REBIRTH, *target))
+            if (REBIRTH && m_botdata->GetAI()->In_Reach(target,REBIRTH) && m_botdata->GetAI()->CastSpell(REBIRTH, *target))
             {
                 std::string msg = "Resurrecting ";
                 msg += target->GetName();
-                m_bot->Say(msg, LANG_UNIVERSAL);
+                m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
                 return RETURN_CONTINUE;
             }
         }
         else
         {
-            if (REVIVE && GetAI()->In_Reach(target,REVIVE) && GetAI()->CastSpell(REVIVE, *target))
+            if (REVIVE && m_botdata->GetAI()->In_Reach(target,REVIVE) && m_botdata->GetAI()->CastSpell(REVIVE, *target))
             {
                 std::string msg = "Resurrecting ";
                 msg += target->GetName();
-                m_bot->Say(msg, LANG_UNIVERSAL);
+                m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
                 return RETURN_CONTINUE;
             }
         }
@@ -437,7 +449,7 @@ CombatManeuverReturns PlayerbotDruidAI::HealPlayer(Player* target)
     }
 
     //If spell exists and orders say we should be dispelling
-    if ((REMOVE_CURSE > 0 || ABOLISH_POISON > 0) && (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_NODISPEL) == 0)
+    if ((REMOVE_CURSE > 0 || ABOLISH_POISON > 0) && (m_botdata->GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_NODISPEL) == 0)
     {
         //This does something important(lol)
         uint32 dispelMask  = GetDispellMask(DISPEL_CURSE);
@@ -478,33 +490,33 @@ CombatManeuverReturns PlayerbotDruidAI::HealPlayer(Player* target)
         return RETURN_NO_ACTION_OK;
 
     // Reset form if needed
-    if (!m_bot->HasAura(TREE_OF_LIFE) || TREE_OF_LIFE == 0)
+    if (!m_botdata->GetBot()->HasAura(TREE_OF_LIFE) || TREE_OF_LIFE == 0)
         GoBuffForm(GetPlayerBot());
 
     // Start heals. Do lowest HP checks at the top
     if (hp < 30)
     {
         // TODO: Use in conjunction with Nature's Swiftness
-        if (HEALING_TOUCH > 0 && GetAI()->In_Reach(target,HEALING_TOUCH) && (NOURISH == 0 /*|| CastSpell(NATURES_SWIFTNESS)*/ ) && CastSpell(HEALING_TOUCH, target))
+        if (HEALING_TOUCH > 0 && m_botdata->GetAI()->In_Reach(target,HEALING_TOUCH) && (NOURISH == 0 /*|| CastSpell(NATURES_SWIFTNESS)*/ ) && CastSpell(HEALING_TOUCH, target))
             return RETURN_CONTINUE;
 
-        if (NOURISH > 0 && GetAI()->In_Reach(target,NOURISH) && CastSpell(NOURISH, target))
+        if (NOURISH > 0 && m_botdata->GetAI()->In_Reach(target,NOURISH) && CastSpell(NOURISH, target))
             return RETURN_CONTINUE;
     }
 
-    if (hp < 45 && WILD_GROWTH > 0 && GetAI()->In_Reach(target,WILD_GROWTH) && !target->HasAura(WILD_GROWTH) && CastSpell(WILD_GROWTH, target))
+    if (hp < 45 && WILD_GROWTH > 0 && m_botdata->GetAI()->In_Reach(target,WILD_GROWTH) && !target->HasAura(WILD_GROWTH) && CastSpell(WILD_GROWTH, target))
         return RETURN_CONTINUE;
 
-    if (hp < 50 && SWIFTMEND > 0 && GetAI()->In_Reach(target,SWIFTMEND) && (target->HasAura(REJUVENATION) || target->HasAura(REGROWTH)) && CastSpell(SWIFTMEND, target))
+    if (hp < 50 && SWIFTMEND > 0 && m_botdata->GetAI()->In_Reach(target,SWIFTMEND) && (target->HasAura(REJUVENATION) || target->HasAura(REGROWTH)) && CastSpell(SWIFTMEND, target))
         return RETURN_CONTINUE;
 
-    if (hp < 60 && REGROWTH > 0 && GetAI()->In_Reach(target,REGROWTH) && !target->HasAura(REGROWTH) && CastSpell(REGROWTH, target))
+    if (hp < 60 && REGROWTH > 0 && m_botdata->GetAI()->In_Reach(target,REGROWTH) && !target->HasAura(REGROWTH) && CastSpell(REGROWTH, target))
         return RETURN_CONTINUE;
 
-    if (hp < 65 && LIFEBLOOM > 0 && GetAI()->In_Reach(target,LIFEBLOOM) && !target->HasAura(LIFEBLOOM) && CastSpell(LIFEBLOOM, target))
+    if (hp < 65 && LIFEBLOOM > 0 && m_botdata->GetAI()->In_Reach(target,LIFEBLOOM) && !target->HasAura(LIFEBLOOM) && CastSpell(LIFEBLOOM, target))
         return RETURN_CONTINUE;
 
-    if (hp < 90 && REJUVENATION > 0 && GetAI()->In_Reach(target,REJUVENATION) && !target->HasAura(REJUVENATION) && CastSpell(REJUVENATION, target))
+    if (hp < 90 && REJUVENATION > 0 && m_botdata->GetAI()->In_Reach(target,REJUVENATION) && !target->HasAura(REJUVENATION) && CastSpell(REJUVENATION, target))
         return RETURN_CONTINUE;
 
     return RETURN_NO_ACTION_UNKNOWN;
@@ -517,15 +529,15 @@ CombatManeuverReturns PlayerbotDruidAI::HealPlayer(Player* target)
 */
 uint8 PlayerbotDruidAI::CheckForms()
 {
-    if (!GetAI())  return RETURN_FAIL;
-    if (!m_bot) return RETURN_FAIL;
+    if (!m_botdata->GetAI())  return RETURN_FAIL;
+    if (!m_botdata->GetBot()) return RETURN_FAIL;
 
-    uint32 spec = m_bot->GetSpec();
+    uint32 spec = m_botdata->GetBot()->GetSpec();
     uint32 BEAR = (DIRE_BEAR_FORM > 0 ? DIRE_BEAR_FORM : BEAR_FORM);
 
     if (spec == DRUID_SPEC_BALANCE)
     {
-        if (m_bot->HasAura(MOONKIN_FORM))
+        if (m_botdata->GetBot()->HasAura(MOONKIN_FORM))
             return RETURN_OK_NOCHANGE;
 
         if (!MOONKIN_FORM)
@@ -540,15 +552,15 @@ uint8 PlayerbotDruidAI::CheckForms()
     if (spec == DRUID_SPEC_FERAL)
     {
         // Use Bear form only if we are told we're a tank and have thorns up
-        if (GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_TANK)
+        if (m_botdata->GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_TANK)
         {
-            if (m_bot->HasAura(BEAR))
+            if (m_botdata->GetBot()->HasAura(BEAR))
                 return RETURN_OK_NOCHANGE;
 
             if (!BEAR)
                 return RETURN_OK_CANNOTSHIFT;
 
-            if (!m_bot->HasAura(THORNS))
+            if (!m_botdata->GetBot()->HasAura(THORNS))
                 return RETURN_FAIL_WAITINGONSELFBUFF;
 
             if (CastSpell(BEAR))
@@ -560,7 +572,7 @@ uint8 PlayerbotDruidAI::CheckForms()
         {
             if (CAT_FORM > 0)
             {
-                if (m_bot->HasAura(CAT_FORM))
+                if (m_botdata->GetBot()->HasAura(CAT_FORM))
                     return RETURN_OK_NOCHANGE;
 
                 if (CastSpell(CAT_FORM))
@@ -571,7 +583,7 @@ uint8 PlayerbotDruidAI::CheckForms()
 
             if (BEAR > 0)
             {
-                if (m_bot->HasAura(BEAR))
+                if (m_botdata->GetBot()->HasAura(BEAR))
                     return RETURN_OK_NOCHANGE;
 
                 if (CastSpell(BEAR))
@@ -586,7 +598,7 @@ uint8 PlayerbotDruidAI::CheckForms()
 
     if (spec == DRUID_SPEC_RESTORATION)
     {
-        if (m_bot->HasAura(TREE_OF_LIFE))
+        if (m_botdata->GetBot()->HasAura(TREE_OF_LIFE))
             return RETURN_OK_NOCHANGE;
 
         if (!TREE_OF_LIFE)
@@ -604,17 +616,17 @@ uint8 PlayerbotDruidAI::CheckForms()
 
 void PlayerbotDruidAI::DoNonCombatActions()
 {
-    if (!GetAI())   return;
-    if (!m_bot)  return;
+    if (!m_botdata->GetAI())   return;
+    if (!m_botdata->GetBot())  return;
 
-    if (!m_bot->isAlive() || m_bot->IsInDuel()) return;
+    if (!m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel()) return;
 
     // Revive
     if (HealPlayer(GetResurrectionTarget()) & RETURN_CONTINUE)
         return;
 
     // Heal
-    if (GetAI()->IsHealer())
+    if (m_botdata->GetAI()->IsHealer())
     {
         if (HealPlayer(GetHealTarget()) & RETURN_CONTINUE)
             return;// RETURN_CONTINUE;
@@ -623,20 +635,20 @@ void PlayerbotDruidAI::DoNonCombatActions()
     {
         // Is this desirable? Debatable.
         // TODO: In a group/raid with a healer you'd want this bot to focus on DPS (it's not specced/geared for healing either)
-        if (HealPlayer(m_bot) & RETURN_CONTINUE)
+        if (HealPlayer(m_botdata->GetBot()) & RETURN_CONTINUE)
             return;// RETURN_CONTINUE;
     }
 
     // Buff group
     // the check for group targets is performed by NeedGroupBuff (if group is found for bots by the function)
-    if (NeedGroupBuff(GIFT_OF_THE_WILD, MARK_OF_THE_WILD) && GetAI()->HasSpellReagents(GIFT_OF_THE_WILD))
+    if (NeedGroupBuff(GIFT_OF_THE_WILD, MARK_OF_THE_WILD) && m_botdata->GetAI()->HasSpellReagents(GIFT_OF_THE_WILD))
     {
-        if (Buff(&PlayerbotDruidAI::BuffHelper, GIFT_OF_THE_WILD) & RETURN_CONTINUE)
+        if (Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, GIFT_OF_THE_WILD) & RETURN_CONTINUE)
             return;
     }
-    else if (Buff(&PlayerbotDruidAI::BuffHelper, MARK_OF_THE_WILD) & RETURN_CONTINUE)
+    else if (Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, MARK_OF_THE_WILD) & RETURN_CONTINUE)
         return;
-    if (Buff(&PlayerbotDruidAI::BuffHelper, THORNS, (m_bot->GetGroup() ? JOB_TANK : JOB_ALL)) & RETURN_CONTINUE)
+    if (Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, THORNS, (m_botdata->GetBot()->GetGroup() ? JOB_TANK : JOB_ALL)) & RETURN_CONTINUE)
         return;
 
     // Return to fighting form AFTER reviving, healing, buffing
@@ -646,26 +658,26 @@ void PlayerbotDruidAI::DoNonCombatActions()
     if (EatDrinkBandage())
         return;
 
-    if (INNERVATE && GetAI()->In_Reach(m_bot,INNERVATE) && !m_bot->HasAura(INNERVATE) && GetAI()->GetManaPercent() <= 20 && CastSpell(INNERVATE, m_bot))
+    if (INNERVATE && m_botdata->GetAI()->In_Reach(m_botdata->GetBot(),INNERVATE) && !m_botdata->GetBot()->HasAura(INNERVATE) && m_botdata->GetAI()->GetManaPercent() <= 20 && CastSpell(INNERVATE, m_botdata->GetBot()))
         return;
 } // end DoNonCombatActions
 
-bool PlayerbotDruidAI::BuffHelper(PlayerbotAI* ai, uint32 spellId, Unit* target)
+CombatManeuverReturns PlayerbotDruidAI::BuffHelper(uint32 spellId, Unit* target)
 {
     //DEBUG_LOG("..Druid_BuffHelper to the rescue!");
-    if (!ai)          return false;
-    if (spellId == 0) return false;
-    if (!target)      return false;
+    if (spellId == 0) return RETURN_NO_ACTION_ERROR;
+    if (!target)      return RETURN_NO_ACTION_INVALIDTARGET;
     //DEBUG_LOG("..Sanity checks passed");
+	
 
-    if (ai->Buff(spellId, target, &(PlayerbotDruidAI::GoBuffForm)))
+    if (m_botdata->GetAI()->Buff(spellId, target, (m_ActionBeforeCast)))
     {
         //DEBUG_LOG("..Buffed");
-        return true;
+        return RETURN_CONTINUE;
     }
 
     //DEBUG_LOG("..Not buffing anyone!");
-    return false;
+    return RETURN_CONTINUE;
 }
 
 void PlayerbotDruidAI::GoBuffForm(Player* self)
@@ -704,13 +716,13 @@ bool PlayerbotDruidAI::Pull()
 
 bool PlayerbotDruidAI::CastHoTOnTank()
 {
-    if (!GetAI()) return false;
+    if (!m_botdata->GetAI()) return false;
 
-    if ((PlayerbotAI::ORDERS_HEAL & GetAI()->GetCombatOrder()) == 0) return false;
+    if ((PlayerbotAI::ORDERS_HEAL & m_botdata->GetAI()->GetCombatOrder()) == 0) return false;
 
     // Druid HoTs: Rejuvenation, Regrowth, Tranquility (channeled, AoE), Lifebloom, and Wild Growth
     if (REJUVENATION > 0)
-        return (RETURN_CONTINUE & CastSpell(REJUVENATION, GetAI()->GetGroupTank()));
+        return (RETURN_CONTINUE & CastSpell(REJUVENATION, m_botdata->GetAI()->GetGroupTank()));
 
     return false;
 }

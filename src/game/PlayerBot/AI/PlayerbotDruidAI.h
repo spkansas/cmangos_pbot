@@ -126,6 +126,8 @@ public:
 
 private:
 
+	bool PlayerbotClassAI_ClassAIInit(void);
+
 	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
 	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
 
@@ -154,7 +156,7 @@ private:
     CombatManeuverReturns HealPlayer (Player* target);
     Player* GetHealTarget() { return PlayerbotClassAI::GetHealTarget(); }
 
-    static bool BuffHelper(PlayerbotAI* ai, uint32 spellId, Unit *target);
+    CombatManeuverReturns BuffHelper(uint32 spellId, Unit *target);
     // Callback method to reset shapeshift forms blocking buffs and heals
     static void GoBuffForm(Player *self);
 

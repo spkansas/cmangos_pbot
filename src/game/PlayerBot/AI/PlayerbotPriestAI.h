@@ -28,6 +28,92 @@ enum
     SPELL_DISCIPLINE
 };
 
+enum TalentsPriest  // 0x010
+{
+	PRIEST_UNBREAKABLE_WILL = 342,   // TabId = 201, Tab = 0, Row = 0, Column = 1
+	PRIEST_TWIN_DISCIPLINES = 1898,  // TabId = 201, Tab = 0, Row = 0, Column = 2
+	PRIEST_SILENT_RESOLVE = 352,   // TabId = 201, Tab = 0, Row = 1, Column = 0
+	PRIEST_IMPROVED_INNER_FIRE = 346,   // TabId = 201, Tab = 0, Row = 1, Column = 1
+	PRIEST_IMPROVED_POWER_WORD_FORTITUDE = 344,   // TabId = 201, Tab = 0, Row = 1, Column = 2
+	PRIEST_MARTYRDOM = 321,   // TabId = 201, Tab = 0, Row = 1, Column = 3
+	PRIEST_MEDITATION = 347,   // TabId = 201, Tab = 0, Row = 2, Column = 0
+	PRIEST_INNER_FOCUS = 348,   // TabId = 201, Tab = 0, Row = 2, Column = 1
+	PRIEST_IMPROVED_POWER_WORD_SHIELD = 343,   // TabId = 201, Tab = 0, Row = 2, Column = 2
+	PRIEST_ABSOLUTION = 1769,  // TabId = 201, Tab = 0, Row = 3, Column = 0
+	PRIEST_MENTAL_AGILITY = 341,   // TabId = 201, Tab = 0, Row = 3, Column = 1
+	PRIEST_IMPROVED_MANA_BURN = 350,   // TabId = 201, Tab = 0, Row = 3, Column = 3
+	PRIEST_REFLECTIVE_SHIELD = 2268,  // TabId = 201, Tab = 0, Row = 4, Column = 0
+	PRIEST_MENTAL_STRENGTH = 1201,  // TabId = 201, Tab = 0, Row = 4, Column = 1
+	PRIEST_SOUL_WARDING = 351,   // TabId = 201, Tab = 0, Row = 4, Column = 2
+	PRIEST_FOCUSED_POWER = 1771,  // TabId = 201, Tab = 0, Row = 5, Column = 0
+	PRIEST_ENLIGHTENMENT = 1772,  // TabId = 201, Tab = 0, Row = 5, Column = 2
+	PRIEST_FOCUSED_WILL = 1858,  // TabId = 201, Tab = 0, Row = 6, Column = 0
+	PRIEST_POWER_INFUSION = 322,   // TabId = 201, Tab = 0, Row = 6, Column = 1
+	PRIEST_IMPROVED_FLASH_HEAL = 1773,  // TabId = 201, Tab = 0, Row = 6, Column = 2
+	PRIEST_RENEWED_HOPE = 2235,  // TabId = 201, Tab = 0, Row = 7, Column = 0
+	PRIEST_RAPTURE = 1896,  // TabId = 201, Tab = 0, Row = 7, Column = 1
+	PRIEST_ASPIRATION = 1894,  // TabId = 201, Tab = 0, Row = 7, Column = 2
+	PRIEST_DIVINE_AEGIS = 1895,  // TabId = 201, Tab = 0, Row = 8, Column = 0
+	PRIEST_PAIN_SUPPRESSION = 1774,  // TabId = 201, Tab = 0, Row = 8, Column = 1
+	PRIEST_GRACE = 1901,  // TabId = 201, Tab = 0, Row = 8, Column = 2
+	PRIEST_BORROWED_TIME = 1202,  // TabId = 201, Tab = 0, Row = 9, Column = 1
+	PRIEST_PENANCE = 1897,  // TabId = 201, Tab = 0, Row = 10, Column = 1
+	PRIEST_HEALING_FOCUS = 410,   // TabId = 202, Tab = 1, Row = 0, Column = 0
+	PRIEST_IMPROVED_RENEW = 406,   // TabId = 202, Tab = 1, Row = 0, Column = 1
+	PRIEST_HOLY_SPECIALIZATION = 401,   // TabId = 202, Tab = 1, Row = 0, Column = 2
+	PRIEST_SPELL_WARDING = 411,   // TabId = 202, Tab = 1, Row = 1, Column = 1
+	PRIEST_DIVINE_FURY = 1181,  // TabId = 202, Tab = 1, Row = 1, Column = 2
+	PRIEST_DESPERATE_PRAYER = 442,   // TabId = 202, Tab = 1, Row = 2, Column = 0
+	PRIEST_BLESSED_RECOVERY = 1636,  // TabId = 202, Tab = 1, Row = 2, Column = 1
+	PRIEST_INSPIRATION = 361,   // TabId = 202, Tab = 1, Row = 2, Column = 3
+	PRIEST_HOLY_REACH = 1635,  // TabId = 202, Tab = 1, Row = 3, Column = 0
+	PRIEST_IMPROVED_HEALIN = 408,   // TabId = 202, Tab = 1, Row = 3, Column = 1
+	PRIEST_SEARING_LIGHT = 403,   // TabId = 202, Tab = 1, Row = 3, Column = 2
+	PRIEST_HEALING_PRAYERS = 413,   // TabId = 202, Tab = 1, Row = 4, Column = 0
+	PRIEST_SPIRIT_OF_REDEMPTION = 1561,  // TabId = 202, Tab = 1, Row = 4, Column = 1
+	PRIEST_SPIRITUAL_GUIDANCE = 402,   // TabId = 202, Tab = 1, Row = 4, Column = 2
+	PRIEST_SURGE_OF_LIGHT = 1766,  // TabId = 202, Tab = 1, Row = 5, Column = 0
+	PRIEST_SPIRITUAL_HEALING = 404,   // TabId = 202, Tab = 1, Row = 5, Column = 2
+	PRIEST_HOLY_CONCENTRATION = 1768,  // TabId = 202, Tab = 1, Row = 6, Column = 0
+	PRIEST_LIGHTWELL = 1637,  // TabId = 202, Tab = 1, Row = 6, Column = 1
+	PRIEST_BLESSED_RESILIENCE = 1765,  // TabId = 202, Tab = 1, Row = 6, Column = 2
+	PRIEST_BODY_AND_SOUL = 2279,  // TabId = 202, Tab = 1, Row = 7, Column = 0
+	PRIEST_EMPOWERED_HEALING = 1767,  // TabId = 202, Tab = 1, Row = 7, Column = 1
+	PRIEST_SERENDIPITY = 1904,  // TabId = 202, Tab = 1, Row = 7, Column = 2
+	PRIEST_EMPOWERED_RENEW = 1902,  // TabId = 202, Tab = 1, Row = 8, Column = 0
+	PRIEST_CIRCLE_OF_HEALING = 1815,  // TabId = 202, Tab = 1, Row = 8, Column = 1
+	PRIEST_TEST_OF_FAITH = 1903,  // TabId = 202, Tab = 1, Row = 8, Column = 2
+	PRIEST_DIVINE_PROVIDENCE = 1905,  // TabId = 202, Tab = 1, Row = 9, Column = 1
+	PRIEST_GUARDIAN_SPIRIT = 1911,  // TabId = 202, Tab = 1, Row = 10, Column = 1
+	PRIEST_SPIRIT_TAP = 465,   // TabId = 203, Tab = 2, Row = 0, Column = 0
+	PRIEST_IMPROVED_SPIRIT_TAP = 2027,  // TabId = 203, Tab = 2, Row = 0, Column = 1
+	PRIEST_DARKNESS = 462,   // TabId = 203, Tab = 2, Row = 0, Column = 2
+	PRIEST_SHADOW_AFFINITY = 466,   // TabId = 203, Tab = 2, Row = 1, Column = 0
+	PRIEST_IMPROVED_SHADOW_WORD_PAIN = 482,   // TabId = 203, Tab = 2, Row = 1, Column = 1
+	PRIEST_SHADOW_FOCUS = 463,   // TabId = 203, Tab = 2, Row = 1, Column = 2
+	PRIEST_IMPROVED_PSYCHIC_SCREAM = 542,   // TabId = 203, Tab = 2, Row = 2, Column = 0
+	PRIEST_IMPROVED_MIND_BLAST = 481,   // TabId = 203, Tab = 2, Row = 2, Column = 1
+	PRIEST_MIND_FLAY = 501,   // TabId = 203, Tab = 2, Row = 2, Column = 2
+	PRIEST_VEILED_SHADOWS = 483,   // TabId = 203, Tab = 2, Row = 3, Column = 1
+	PRIEST_SHADOW_REACH = 881,   // TabId = 203, Tab = 2, Row = 3, Column = 2
+	PRIEST_SHADOW_WEAVING = 461,   // TabId = 203, Tab = 2, Row = 3, Column = 3
+	PRIEST_SILENCE = 541,   // TabId = 203, Tab = 2, Row = 4, Column = 0
+	PRIEST_VAMPIRIC_EMBRACE = 484,   // TabId = 203, Tab = 2, Row = 4, Column = 1
+	PRIEST_IMPROVED_VAMPIRIC_EMBRACE = 1638,  // TabId = 203, Tab = 2, Row = 4, Column = 2
+	PRIEST_FOCUSED_MIND = 1777,  // TabId = 203, Tab = 2, Row = 4, Column = 3
+	PRIEST_MIND_MELT = 1781,  // TabId = 203, Tab = 2, Row = 5, Column = 0
+	PRIEST_IMPROVED_DEVOURING_PLAGUE = 2267,  // TabId = 203, Tab = 2, Row = 5, Column = 2
+	PRIEST_SHADOWFORM = 521,   // TabId = 203, Tab = 2, Row = 6, Column = 1
+	PRIEST_SHADOW_POWER = 1778,  // TabId = 203, Tab = 2, Row = 6, Column = 2
+	PRIEST_IMPROVED_SHADOWFORM = 1906,  // TabId = 203, Tab = 2, Row = 7, Column = 0
+	PRIEST_MISERY = 1816,  // TabId = 203, Tab = 2, Row = 7, Column = 2
+	PRIEST_PSYCHIC_HORROR = 1908,  // TabId = 203, Tab = 2, Row = 8, Column = 0
+	PRIEST_VAMPIRIC_TOUCH = 1779,  // TabId = 203, Tab = 2, Row = 8, Column = 1
+	PRIEST_PAIN_AND_SUFFERING = 1909,  // TabId = 203, Tab = 2, Row = 8, Column = 2
+	PRIEST_TWISTED_FAITH = 1907,  // TabId = 203, Tab = 2, Row = 9, Column = 2
+	PRIEST_DISPERSION = 1910   // TabId = 203, Tab = 2, Row = 10, Column = 1
+};
+
 enum PriestSpells
 {
     ABOLISH_DISEASE_1               = 552,
@@ -97,26 +183,28 @@ public:
     PlayerbotPriestAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
     virtual ~PlayerbotPriestAI();
 
-    // all combat actions go here
- //   CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
- //   CombatManeuverReturns DoManeuver_Combat_Exec(Unit* pTarget);
-
     // all non combat actions go here, ex buffs, heals, rezzes
-    void DoNonCombatActions();
+ //   void DoNonCombatActions();
 
     // Utility Functions
     bool CastHoTOnTank();
 
+protected:
+
+    bool PBotNewAI(void) { return true; }
+
 private:
 
-	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
+    bool PlayerbotClassAI_ClassAIInit(void);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
+
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
 
 	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
 
@@ -125,14 +213,27 @@ private:
     CombatManeuverReturns DoFirstCombatManeuverPVP(Unit* pTarget);
     CombatManeuverReturns DoNextCombatManeuverPVP(Unit* pTarget);
 
+private:
+
+    CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
+//	CombatManeuverReturns DoManeuver_Idle_SummonPet(void);
+
+//  CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player* target);
+//  CombatManeuverReturns DoManeuver_Idle_Rez(Player* target);
+//  CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player* target);
+
+    CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player* target);
+//  CombatManeuverReturns DoManeuver_Idle_Heal(Player* target);
+//  CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player* target);
+
+private:
+
     CombatManeuverReturns CastSpell(uint32 nextAction, Unit *pTarget = nullptr) { return CastSpellWand(nextAction, pTarget, SHOOT); }
 
     // Heals the target based off its hps
     CombatManeuverReturns HealPlayer(Player* target);
-
-    static bool BuffHelper(PlayerbotAI* ai, uint32 spellId, Unit *target);
-
-    // holy
+	
+	// holy
     uint32 BINDING_HEAL,
            CIRCLE_OF_HEALING,
            CLEARCASTING,

@@ -104,9 +104,6 @@ public:
 //    CombatManeuverReturns DoManeuver_Combat_Exec(Unit* pTarget);
     bool Pull();
 
-    // all non combat actions go here, ex buffs, heals, rezzes
-    void DoNonCombatActions();
-
     //Buff/rebuff shouts
     void CheckShouts();
 
@@ -115,21 +112,37 @@ public:
 
 private:
 
-	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
+	bool PlayerbotClassAI_ClassAIInit(void);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
+
+//	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
 
 	CombatManeuverReturns DoFirstCombatManeuverPVE(Unit* pTarget);
     CombatManeuverReturns DoNextCombatManeuverPVE(Unit* pTarget);
     CombatManeuverReturns DoFirstCombatManeuverPVP(Unit* pTarget);
     CombatManeuverReturns DoNextCombatManeuverPVP(Unit* pTarget);
+
+private:
+
+	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
+
+//  CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player* target);
+//  CombatManeuverReturns DoManeuver_Idle_Rez(Player* target);
+//  CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player* target);
+
+	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player* target);
+//  CombatManeuverReturns DoManeuver_Idle_Heal(Player* target);
+//  CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player* target);
+
+private:
 
     // ARMS
     uint32 BATTLE_STANCE,
