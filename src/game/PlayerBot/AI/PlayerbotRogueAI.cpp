@@ -77,6 +77,8 @@ bool PlayerbotRogueAI::PlayerbotClassAI_ClassAIInit(void)
     BERSERKING               = m_botdata->GetAI()->initSpell(BERSERKING_ALL); // troll
     WILL_OF_THE_FORSAKEN     = m_botdata->GetAI()->initSpell(WILL_OF_THE_FORSAKEN_ALL); // undead
 
+	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_DPS_MELEE);
+
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
 

@@ -91,6 +91,17 @@ bool PlayerbotMageAI::PlayerbotClassAI_ClassAIInit(void)
     BERSERKING              = m_botdata->GetAI()->initSpell(BERSERKING_ALL); // troll
     WILL_OF_THE_FORSAKEN    = m_botdata->GetAI()->initSpell(WILL_OF_THE_FORSAKEN_ALL); // undead
 
+	buff_list[0] = new PlayerbotBufflist;
+
+	buff_list[0]->spellid.group				= { ARCANE_BRILLIANCE };					// Group Version
+	buff_list[0]->spellid.single			= { ARCANE_INTELLECT };						// Standard Version
+	buff_list[0]->spellid.single_enhanced	= { NULL };									// Greater Version
+	buff_list[0]->spec_required				= { NULL };									// Spec Required to cast
+	buff_list[0]->caston_non_bot_all		= { PBOT_CLASS_ALL };						// Non-bot buff control
+	buff_list[0]->caston_pet_all			= { PBOT_PET_ALL };							// Pet buff control
+
+	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_DPS_CASTER);
+
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
 
@@ -261,85 +272,55 @@ CombatManeuverReturns PlayerbotMageAI::DoNextCombatManeuverPVP(Unit* pTarget)
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
 }
 
-void PlayerbotMageAI::DoNonCombatActions()
+CombatManeuverReturns PlayerbotMageAI::DoManeuver_Idle_Cure_Detremental(void)
 {
-    Player* master = m_botdata->GetMaster();
+	// Remove curse on group members
+	if (Player* pCursedTarget = GetDispelTarget(DISPEL_CURSE))
+	{
+		if (MAGE_REMOVE_CURSE > 0 && CastSpell(MAGE_REMOVE_CURSE, pCursedTarget))
+			return RETURN_CONTINUE;
+	}
 
-    if (!m_botdata->GetBot() || !master)
-        return;
+	return RETURN_NO_ACTION_OK;
+}
 
-    // Remove curse on group members
-    if (Player* pCursedTarget = GetDispelTarget(DISPEL_CURSE))
-    {
-        if (MAGE_REMOVE_CURSE > 0 && CastSpell(MAGE_REMOVE_CURSE, pCursedTarget))
-            return;
-    }
 
-    // Buff armor
-    if (MOLTEN_ARMOR)
-    {
-        if (m_botdata->GetAI()->SelfBuff(MOLTEN_ARMOR))
-            return;
-    }
-    else if (MAGE_ARMOR)
-    {
-        if (m_botdata->GetAI()->SelfBuff(MAGE_ARMOR))
-            return;
-    }
-    else if (ICE_ARMOR)
-    {
-        if (m_botdata->GetAI()->SelfBuff(ICE_ARMOR))
-            return;
-    }
-    else if (FROST_ARMOR)
-        if (m_botdata->GetAI()->SelfBuff(FROST_ARMOR))
-            return;
-
-    // buff group
-    // the check for group targets is performed by NeedGroupBuff (if group is found for bots by the function)
-    if (NeedGroupBuff(ARCANE_BRILLIANCE, ARCANE_INTELLECT) && m_botdata->GetAI()->HasSpellReagents(ARCANE_BRILLIANCE))
-    {
-        if (Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, ARCANE_BRILLIANCE) & RETURN_CONTINUE)
-            return;
-    }
-    else if (Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, ARCANE_INTELLECT, JOB_MANAONLY) & RETURN_CONTINUE)
-        return;
-    //DEBUG_LOG("Didn't buff. Woot!");
-
-    // TODO: The beauty of a mage is not only its ability to supply itself with water, but to share its water
-    // So, conjure at *least* 1.25 stacks, ready to trade a stack and still have some left for self
-    if (m_botdata->GetAI()->FindDrink() == nullptr && CONJURE_WATER && m_botdata->GetAI()->CastSpell(CONJURE_WATER, *m_botdata->GetBot()))
-    {
-        m_botdata->GetAI()->TellMaster("I'm conjuring some water.");
-        m_botdata->GetAI()->SetIgnoreUpdateTime(3);
-        return;
-    }
-    if (m_botdata->GetAI()->FindFood() == nullptr && CONJURE_FOOD && m_botdata->GetAI()->CastSpell(CONJURE_FOOD, *m_botdata->GetBot()))
-    {
-        m_botdata->GetAI()->TellMaster("I'm conjuring some food.");
-        m_botdata->GetAI()->SetIgnoreUpdateTime(3);
-        return;
-    }
-
-    if (EatDrinkBandage())
-        return;
-} // end DoNonCombatActions
-
-// TODO: this and priest's BuffHelper are identical and thus could probably go in PlayerbotClassAI.cpp somewhere
-bool PlayerbotMageAI::BuffHelper(PlayerbotAI* ai, uint32 spellId, Unit *target)
+CombatManeuverReturns PlayerbotMageAI::DoManeuver_Idle_SelfBuff(void)
 {
-    //DEBUG_LOG("..Mage_BuffHelper to the rescue!");
-    if (!ai)          return false;
-    if (spellId == 0) return false;
-    if (!target)      return false;
-    //DEBUG_LOG("..Sanity checks passed");
+	// Buff armor
+	if (MOLTEN_ARMOR)
+	{
+		if (m_botdata->GetAI()->SelfBuff(MOLTEN_ARMOR))
+			return RETURN_CONTINUE;
+	}
+	else if (MAGE_ARMOR)
+	{
+		if (m_botdata->GetAI()->SelfBuff(MAGE_ARMOR))
+			return RETURN_CONTINUE;
+	}
+	else if (ICE_ARMOR)
+	{
+		if (m_botdata->GetAI()->SelfBuff(ICE_ARMOR))
+			return RETURN_CONTINUE;
+	}
+	else if (FROST_ARMOR)
+		if (m_botdata->GetAI()->SelfBuff(FROST_ARMOR))
+			return RETURN_CONTINUE;
+	
+	// TODO: The beauty of a mage is not only its ability to supply itself with water, but to share its water
+	// So, conjure at *least* 1.25 stacks, ready to trade a stack and still have some left for self
+	if (m_botdata->GetAI()->FindDrink() == nullptr && CONJURE_WATER && m_botdata->GetAI()->CastSpell(CONJURE_WATER, *m_botdata->GetBot()))
+	{
+		m_botdata->GetAI()->TellMaster("I'm conjuring some water.");
+		m_botdata->GetAI()->SetIgnoreUpdateTime(3);
+		return RETURN_CONTINUE;
+	}
+	if (m_botdata->GetAI()->FindFood() == nullptr && CONJURE_FOOD && m_botdata->GetAI()->CastSpell(CONJURE_FOOD, *m_botdata->GetBot()))
+	{
+		m_botdata->GetAI()->TellMaster("I'm conjuring some food.");
+		m_botdata->GetAI()->SetIgnoreUpdateTime(3);
+		return RETURN_CONTINUE;
+	}
 
-    if (ai->Buff(spellId, target))
-    {
-        //DEBUG_LOG("..Buffed");
-        return true;
-    }
-
-    //DEBUG_LOG("..Not buffing anyone!");
-    return false;
+	return RETURN_NO_ACTION_OK;
 }

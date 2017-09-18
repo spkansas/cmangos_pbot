@@ -129,6 +129,8 @@ bool PlayerbotShamanAI::PlayerbotClassAI_ClassAIInit(void)
     IMPROVED_ICY_TALONS     = m_botdata->GetAI()->initSpell(IMPROVED_ICY_TALONS_1);
     HORN_OF_WINTER          = m_botdata->GetAI()->initSpell(HORN_OF_WINTER_1);
 
+	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_HEAL);
+
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
 
@@ -394,19 +396,33 @@ void PlayerbotShamanAI::DropTotems()
         return RETURN_CONTINUE;*/
 }
 
-void PlayerbotShamanAI::CheckShields()
+CombatManeuverReturns PlayerbotShamanAI::CheckShields()
 {
-    if (!m_botdata->GetAI())  return;
-    if (!m_botdata->GetBot()) return;
+	CombatManeuverReturns ret_val = RETURN_NO_ACTION_OK;
 
-    uint32 spec = m_botdata->GetBot()->GetSpec();
+	if (m_botdata->GetSpec() == SHAMAN_SPEC_ENHANCEMENT && LIGHTNING_SHIELD > 0 && !m_botdata->GetBot()->HasAura(LIGHTNING_SHIELD, EFFECT_INDEX_0))
+	{
+		if (m_botdata->GetAI()->CastSpell(LIGHTNING_SHIELD, *m_botdata->GetBot()))
+		{
+			ret_val = RETURN_CONTINUE;
+		}
+	}
+	else if ((m_botdata->GetSpec() == SHAMAN_SPEC_ELEMENTAL || m_botdata->GetSpec() == SHAMAN_SPEC_RESTORATION) && WATER_SHIELD > 0 && !m_botdata->GetBot()->HasAura(WATER_SHIELD, EFFECT_INDEX_0))
+	{
+		if (m_botdata->GetAI()->CastSpell(WATER_SHIELD, *m_botdata->GetBot()))
+		{
+			ret_val = RETURN_CONTINUE;
+		}
+	}
+	else if (EARTH_SHIELD > 0 && !m_botdata->GetMaster()->HasAura(EARTH_SHIELD, EFFECT_INDEX_0))
+	{
+		if (m_botdata->GetAI()->CastSpell(EARTH_SHIELD, *(m_botdata->GetMaster())))
+		{
+			ret_val = RETURN_CONTINUE;
+		}
+	}
 
-    if (spec == SHAMAN_SPEC_ENHANCEMENT && LIGHTNING_SHIELD > 0 && !m_botdata->GetBot()->HasAura(LIGHTNING_SHIELD, EFFECT_INDEX_0))
-        m_botdata->GetAI()->CastSpell(LIGHTNING_SHIELD, *m_botdata->GetBot());
-    else if ((spec == SHAMAN_SPEC_ELEMENTAL || spec == SHAMAN_SPEC_RESTORATION) && WATER_SHIELD > 0 && !m_botdata->GetBot()->HasAura(WATER_SHIELD, EFFECT_INDEX_0))
-        m_botdata->GetAI()->CastSpell(WATER_SHIELD, *m_botdata->GetBot());
-    if (EARTH_SHIELD > 0 && !m_botdata->GetMaster()->HasAura(EARTH_SHIELD, EFFECT_INDEX_0))
-        m_botdata->GetAI()->CastSpell(EARTH_SHIELD, *(m_botdata->GetMaster()));
+	return ret_val;
 }
 
 void PlayerbotShamanAI::UseCooldowns()
@@ -414,7 +430,7 @@ void PlayerbotShamanAI::UseCooldowns()
     if (!m_botdata->GetAI())  return;
     if (!m_botdata->GetBot()) return;
 
-    uint32 spec = m_botdata->GetBot()->GetSpec();
+    uint32 spec = m_botdata->GetSpec();
 
     if (BLOODLUST > 0 && (!m_botdata->GetMaster()->HasAura(BLOODLUST, EFFECT_INDEX_0)) && m_botdata->GetAI()->CastSpell(BLOODLUST))
         return;
@@ -450,66 +466,69 @@ void PlayerbotShamanAI::UseCooldowns()
     }
 }
 
-void PlayerbotShamanAI::DoNonCombatActions()
+CombatManeuverReturns PlayerbotShamanAI::DoManeuver_Idle_SelfBuff(void)
 {
-    if (!m_botdata->GetAI())   return;
-    if (!m_botdata->GetBot())  return;
+	CombatManeuverReturns ret_val = CheckShields();
 
-    if (!m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel()) return;
+	if (ret_val != RETURN_CONTINUE && !(ret_val & RETURN_ANY_ERROR))
+	{
+		Item* weapon;
 
-    uint32 spec = m_botdata->GetBot()->GetSpec();
+		/*
+		// buff myself weapon
+		if (ROCKBITER_WEAPON > 0)
+		(!m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(ROCKBITER_WEAPON,*m_botdata->GetBot()) );
+		else if (EARTHLIVING_WEAPON > 0)
+		(!m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(WINDFURY_WEAPON,*m_botdata->GetBot()) );
+		else if (WINDFURY_WEAPON > 0)
+		(!m_botdata->GetBot()->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(WINDFURY_WEAPON,*m_botdata->GetBot()) );
+		else if (FLAMETONGUE_WEAPON > 0)
+		(!m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(FLAMETONGUE_WEAPON,*m_botdata->GetBot()) );
+		else if (FROSTBRAND_WEAPON > 0)
+		(!m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(FROSTBRAND_WEAPON,*m_botdata->GetBot()) );
+		*/
 
-    CheckShields();
-/*
-       // buff myself weapon
-       if (ROCKBITER_WEAPON > 0)
-            (!m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(ROCKBITER_WEAPON,*m_botdata->GetBot()) );
-       else if (EARTHLIVING_WEAPON > 0)
-            (!m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(WINDFURY_WEAPON,*m_botdata->GetBot()) );
-       else if (WINDFURY_WEAPON > 0)
-            (!m_botdata->GetBot()->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(WINDFURY_WEAPON,*m_botdata->GetBot()) );
-       else if (FLAMETONGUE_WEAPON > 0)
-            (!m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(FLAMETONGUE_WEAPON,*m_botdata->GetBot()) );
-       else if (FROSTBRAND_WEAPON > 0)
-            (!m_botdata->GetBot()->HasAura(FROSTBRAND_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(EARTHLIVING_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(WINDFURY_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(FLAMETONGUE_WEAPON, EFFECT_INDEX_0) && !m_botdata->GetBot()->HasAura(ROCKBITER_WEAPON, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(FROSTBRAND_WEAPON,*m_botdata->GetBot()) );
- */
-    // Mainhand
-    Item* weapon;
-    weapon = m_botdata->GetBot()->GetItemByPos(EQUIPMENT_SLOT_MAINHAND);
-    if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && spec == SHAMAN_SPEC_RESTORATION)
-        m_botdata->GetAI()->CastSpell(EARTHLIVING_WEAPON, *m_botdata->GetBot());
-    else if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && spec == SHAMAN_SPEC_ELEMENTAL)
-        m_botdata->GetAI()->CastSpell(FLAMETONGUE_WEAPON, *m_botdata->GetBot());
-    else if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && spec == SHAMAN_SPEC_ENHANCEMENT)
-        m_botdata->GetAI()->CastSpell(WINDFURY_WEAPON, *m_botdata->GetBot());
+		// Mainhand
+		weapon = m_botdata->GetBot()->GetItemByPos(EQUIPMENT_SLOT_MAINHAND);
 
-    //Offhand
-    weapon = m_botdata->GetBot()->GetItemByPos(EQUIPMENT_SLOT_OFFHAND);
-    if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && spec == SHAMAN_SPEC_ENHANCEMENT)
-        m_botdata->GetAI()->CastSpell(FLAMETONGUE_WEAPON, *m_botdata->GetBot());
+		if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && m_botdata->GetSpec() == SHAMAN_SPEC_RESTORATION)
+		{
+			if (m_botdata->GetAI()->CastSpell(EARTHLIVING_WEAPON, *m_botdata->GetBot()))
+			{
+				ret_val = RETURN_CONTINUE;
+			}
+		}
+		else if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && m_botdata->GetSpec() == SHAMAN_SPEC_ELEMENTAL)
+		{
+			if (m_botdata->GetAI()->CastSpell(FLAMETONGUE_WEAPON, *m_botdata->GetBot()))
+			{
+				ret_val = RETURN_CONTINUE;
+			}
+		}
+		else if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && m_botdata->GetSpec() == SHAMAN_SPEC_ENHANCEMENT)
+		{
+			if (m_botdata->GetAI()->CastSpell(WINDFURY_WEAPON, *m_botdata->GetBot()))
+			{
+				ret_val = RETURN_CONTINUE;
+			}
+		}
+		else
+		{
+			//Offhand
+			weapon = m_botdata->GetBot()->GetItemByPos(EQUIPMENT_SLOT_OFFHAND);
+			if (weapon && (weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0) && m_botdata->GetSpec() == SHAMAN_SPEC_ENHANCEMENT)
+			{
+				if (m_botdata->GetAI()->CastSpell(FLAMETONGUE_WEAPON, *m_botdata->GetBot()))
+				{
+					ret_val = RETURN_CONTINUE;
+				}
+			}
+		}
+	}
 
-    // Revive
-    if (HealPlayer(GetResurrectionTarget()) & RETURN_CONTINUE)
-        return;
+	return ret_val;
+}
 
-    // Heal
-    if (m_botdata->GetAI()->IsHealer())
-    {
-        if (HealPlayer(GetHealTarget()) & RETURN_CONTINUE)
-            return;// RETURN_CONTINUE;
-    }
-    else
-    {
-        // Is this desirable? Debatable.
-        // TODO: In a group/raid with a healer you'd want this bot to focus on DPS (it's not specced/geared for healing either)
-        if (HealPlayer(m_botdata->GetBot()) & RETURN_CONTINUE)
-            return;// RETURN_CONTINUE;
-    }
-
-    // hp/mana check
-    if (EatDrinkBandage())
-        return;
-} // end DoNonCombatActions
 
 bool PlayerbotShamanAI::CastHoTOnTank()
 {

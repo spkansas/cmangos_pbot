@@ -102,7 +102,31 @@ bool PlayerbotDruidAI::PlayerbotClassAI_ClassAIInit(void)
     ECLIPSE_SOLAR                 = m_botdata->GetAI()->initSpell(ECLIPSE_SOLAR_1);
     ECLIPSE_LUNAR                 = m_botdata->GetAI()->initSpell(ECLIPSE_LUNAR_1);
 
-    return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
+	m_botdata->SetRezSpell(REVIVE);
+
+	buff_list[0] = new PlayerbotBufflist;
+
+	buff_list[0]->spellid.group				= { GIFT_OF_THE_WILD };						// Group Version
+	buff_list[0]->spellid.single			= { MARK_OF_THE_WILD };						// Standard Version
+	buff_list[0]->spellid.single_enhanced	= { NULL };									// Greater Version
+	buff_list[0]->spec_required				= { NULL };									// Spec Required to cast
+	buff_list[0]->caston_non_bot_all		= { PBOT_CLASS_ALL };						// Non-bot buff control
+	buff_list[0]->caston_bot_role			= { BOT_ROLE::ROLE_ALL };					// Non-bot buff control
+	buff_list[0]->caston_pet_all			= { PBOT_PET_ALL };							// Pet buff control
+
+	buff_list[1] = new PlayerbotBufflist;
+
+	buff_list[1]->spellid.group				= { NULL };									// Group Version
+	buff_list[1]->spellid.single			= { THORNS };								// Standard Version
+	buff_list[1]->spellid.single_enhanced	= { NULL };									// Greater Version
+	buff_list[1]->spec_required				= { NULL };									// Spec Required to cast
+	buff_list[1]->caston_non_bot_all		= { PBOT_CLASS_TANK | PBOT_CLASS_DRUID };	// Non-bot buff control
+	buff_list[1]->caston_bot_role			= { BOT_ROLE::ROLE_TANK };					// Non-bot buff control
+	buff_list[1]->caston_pet_all			= { PBOT_PET_ALL };							// Pet buff control
+
+	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_HEAL);
+	
+	return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
 
 
@@ -141,6 +165,8 @@ CombatManeuverReturns PlayerbotDruidAI::DoNextManeuver_Heal_ClassSetup(Unit* pTa
 		//m_botdata->GetAI()->TellMaster("FormClearMoonkin");
 		return RETURN_CONTINUE;
 	}
+
+	m_botdata->SetRezSpell(REVIVE);
 
 	return RETURN_CONTINUE;
 }
@@ -422,32 +448,6 @@ CombatManeuverReturns PlayerbotDruidAI::HealPlayer(Player* target)
     if (r != RETURN_NO_ACTION_OK)
         return r;
 
-    if (!target->isAlive())
-    {
-        if (m_botdata->GetBot()->isInCombat())
-        {
-            // TODO: Add check for cooldown
-            if (REBIRTH && m_botdata->GetAI()->In_Reach(target,REBIRTH) && m_botdata->GetAI()->CastSpell(REBIRTH, *target))
-            {
-                std::string msg = "Resurrecting ";
-                msg += target->GetName();
-                m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
-                return RETURN_CONTINUE;
-            }
-        }
-        else
-        {
-            if (REVIVE && m_botdata->GetAI()->In_Reach(target,REVIVE) && m_botdata->GetAI()->CastSpell(REVIVE, *target))
-            {
-                std::string msg = "Resurrecting ";
-                msg += target->GetName();
-                m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
-                return RETURN_CONTINUE;
-            }
-        }
-        return RETURN_NO_ACTION_ERROR; // not error per se - possibly just OOM
-    }
-
     //If spell exists and orders say we should be dispelling
     if ((REMOVE_CURSE > 0 || ABOLISH_POISON > 0) && (m_botdata->GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_NODISPEL) == 0)
     {
@@ -529,9 +529,6 @@ CombatManeuverReturns PlayerbotDruidAI::HealPlayer(Player* target)
 */
 uint8 PlayerbotDruidAI::CheckForms()
 {
-    if (!m_botdata->GetAI())  return RETURN_FAIL;
-    if (!m_botdata->GetBot()) return RETURN_FAIL;
-
     uint32 spec = m_botdata->GetBot()->GetSpec();
     uint32 BEAR = (DIRE_BEAR_FORM > 0 ? DIRE_BEAR_FORM : BEAR_FORM);
 
@@ -614,53 +611,25 @@ uint8 PlayerbotDruidAI::CheckForms()
     return RETURN_FAIL;
 }
 
-void PlayerbotDruidAI::DoNonCombatActions()
+CombatManeuverReturns PlayerbotDruidAI::DoManeuver_Idle_SelfBuff(void)
 {
-    if (!m_botdata->GetAI())   return;
-    if (!m_botdata->GetBot())  return;
+	if (INNERVATE && m_botdata->GetAI()->In_Reach(m_botdata->GetBot(), INNERVATE) && !m_botdata->GetBot()->HasAura(INNERVATE) && m_botdata->GetAI()->GetManaPercent() <= 20 && CastSpell(INNERVATE, m_botdata->GetBot()))
+	{
+		return RETURN_CONTINUE;
+	}
 
-    if (!m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel()) return;
+	return RETURN_NO_ACTION_OK;
+}
 
-    // Revive
-    if (HealPlayer(GetResurrectionTarget()) & RETURN_CONTINUE)
-        return;
+CombatManeuverReturns PlayerbotDruidAI::DoManeuver_Idle_Forms_End(void)
+{
+	if (CheckForms() != RETURN_FAIL)
+	{
+		return RETURN_CONTINUE;
+	}
 
-    // Heal
-    if (m_botdata->GetAI()->IsHealer())
-    {
-        if (HealPlayer(GetHealTarget()) & RETURN_CONTINUE)
-            return;// RETURN_CONTINUE;
-    }
-    else
-    {
-        // Is this desirable? Debatable.
-        // TODO: In a group/raid with a healer you'd want this bot to focus on DPS (it's not specced/geared for healing either)
-        if (HealPlayer(m_botdata->GetBot()) & RETURN_CONTINUE)
-            return;// RETURN_CONTINUE;
-    }
-
-    // Buff group
-    // the check for group targets is performed by NeedGroupBuff (if group is found for bots by the function)
-    if (NeedGroupBuff(GIFT_OF_THE_WILD, MARK_OF_THE_WILD) && m_botdata->GetAI()->HasSpellReagents(GIFT_OF_THE_WILD))
-    {
-        if (Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, GIFT_OF_THE_WILD) & RETURN_CONTINUE)
-            return;
-    }
-    else if (Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, MARK_OF_THE_WILD) & RETURN_CONTINUE)
-        return;
-    if (Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, THORNS, (m_botdata->GetBot()->GetGroup() ? JOB_TANK : JOB_ALL)) & RETURN_CONTINUE)
-        return;
-
-    // Return to fighting form AFTER reviving, healing, buffing
-    CheckForms();
-
-    // hp/mana check
-    if (EatDrinkBandage())
-        return;
-
-    if (INNERVATE && m_botdata->GetAI()->In_Reach(m_botdata->GetBot(),INNERVATE) && !m_botdata->GetBot()->HasAura(INNERVATE) && m_botdata->GetAI()->GetManaPercent() <= 20 && CastSpell(INNERVATE, m_botdata->GetBot()))
-        return;
-} // end DoNonCombatActions
+	return RETURN_NO_ACTION_OK;
+}
 
 CombatManeuverReturns PlayerbotDruidAI::BuffHelper(uint32 spellId, Unit* target)
 {
@@ -726,3 +695,32 @@ bool PlayerbotDruidAI::CastHoTOnTank()
 
     return false;
 }
+
+
+/*
+if (!target->isAlive())
+{
+if (m_botdata->GetBot()->isInCombat())
+{
+// TODO: Add check for cooldown
+if (REBIRTH && m_botdata->GetAI()->In_Reach(target,REBIRTH) && m_botdata->GetAI()->CastSpell(REBIRTH, *target))
+{
+std::string msg = "Resurrecting ";
+msg += target->GetName();
+m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
+return RETURN_CONTINUE;
+}
+}
+else
+{
+if (REVIVE && m_botdata->GetAI()->In_Reach(target,REVIVE) && m_botdata->GetAI()->CastSpell(REVIVE, *target))
+{
+std::string msg = "Resurrecting ";
+msg += target->GetName();
+m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
+return RETURN_CONTINUE;
+}
+}
+return RETURN_NO_ACTION_ERROR; // not error per se - possibly just OOM
+}
+*/

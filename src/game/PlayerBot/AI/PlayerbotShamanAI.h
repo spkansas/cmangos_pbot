@@ -134,15 +134,12 @@ public:
     PlayerbotShamanAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
     virtual ~PlayerbotShamanAI();
 
-    // all combat actions go here
- //   CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
- //   CombatManeuverReturns DoManeuver_Combat_Exec(Unit* pTarget);
-
-    // all non combat actions go here, ex buffs, heals, rezzes
-    void DoNonCombatActions();
-
     // Utility Functions
     bool CastHoTOnTank();
+
+protected:
+
+	bool PBotNewAI(void) { return true; }
 
 private:
 
@@ -164,11 +161,38 @@ private:
     CombatManeuverReturns DoFirstCombatManeuverPVP(Unit* pTarget);
     CombatManeuverReturns DoNextCombatManeuverPVP(Unit* pTarget);
 
-    // Heals the target based off its hps
+private:
+
+//	CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Cure_Detremental(void);
+
+	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player *target);
+
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player *target);
+
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Prep(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Post(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
+
+private:
+// Heals the target based off its hps
     CombatManeuverReturns HealPlayer(Player* target);
     Player* GetHealTarget() { return PlayerbotClassAI::GetHealTarget(); }
     void DropTotems();
-    void CheckShields();
+	CombatManeuverReturns CheckShields(void);
     void UseCooldowns();
 
     // ENHANCEMENT

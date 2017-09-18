@@ -73,25 +73,32 @@ PlayerbotClassAI::PlayerbotClassAI(Player* const master, Player* const bot, Play
 
 PlayerbotClassAI::~PlayerbotClassAI() 
 {
+	for (int i = 0; i < 10; i++)
+	{
+		if (buff_list[i]) delete buff_list[i];
+		buff_list[i] = nullptr;
+	}
+
 	delete m_botdata;
 }
 
 bool PlayerbotClassAI::PlayerbotClassAI_ClassAIInit(void)
 {
-    RECENTLY_BANDAGED = 11196; // first aid check
-
+//	DEBUG_LOG("[PlayerbotClassAI::PlayerbotClassAI_ClassAIInit] - Entered");
     return true;
 }
 
 // Combat - Start
-
-CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Start_Class_Prep(Unit* pTarget)
+CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Start_Class_Prep(Unit *pTarget)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Start_Class_Prep] - Entered");
 	return RETURN_NO_ACTION_OK;
 }
 
-CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Start(Unit* pTarget)
+CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Start(Unit *pTarget)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Start] - Entered");
+
 	CombatManeuverReturns ret_val = DoManeuver_Combat_Start_Class_Prep(pTarget);
 
 	if (ret_val & RETURN_ANY_OK)
@@ -118,61 +125,76 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Start(Unit* pTarget)
 						m_botdata->GetAI()->Attack(m_botdata->GetAI()->GetCurrentTarget());
 
 						// While everyone else is waiting 2 second, we need to build up aggro, so don't return
+						ret_val = RETURN_CONTINUE;
 					}
 					else
 					{
 						// TODO: add check if target is ranged
-						return RETURN_NO_ACTION_OK; // wait for target to get nearer
+						ret_val = RETURN_NO_ACTION_OK; // wait for target to get nearer
 					}
 				}
 				else if (PlayerbotAI::ORDERS_HEAL & cmbt_orders)
 				{
-					return DoNextManeuver_Heal(pTarget);
+					ret_val = DoNextManeuver_Heal(pTarget);
 				}
 				else
 				{
-					return RETURN_NO_ACTION_OK; // wait it out
+					ret_val = RETURN_NO_ACTION_OK; // wait it out
 				}
 			}
 			else
 			{
 				// Bot has now waited, clear wait flag
 				m_botdata->GetAI()->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_TANKAGGRO);
+
+				ret_val = RETURN_NO_ACTION_OK;
 			}
 		}
 
-		if (cmbt_orders & PlayerbotAI::ORDERS_TEMP_WAIT_OOC)
+		if (ret_val & RETURN_ANY_OK)
 		{
-			if (m_WaitUntil > m_botdata->GetAI()->CurrentTime() && !m_botdata->GetAI()->IsGroupInCombat())
+			if (cmbt_orders & PlayerbotAI::ORDERS_TEMP_WAIT_OOC)
 			{
-				return RETURN_NO_ACTION_OK; // wait it out
+				// TODO: Logic works but ugly - change
+				if (m_WaitUntil > m_botdata->GetAI()->CurrentTime() && !m_botdata->GetAI()->IsGroupInCombat())
+				{
+					ret_val = RETURN_NO_ACTION_OK; // wait it out
+				}
+				else
+				{
+					m_botdata->GetAI()->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_OOC);
+					ret_val = RETURN_NO_ACTION_OK; 
+				}
 			}
-			else
+
+			if (ret_val & RETURN_ANY_OK)
 			{
-				m_botdata->GetAI()->ClearGroupCombatOrder(PlayerbotAI::ORDERS_TEMP_WAIT_OOC);
+				ret_val = DoManeuver_Combat_Start_Class_Post(pTarget);
 			}
 		}
-
-		return DoManeuver_Combat_Start_Class_Post(pTarget);
 	}
 
 	return ret_val;
 }
 
-CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Start_Class_Post(Unit* pTarget)
+CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Start_Class_Post(Unit *pTarget)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Start_Class_Post] - Entered");
 	return RETURN_NO_ACTION_OK;
 }
 
 // Combat - Move
 
-CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Move_Class_Prep(Unit* pTarget)
+CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Move_Class_Prep(Unit *pTarget)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Move_Class_Prep] - Entered");
 	return RETURN_CONTINUE;
 }
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Move(Unit *pTarget)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Move] - Entered");
+
 	CombatManeuverReturns ret_val = RETURN_NO_ACTION_ERROR;
 
 	if (m_botdata->GetAI()->m_targetCombat)
@@ -215,6 +237,7 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Move(Unit *pTarget)
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Move_Class_Post(Unit* pTarget)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Move_Class_Post] - Entered");
 	return RETURN_CONTINUE;
 }
 
@@ -222,11 +245,14 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Move_Class_Post(Unit* 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Exec_Class_Prep(Unit* pTarget)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Exec_Class_Prep] - Entered");
 	return RETURN_CONTINUE;
 }
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Exec(Unit *pTarget)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Exec] - Entered");
+
 	CombatManeuverReturns ret_val = DoManeuver_Combat_Exec_Class_Prep(pTarget);
 
 	if (ret_val & RETURN_ANY_OK)
@@ -252,6 +278,7 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Exec(Unit *pTarget)
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Exec_Class_Post(Unit* pTarget)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Exec_Class_Post] - Entered");
 	return RETURN_CONTINUE;
 }
 
@@ -259,24 +286,36 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Exec_Class_Post(Unit* 
 
 CombatManeuverReturns PlayerbotClassAI::DoNextManeuver_Heal_ClassSetup(Unit* pTarget)
 {
-	// The default for this is an error, as healing classes should have overridden this.
+	sLog.outError("[PlayerbotClassAI::DoNextManeuver_Heal_ClassSetup]: Warning: Base class function used rather than class specific function");
 	return RETURN_NO_ACTION_ERROR;
 }
 
 
-CombatManeuverReturns PlayerbotClassAI::DoFirstCombatManeuverPVE(Unit *) { return RETURN_NO_ACTION_OK; }
-CombatManeuverReturns PlayerbotClassAI::DoFirstCombatManeuverPVP(Unit *) { return RETURN_NO_ACTION_OK; }
+CombatManeuverReturns PlayerbotClassAI::DoFirstCombatManeuverPVE(Unit *pTarget)
+{
+//	DEBUG_LOG("[PlayerbotClassAI::DoFirstCombatManeuverPVE] - Entered");
+	return RETURN_NO_ACTION_OK; 
+}
+
+
+CombatManeuverReturns PlayerbotClassAI::DoFirstCombatManeuverPVP(Unit *pTarget)
+{ 
+//	DEBUG_LOG("[PlayerbotClassAI::DoFirstCombatManeuverPVE] - Entered");
+	return RETURN_NO_ACTION_OK; 
+}
 
 
 CombatManeuverReturns PlayerbotClassAI::DoNextManeuver_Heal(Unit* pTarget)
 {
+	//	DEBUG_LOG("[PlayerbotClassAI::DoNextManeuver_Heal] - Entered");
+
 	CombatManeuverReturns ret_val = DoNextManeuver_Heal_ClassSetup(pTarget);
 
 	if (ret_val == RETURN_CONTINUE)
 	{
 		ret_val = HealPlayer(GetHealTarget());
 
-		if (ret_val & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
+		if (ret_val & RETURN_ANY_OK)
 		{
 			return RETURN_CONTINUE;
 		}
@@ -285,12 +324,23 @@ CombatManeuverReturns PlayerbotClassAI::DoNextManeuver_Heal(Unit* pTarget)
 	return ret_val;
 }
 
-CombatManeuverReturns PlayerbotClassAI::DoNextCombatManeuverPVE(Unit *) { return RETURN_NO_ACTION_OK; }
-CombatManeuverReturns PlayerbotClassAI::DoNextCombatManeuverPVP(Unit *) { return RETURN_NO_ACTION_OK; }
+CombatManeuverReturns PlayerbotClassAI::DoNextCombatManeuverPVE(Unit *pTarget) 
+{
+//	DEBUG_LOG("[PlayerbotClassAI::DoNextCombatManeuverPVE] - Entered");
+	return RETURN_NO_ACTION_OK;
+}
+
+
+CombatManeuverReturns PlayerbotClassAI::DoNextCombatManeuverPVP(Unit *pTarget) 
+{
+//	DEBUG_LOG("[PlayerbotClassAI::DoNextCombatManeuverPVP] - Entered");
+	return RETURN_NO_ACTION_OK;
+}
+
 
 void PlayerbotClassAI::DoNonCombatActions()
 {
-//    CombatManeuverReturns ret_val;
+//	DEBUG_LOG("[PlayerbotClassAI::DoNonCombatActions] - Entered");
 
     if (!PBotNewAI())
     {
@@ -299,6 +349,9 @@ void PlayerbotClassAI::DoNonCombatActions()
     }
 
     if (!m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel()) return;
+
+	// Form control - Start of process
+	if (DoManeuver_Idle_Forms_Start() & RETURN_CONTINUE) return;
 
     // Self Buff
     if (DoManeuver_Idle_SelfBuff() & RETURN_CONTINUE) return;
@@ -314,7 +367,7 @@ void PlayerbotClassAI::DoNonCombatActions()
         }
     }
 
-    // Can this Bot Heal? 
+    // Healing 
     if (m_botdata->GetRoles() & BOT_ROLE::ROLE_HEAL)
     {
         Player *m_Player2Heal = (m_botdata->GetAI()->IsHealer() ? GetHealTarget() : m_botdata->GetBot());
@@ -326,26 +379,48 @@ void PlayerbotClassAI::DoNonCombatActions()
         }
     }
 
-	// Can this Bot Buff? 
+	// Group Buffing
 	if (m_botdata->GetRoles() & BOT_ROLE::ROLE_BUFF)
 	{
 		if (DoManeuver_Idle_Buff() & RETURN_CONTINUE) return;
 	}
 
-	// Pet
+	// Pet Management
 	if (DoManeuver_Idle_Pet_Summon() & RETURN_CONTINUE) return;
 
+	// Pet Healing
 	if (DoManeuver_Idle_Pet_BuffnHeal() & RETURN_CONTINUE) return;
 
 	if (EatDrinkBandage())  return;
 
+	// Form control - End of process
+	if (DoManeuver_Idle_Forms_End() & RETURN_CONTINUE) return;
+
     return;
+}
+
+
+CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Cure_Detremental(void)
+{
+	return RETURN_NO_ACTION_OK;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_SelfBuff(void)
 {
     return RETURN_NO_ACTION_OK;
+}
+
+
+CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Forms_Start(void)
+{
+	return RETURN_NO_ACTION_OK;
+}
+
+
+CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Forms_End(void)
+{
+	return RETURN_NO_ACTION_OK;
 }
 
 
@@ -446,34 +521,238 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff(void)
 
     if (ret_val & RETURN_ANY_OK)
     {
-		int i = 0;
+		ret_val = RETURN_NO_ACTION_OK;
 
-		while ((buff_array[i][0]) | (buff_array[i][1]))
+		for (int i = 0; ((i < 10) && (buff_list[i]) && (buff_list[i]->spellid.group) | (buff_list[i]->spellid.single)); i++)
 		{
-			m_botdata->GetAI()->TellMaster("while");
-
-			if (!buff_array[i][2] || (buff_array[i][2] && (m_botdata->GetSpec() == buff_array[i][2])))
+			if ((!buff_list[i]->spec_required) || (m_botdata->GetSpec() == buff_list[i]->spec_required))
 			{
-				m_botdata->GetAI()->TellMaster("1");
-				if (NeedGroupBuff(buff_array[i][0], buff_array[i][1]) && m_botdata->GetAI()->HasSpellReagents(buff_array[i][0]))
-				{
-					m_botdata->GetAI()->TellMaster("2");
+				uint8 numberOfGroupTargets = 0;
 
-					ret_val = Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, buff_array[i][0]);
+				if (buff_list[i]->spellid.group && m_botdata->GetBot()->GetGroup())
+				{
+					Group::MemberSlotList const& groupSlot = m_botdata->GetBot()->GetGroup()->GetMemberSlots();
+
+					for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+					{
+						Player *groupMember = sObjectMgr.GetPlayer(itr->guid);
+
+						if (!groupMember || !groupMember->isAlive() || groupMember->IsInDuel()) continue;
+
+						if (!groupMember->HasAura(buff_list[i]->spellid.group, EFFECT_INDEX_0))
+						{
+							if (!buff_list[i]->spellid.single && !buff_list[i]->spellid.single_enhanced)
+							{
+								// Here we have any group member that needs the group buff,
+								// and there are no single version of the buff.  So we simulate
+								// needing the group buff.
+								numberOfGroupTargets = 3;
+								break;
+							}
+							else if ((buff_list[i]->spellid.single && !groupMember->HasAura(buff_list[i]->spellid.single, EFFECT_INDEX_0)) &&
+								     (buff_list[i]->spellid.single_enhanced && !groupMember->HasAura(buff_list[i]->spellid.single_enhanced, EFFECT_INDEX_0)))
+							{
+								numberOfGroupTargets++;
+
+								if (numberOfGroupTargets > 2) break;
+							}
+						}
+
+						// Don't forget about pet
+						Pet * pet = groupMember->GetPet();
+
+						if (pet && !pet->HasAura(buff_list[i]->spellid.group, EFFECT_INDEX_0))
+						{
+							if (!buff_list[i]->spellid.single && !buff_list[i]->spellid.single_enhanced)
+							{
+								// Here we have any group member that needs the group buff,
+								// and there are no single version of the buff.  So we simulate
+								// needing the group buff.
+								numberOfGroupTargets = 3;
+								break;
+							}
+							else if ((buff_list[i]->spellid.single && !pet->HasAura(buff_list[i]->spellid.single, EFFECT_INDEX_0)) &&
+								     (buff_list[i]->spellid.single_enhanced && !pet->HasAura(buff_list[i]->spellid.single_enhanced, EFFECT_INDEX_0)))
+							{
+								numberOfGroupTargets++;
+
+								if (numberOfGroupTargets > 2) break;
+							}
+						}
+					}
+				}
+
+				if (numberOfGroupTargets > 2)
+				{
+					ret_val = (m_botdata->GetAI()->Buff(buff_list[i]->spellid.group, GetPlayerBot(), m_ActionBeforeCast) ? RETURN_CONTINUE : RETURN_NO_ACTION_OK);
 				}
 				else
 				{
-					m_botdata->GetAI()->TellMaster("4");
-					ret_val = Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, buff_array[i][1]);
+					// TODO:  This section needs to be re-written to support the enhanced and regants
+					uint32 spellId = (buff_list[i]->spellid.single_enhanced ? buff_list[i]->spellid.single_enhanced : buff_list[i]->spellid.single);
+
+					if (!spellId) 
+					{ 
+						sLog.outError("[PlayerbotClassAI::DoManeuver_Idle_Buff] - spellId is zero - setting RETURN_NO_ACTION_ERROR and breaking.");
+						ret_val = RETURN_NO_ACTION_ERROR;
+						break;
+					}
+
+					if (m_botdata->GetBot()->GetGroup())
+					{
+						DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Buff] - m_botdata->GetBot()->GetGroup()");
+						Group::MemberSlotList const& groupSlot = m_botdata->GetBot()->GetGroup()->GetMemberSlots();
+
+						for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+						{
+							Player *groupMember = sObjectMgr.GetPlayer(itr->guid);
+
+							if (!groupMember || !groupMember->isAlive() || groupMember->IsInDuel())
+							{
+								continue;
+							}
+							
+							DEBUG_LOG("[PlayerbotClassAI::Buff] - Preping to buff Group Member Pet.");
+
+							Pet* pet = groupMember->GetPet();
+
+							if (pet && buff_list[i]->CheckPet(pet->getPetType()))
+							{
+								// If pet is available and (any buff OR mana buff and pet is mana)
+								if (!pet->HasAuraType(SPELL_AURA_MOD_UNATTACKABLE) && !pet->HasAura(spellId, EFFECT_INDEX_0))
+								{
+									sLog.outError("[PlayerbotClassAI::Buff] - Buffing Group Member (%s) Pet (%s).", groupMember->GetName(), pet->GetName());
+
+									if (m_botdata->GetAI()->Buff(spellId, pet, m_ActionBeforeCast))
+									{
+										sLog.outError("[PlayerbotClassAI::Buff] - Buffed Pet - setting RETURN_CONTINUE and breaking loop.");
+										ret_val = RETURN_CONTINUE;
+										break;
+									}
+								}
+							}
+
+							DEBUG_LOG("[PlayerbotClassAI::Buff] - Preping to buff Group Member.");
+
+							// Check if group member has buff
+							if (!groupMember->HasAura(spellId, EFFECT_INDEX_0))
+							{
+								// Check if group member wants buff
+								if (groupMember->GetPlayerbotAI())
+								{
+									if (!(groupMember->GetPlayerbotAI()->GetClassAI()->m_botdata->GetRolePrimary() & buff_list[i]->caston_bot_role)) continue;
+								}
+								else
+								{
+									if (!buff_list[i]->CheckClass(groupMember->getClass())) continue;
+								}
+
+								sLog.outError("[PlayerbotClassAI::Buff] - %s is buffing Group Member %s with (%u).", m_botdata->GetBot()->GetName(), groupMember->GetName(), spellId);
+
+								if (m_botdata->GetAI()->Buff(spellId, groupMember, m_ActionBeforeCast))
+								{
+									sLog.outError("[PlayerbotClassAI::Buff] - Buffed Group Member - setting RETURN_CONTINUE and breaking loop.");
+									ret_val = RETURN_CONTINUE;
+									break;
+								}
+							}
+
+							DEBUG_LOG("[PlayerbotClassAI::Buff] - No buff needed - Checking for another group member.");
+						}
+					}
+					else
+					{
+						sLog.outError("[PlayerbotClassAI::Buff] - No Group - Attempting to buffing Master and Master's Pet.");
+
+						if (!m_botdata->GetMaster() || !m_botdata->GetMaster()->isAlive() || m_botdata->GetMaster()->IsInDuel())
+						{
+							DEBUG_LOG("[PlayerbotClassAI::Buff] -  (!m_botdata->GetMaster() || !m_botdata->GetMaster()->isAlive() || m_botdata->GetMaster()->IsInDuel()) - loooping");
+							break;
+						}
+
+						// Check if Master has buff
+						if (!m_botdata->GetMaster()->HasAura(spellId, EFFECT_INDEX_0))
+						{
+							sLog.outError("[PlayerbotClassAI::Buff] - Buffing Master (%s).", m_botdata->GetMaster()->GetName());
+
+							if (m_botdata->GetAI()->Buff(spellId, m_botdata->GetMaster(), m_ActionBeforeCast))
+							{
+								DEBUG_LOG("[PlayerbotClassAI::Buff] - Buffed Master - setting RETURN_CONTINUE and breaking loop.");
+								ret_val = RETURN_CONTINUE;
+								break;
+							}
+						}
+
+						Pet* pet = m_botdata->GetMaster()->GetPet();
+
+						if (pet)
+						{
+							if (!pet->HasAura(spellId, EFFECT_INDEX_0) && buff_list[i]->CheckPet(pet->getPetType()))
+							{
+								if (!pet->HasAuraType(SPELL_AURA_MOD_UNATTACKABLE))
+								{
+									sLog.outError("[PlayerbotClassAI::Buff] - Buffing Masters (%s) Pet (%s).", m_botdata->GetMaster()->GetName(), pet->GetName());
+
+									if (m_botdata->GetAI()->Buff(spellId, pet, m_ActionBeforeCast))
+									{
+										DEBUG_LOG("[PlayerbotClassAI::Buff] - Buffed Pet - setting RETURN_CONTINUE and breaking loop.");
+										ret_val = RETURN_CONTINUE;
+										break;
+									}
+								}
+							}
+						}
+
+						DEBUG_LOG("[PlayerbotClassAI::Buff] - No Group - Attempting to buffing self and pet.");
+
+						if (!m_botdata->GetBot() || !m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel())
+						{
+							DEBUG_LOG("[PlayerbotClassAI::Buff] -  (!m_botdata->GetBot() || !m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel()) - loooping");
+							continue;
+						}
+
+						// Check if Self has buff
+						if (!m_botdata->GetBot()->HasAura(spellId, EFFECT_INDEX_0))
+						{
+							sLog.outError("[PlayerbotClassAI::Buff] - Buffing Self (%s).", m_botdata->GetMaster()->GetName());
+
+							if (m_botdata->GetAI()->Buff(spellId, m_botdata->GetBot(), m_ActionBeforeCast))
+							{
+								DEBUG_LOG("[PlayerbotClassAI::Buff] - Buffed Self - setting RETURN_CONTINUE and breaking loop.");
+								ret_val = RETURN_CONTINUE;
+								break;
+							}
+						}
+
+						pet = m_botdata->GetBot()->GetPet();
+
+						if (pet)
+						{
+							if (!pet->HasAura(spellId, EFFECT_INDEX_0) && buff_list[i]->CheckPet(pet->getPetType()))
+							{
+								// If pet is available and (any buff OR mana buff and pet is mana)
+								if (!pet->HasAuraType(SPELL_AURA_MOD_UNATTACKABLE))
+								{
+									sLog.outError("[PlayerbotClassAI::Buff] - Buffing Self (%s) Pet (%s).", m_botdata->GetMaster()->GetName(), pet->GetName());
+
+									if (m_botdata->GetAI()->Buff(spellId, pet, m_ActionBeforeCast))
+									{
+										DEBUG_LOG("[PlayerbotClassAI::Buff] - Buffed Self Pet - setting RETURN_CONTINUE and breaking loop.");
+										ret_val = RETURN_CONTINUE;
+										break;
+									}
+								}
+							}
+						}
+					}
 				}
-
-				if (ret_val & RETURN_ANY_ERROR) return ret_val;
-
-				m_botdata->GetAI()->TellMaster("5");
-
+			}
+			else
+			{
+				ret_val = RETURN_NO_ACTION_OK;
 			}
 
-			i++;
+			if (ret_val == RETURN_CONTINUE) break;
 		}
 
         if (ret_val & RETURN_ANY_OK)
@@ -486,27 +765,23 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff(void)
 }
 
 
-
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff_Helper(uint32 spellId, Unit *target)
 {
 	if (spellId == 0) return RETURN_NO_ACTION_ERROR;
 	if (!target)      return RETURN_NO_ACTION_INVALIDTARGET;
 
+	DEBUG_LOG("[DoManeuver_Idle_Buff_Helper] spell id %u at target %s", spellId, target->GetName());
+
 	Pet *pet = target->GetPet();
-	m_botdata->GetAI()->TellMaster("b1");
 
 	if (pet && !pet->HasAuraType(SPELL_AURA_MOD_UNATTACKABLE) && m_botdata->GetAI()->Buff(spellId, pet))
 		return RETURN_CONTINUE;
 
-	m_botdata->GetAI()->TellMaster("[DoManeuver_Idle_Buff_Helper] spell id %u at target %s", spellId, target->GetName());
-
 	if (m_botdata->GetAI()->Buff(spellId, target, m_ActionBeforeCast))
 	{
-		//sLog.outError("..Buffed");
 		return RETURN_CONTINUE;
 	}
-	m_botdata->GetAI()->TellMaster("b3");
-	//sLog.outError("..Not buffing anyone!");
+
 	return RETURN_NO_ACTION_OK;
 }
 
@@ -574,73 +849,6 @@ CombatManeuverReturns PlayerbotClassAI::HealPlayer(Player* target)
     return RETURN_NO_ACTION_OK;
 }
 
-// Please note that job_type JOB_MANAONLY is a cumulative restriction. JOB_TANK | JOB_HEAL means both; JOB_TANK | JOB_MANAONLY means tanks with powertype MANA (paladins, druids)
-CombatManeuverReturns PlayerbotClassAI::Buff(CombatManeuverReturns (PlayerbotClassAI::*BuffHelper)(uint32, Unit*), uint32 spellId, uint32 type, bool bMustBeOOC)
-{
-	sLog.outError("PlayerbotClassAI::Buff.");
-    if (!m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel()) return RETURN_NO_ACTION_ERROR;
-    if (bMustBeOOC && m_botdata->GetBot()->isInCombat()) return RETURN_NO_ACTION_ERROR;
-
-    if (spellId == 0) return RETURN_NO_ACTION_OK;
-    sLog.outError(".Still here");
-
-    if (m_botdata->GetBot()->GetGroup())
-    {
-        sLog.outError(".So this group walks into a bar...");
-        Group::MemberSlotList const& groupSlot = m_botdata->GetBot()->GetGroup()->GetMemberSlots();
-        for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
-        {
-            sLog.outError(".Group_Member");
-            Player *groupMember = sObjectMgr.GetPlayer(itr->guid);
-            if (!groupMember || !groupMember->isAlive() || groupMember->IsInDuel())
-                continue;
-
-            Pet* pet = groupMember->GetPet();
-            // If pet is available and (any buff OR mana buff and pet is mana)
-            if (pet && !pet->HasAuraType(SPELL_AURA_MOD_UNATTACKABLE)
-                && ( !(type & JOB_MANAONLY) || pet->GetPowerType() == POWER_MANA ))
-            {
-                sLog.outError(".Group_Member's pet: %s's %s", groupMember->GetName(), pet->GetName());
-                if((this->*BuffHelper)( spellId, pet) & RETURN_CONTINUE)
-                {
-                    sLog.outError(".Buffing pet, RETURN");
-                    return RETURN_CONTINUE;
-                }
-            }
-            sLog.outError(".Group_Member: %s", groupMember->GetName());
-            JOB_TYPE job = GetTargetJob(groupMember);
-            if (job & type && (!(type & JOB_MANAONLY) || groupMember->getClass() == CLASS_DRUID || groupMember->GetPowerType() == POWER_MANA))
-            {
-                sLog.outError(".Correct job");
-                if ((this->*BuffHelper)( spellId, groupMember) & RETURN_CONTINUE)
-                {
-                    sLog.outError(".Buffing, RETURN");
-                    return RETURN_CONTINUE;
-                }
-            }
-            sLog.outError(".no buff, checking next group member");
-        }
-        sLog.outError(".nobody in the group to buff");
-    }
-    else
-    {
-        sLog.outError(".No group");
-        if (m_botdata->GetMaster() && !m_botdata->GetMaster()->IsInDuel()
-            && (!(GetTargetJob(m_botdata->GetMaster()) & JOB_MANAONLY) || m_botdata->GetMaster()->getClass() == CLASS_DRUID || m_botdata->GetMaster()->GetPowerType() == POWER_MANA))
-            if ((this->*BuffHelper)(spellId, m_botdata->GetMaster()) & RETURN_CONTINUE)
-                return RETURN_CONTINUE;
-        // Do not check job or power type - any buff you have is always useful to self
-        if ((this->*BuffHelper)( spellId, m_botdata->GetBot()) & RETURN_CONTINUE)
-        {
-           sLog.outError(".Buffed");
-            return RETURN_CONTINUE;
-        }
-    }
-
-    sLog.outError(".No buff");
-    return RETURN_NO_ACTION_OK;
-}
-
 /**
  * NeedGroupBuff()
  * return boolean Returns true if more than two targets in the bot's group need the group buff.
@@ -650,7 +858,7 @@ CombatManeuverReturns PlayerbotClassAI::Buff(CombatManeuverReturns (PlayerbotCla
  * return false if false is returned, the bot is expected to perform a buff check for the single target buff of the group buff.
  *
  */
-bool PlayerbotClassAI::NeedGroupBuff(uint32 groupBuffSpellId, uint32 singleBuffSpellId)
+bool PlayerbotClassAI::NeedGroupBuff(uint32 groupBuffSpellId, uint32 singleBuffSpellId, uint32 singleGreaterBuffSpellId)
 {
     if (!m_botdata->GetBot()) return false;
 

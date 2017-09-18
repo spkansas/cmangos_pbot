@@ -106,6 +106,8 @@ bool PlayerbotWarriorAI::PlayerbotClassAI_ClassAIInit(void)
     TASTE_FOR_BLOOD         = m_botdata->GetAI()->initSpell(TASTE_FOR_BLOOD_1);
     SUDDEN_DEATH            = m_botdata->GetAI()->initSpell(SUDDEN_DEATH_1);
 	
+	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_TANK);
+
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
 
@@ -413,7 +415,7 @@ void PlayerbotWarriorAI::CheckShouts()
 }
 
 
-CombatManeuverReturns PlayerbotWarriorAI::DoManeuver_Idle_SelfBuff(void)
+CombatManeuverReturns PlayerbotWarriorAI::DoManeuver_Idle_Forms_Start(void)
 {
 	CombatManeuverReturns ret_val;
 
@@ -445,9 +447,7 @@ CombatManeuverReturns PlayerbotWarriorAI::DoManeuver_Idle_Heal_Prep(Player* targ
 
 	if (m_botdata->GetBot()->getRace() == RACE_DRAENEI && !target->HasAura(GIFT_OF_THE_NAARU, EFFECT_INDEX_0) && target->GetHealthPercent() < 70)
 	{
-		m_botdata->SetHealSpell(GIFT_OF_THE_NAARU);
-
-		ret_val = RETURN_NO_ACTION_OK;
+		ret_val = m_botdata->SetHealSpell(GIFT_OF_THE_NAARU) ? RETURN_NO_ACTION_OK : RETURN_CONTINUE);
 	}
 	else
 	{

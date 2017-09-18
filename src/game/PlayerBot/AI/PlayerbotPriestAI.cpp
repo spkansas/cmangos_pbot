@@ -96,18 +96,34 @@ bool PlayerbotPriestAI::PlayerbotClassAI_ClassAIInit(void)
 	
     m_botdata->SetRezSpell(RESURRECTION);
 
-	buff_array[0][0] = { PRAYER_OF_FORTITUDE };
-	buff_array[0][1] = { POWER_WORD_FORTITUDE };
-	buff_array[0][2] = { NULL };
-	buff_array[1][0] = { PRAYER_OF_SPIRIT };
-	buff_array[1][1] = { DIVINE_SPIRIT };
-	buff_array[1][2] = { NULL };
-	buff_array[2][0] = { PRAYER_OF_SHADOW_PROTECTION };
-	buff_array[2][1] = { SHADOW_PROTECTION };
-	buff_array[2][2] = { NULL };
-	buff_array[3][0] = { NULL };
-	buff_array[3][1] = { NULL };
-	buff_array[3][2] = { NULL };
+	buff_list[0] = new PlayerbotBufflist;
+
+	buff_list[0]->spellid.group			  = { PRAYER_OF_FORTITUDE };	// Group Version
+	buff_list[0]->spellid.single		  = { POWER_WORD_FORTITUDE };	// Standard Version
+	buff_list[0]->spellid.single_enhanced = { NULL };					// Greater Version
+	buff_list[0]->spec_required			  = { NULL };					// Spec Required to cast
+	buff_list[0]->caston_non_bot_all	  = { PBOT_CLASS_ALL };			// Non-bot buff control
+	buff_list[0]->caston_pet_all		  = { PBOT_PET_ALL };		    // Pet buff control
+
+	buff_list[1] = new PlayerbotBufflist;
+
+	buff_list[1]->spellid.group			  = { PRAYER_OF_SPIRIT };		// Group Version
+	buff_list[1]->spellid.single		  = { DIVINE_SPIRIT };			// Standard Version
+	buff_list[1]->spellid.single_enhanced = { NULL };					// Greater Version
+	buff_list[1]->spec_required			  = { NULL };					// Spec Required to cast
+	buff_list[1]->caston_non_bot_all	  = { PBOT_CLASS_ALL };			// Non-bot buff control
+	buff_list[1]->caston_pet_all		  = { PBOT_PET_ALL };		    // Pet buff control
+
+	buff_list[2] = new PlayerbotBufflist;
+
+	buff_list[2]->spellid.group			  = { PRAYER_OF_SHADOW_PROTECTION }; // Group Version
+	buff_list[2]->spellid.single		  = { SHADOW_PROTECTION };		// Standard Version
+	buff_list[2]->spellid.single_enhanced = { NULL };					// Greater Version
+	buff_list[2]->spec_required		      = { NULL };					// Spec Required to cast
+	buff_list[2]->caston_non_bot_all	  = { PBOT_CLASS_ALL };			// Non-bot buff control
+	buff_list[2]->caston_pet_all		  = { PBOT_PET_ALL };		    // Pet buff control
+
+	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_HEAL);
 
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }

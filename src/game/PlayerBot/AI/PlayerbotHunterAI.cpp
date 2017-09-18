@@ -105,6 +105,8 @@ bool PlayerbotHunterAI::PlayerbotClassAI_ClassAIInit(void)
     WAR_STOMP                     = m_botdata->GetAI()->initSpell(WAR_STOMP_ALL); // tauren
     BERSERKING                    = m_botdata->GetAI()->initSpell(BERSERKING_ALL); // troll
 
+	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_DPS_MELEE);
+
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
 

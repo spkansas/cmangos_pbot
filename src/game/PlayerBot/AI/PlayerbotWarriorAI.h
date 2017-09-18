@@ -95,13 +95,91 @@ enum WarriorSpells
 
 class PlayerbotWarriorAI : PlayerbotClassAI
 {
+
+private:
+
+	// ARMS
+	uint32	BATTLE_STANCE,
+			CHARGE,
+			HEROIC_STRIKE,
+			REND,
+			THUNDER_CLAP,
+			HAMSTRING,
+			MOCKING_BLOW,
+			RETALIATION,
+			SWEEPING_STRIKES,
+			MORTAL_STRIKE,
+			BLADESTORM,
+			HEROIC_THROW,
+			SHATTERING_THROW,
+			TASTE_FOR_BLOOD,
+			SUDDEN_DEATH;
+
+	// PROTECTION
+	uint32	DEFENSIVE_STANCE,
+			BLOODRAGE,
+			SUNDER_ARMOR,
+			TAUNT,
+			SHIELD_BASH,
+			REVENGE,
+			SHIELD_BLOCK,
+			DISARM,
+			SHIELD_WALL,
+			SHIELD_SLAM,
+			VIGILANCE,
+			DEVASTATE,
+			SHOCKWAVE,
+			CONCUSSION_BLOW,
+			SPELL_REFLECTION,
+			LAST_STAND;
+
+	// FURY
+	uint32	BERSERKER_STANCE,
+			BATTLE_SHOUT,
+			DEMORALIZING_SHOUT,
+			OVERPOWER,
+			CLEAVE,
+			INTIMIDATING_SHOUT,
+			EXECUTE,
+			CHALLENGING_SHOUT,
+			SLAM,
+			INTERCEPT,
+			DEATH_WISH,
+			BERSERKER_RAGE,
+			WHIRLWIND,
+			PUMMEL,
+			BLOODTHIRST,
+			RECKLESSNESS,
+			RAMPAGE,
+			HEROIC_FURY,
+			COMMANDING_SHOUT,
+			ENRAGED_REGENERATION,
+			PIERCING_HOWL,
+			SLAM_PROC,
+			BLOODSURGE;
+
+	// racial
+	uint32	ARCANE_TORRENT,
+			GIFT_OF_THE_NAARU,
+			STONEFORM,
+			ESCAPE_ARTIST,
+			EVERY_MAN_FOR_HIMSELF,
+			SHADOWMELD,
+			BLOOD_FURY,
+			WAR_STOMP,
+			BERSERKING,
+			WILL_OF_THE_FORSAKEN;
+
+	// general
+	uint32	AUTO_SHOT;
+
+	uint32	SpellSequence = 0; 
+
 public:
+
     PlayerbotWarriorAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
     virtual ~PlayerbotWarriorAI();
 
-    // all combat actions go here
-//    CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
-//    CombatManeuverReturns DoManeuver_Combat_Exec(Unit* pTarget);
     bool Pull();
 
     //Buff/rebuff shouts
@@ -109,6 +187,10 @@ public:
 
     // Utility Functions
     bool CanPull();
+
+protected:
+
+	bool PBotNewAI(void) { return true; }
 
 private:
 
@@ -125,101 +207,37 @@ private:
 
 //	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
 
-	CombatManeuverReturns DoFirstCombatManeuverPVE(Unit* pTarget);
-    CombatManeuverReturns DoNextCombatManeuverPVE(Unit* pTarget);
-    CombatManeuverReturns DoFirstCombatManeuverPVP(Unit* pTarget);
-    CombatManeuverReturns DoNextCombatManeuverPVP(Unit* pTarget);
+	CombatManeuverReturns DoFirstCombatManeuverPVE(Unit *pTarget);
+    CombatManeuverReturns DoNextCombatManeuverPVE(Unit *pTarget);
+    CombatManeuverReturns DoFirstCombatManeuverPVP(Unit *pTarget);
+    CombatManeuverReturns DoNextCombatManeuverPVP(Unit *pTarget);
 
 private:
 
-	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
+	CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
 
-//  CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player* target);
-//  CombatManeuverReturns DoManeuver_Idle_Rez(Player* target);
-//  CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player* target);
+//	CombatManeuverReturns DoManeuver_Idle_Cure_Detremental(void);
 
-	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player* target);
-//  CombatManeuverReturns DoManeuver_Idle_Heal(Player* target);
-//  CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player* target);
+//	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
 
-private:
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player *target);
 
-    // ARMS
-    uint32 BATTLE_STANCE,
-           CHARGE,
-           HEROIC_STRIKE,
-           REND,
-           THUNDER_CLAP,
-           HAMSTRING,
-           MOCKING_BLOW,
-           RETALIATION,
-           SWEEPING_STRIKES,
-           MORTAL_STRIKE,
-           BLADESTORM,
-           HEROIC_THROW,
-           SHATTERING_THROW,
-           TASTE_FOR_BLOOD,
-           SUDDEN_DEATH;
+	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player *target);
 
-    // PROTECTION
-    uint32 DEFENSIVE_STANCE,
-           BLOODRAGE,
-           SUNDER_ARMOR,
-           TAUNT,
-           SHIELD_BASH,
-           REVENGE,
-           SHIELD_BLOCK,
-           DISARM,
-           SHIELD_WALL,
-           SHIELD_SLAM,
-           VIGILANCE,
-           DEVASTATE,
-           SHOCKWAVE,
-           CONCUSSION_BLOW,
-           SPELL_REFLECTION,
-           LAST_STAND;
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Prep(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Post(void);
 
-    // FURY
-    uint32 BERSERKER_STANCE,
-           BATTLE_SHOUT,
-           DEMORALIZING_SHOUT,
-           OVERPOWER,
-           CLEAVE,
-           INTIMIDATING_SHOUT,
-           EXECUTE,
-           CHALLENGING_SHOUT,
-           SLAM,
-           INTERCEPT,
-           DEATH_WISH,
-           BERSERKER_RAGE,
-           WHIRLWIND,
-           PUMMEL,
-           BLOODTHIRST,
-           RECKLESSNESS,
-           RAMPAGE,
-           HEROIC_FURY,
-           COMMANDING_SHOUT,
-           ENRAGED_REGENERATION,
-           PIERCING_HOWL,
-           SLAM_PROC,
-           BLOODSURGE;
+//	CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
 
-    // racial
-    uint32 ARCANE_TORRENT,
-           GIFT_OF_THE_NAARU,
-           STONEFORM,
-           ESCAPE_ARTIST,
-           EVERY_MAN_FOR_HIMSELF,
-           SHADOWMELD,
-           BLOOD_FURY,
-           WAR_STOMP,
-           BERSERKING,
-           WILL_OF_THE_FORSAKEN;
+//	CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
 
-    // general
-    uint32 AUTO_SHOT;
+//	CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
 
-    uint32 SpellSequence;
 };
 
 #endif

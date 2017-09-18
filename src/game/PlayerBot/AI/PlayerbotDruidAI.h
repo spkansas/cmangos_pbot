@@ -112,30 +112,28 @@ public:
     PlayerbotDruidAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
     virtual ~PlayerbotDruidAI();
 
-    // all combat actions go here
- //   CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
- //   CombatManeuverReturns DoManeuver_Combat_Exec(Unit* pTarget);
     bool Pull();
 
-    // all non combat actions go here, ex buffs, heals, rezzes
-    void DoNonCombatActions();
-
-    // Utility Functions
+   // Utility Functions
     bool CanPull();
     bool CastHoTOnTank();
+
+protected:
+
+	bool PBotNewAI(void) { return true; }
 
 private:
 
 	bool PlayerbotClassAI_ClassAIInit(void);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
 
 	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
 
@@ -149,9 +147,31 @@ private:
     // Combat Maneuver helper functions
     CombatManeuverReturns _DoNextPVECombatManeuverBear(Unit* pTarget);
     CombatManeuverReturns _DoNextPVECombatManeuverCat(Unit* pTarget);
-    CombatManeuverReturns _DoNextPVECombatManeuverSpellDPS(Unit* pTarget);
- //   CombatManeuverReturns _DoNextPVECombatManeuverHeal();
+	CombatManeuverReturns _DoNextPVECombatManeuverSpellDPS(Unit* pTarget);
+//  CombatManeuverReturns _DoNextPVECombatManeuverHeal();
 
+private:
+
+	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
+//	CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
+//	CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
+//	CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
+	CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player* target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez(Player* target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player* target);
+
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player* target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal(Player* target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player* target);
+
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Prep(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Post(void);
+
+
+private:
     // Heals the target based off its hps
     CombatManeuverReturns HealPlayer (Player* target);
     Player* GetHealTarget() { return PlayerbotClassAI::GetHealTarget(); }

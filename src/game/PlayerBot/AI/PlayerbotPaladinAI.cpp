@@ -108,6 +108,46 @@ bool PlayerbotPaladinAI::PlayerbotClassAI_ClassAIInit(void)
     //The check doesn't work for now
     //PRAYER_OF_SHADOW_PROTECTION   = m_botdata->GetAI()->initSpell(PriestSpells::PRAYER_OF_SHADOW_PROTECTION_1);
 
+	buff_list[0] = new PlayerbotBufflist;
+
+	buff_list[0]->spellid.group				= { NULL };							// Group Version
+	buff_list[0]->spellid.single			= { BLESSING_OF_MIGHT };			// Standard Version
+	buff_list[0]->spellid.single_enhanced	= { GREATER_BLESSING_OF_MIGHT };	// Greater Version
+	buff_list[0]->spec_required				= { NULL };							// Spec Required to cast
+	buff_list[0]->caston_non_bot_all		= { PBOT_CLASS_TANK };				// Non-bot buff control
+	buff_list[0]->caston_bot_role			= { BOT_ROLE::ROLE_TANK };			// Non-bot buff control
+	buff_list[0]->caston_pet_all			= { PBOT_PET_ALL_TANK };			// Pet buff control
+
+	buff_list[1] = new PlayerbotBufflist;
+
+	buff_list[1]->spellid.group				= { NULL };							// Group Version
+	buff_list[1]->spellid.single			= { BLESSING_OF_KINGS };			// Standard Version
+	buff_list[1]->spellid.single_enhanced	= { GREATER_BLESSING_OF_KINGS };	// Greater Version
+	buff_list[1]->spec_required				= { NULL };							// Spec Required to cast
+	buff_list[1]->caston_non_bot_all		= { PBOT_CLASS_MELEEDPS | PBOT_CLASS_DRUID | PBOT_CLASS_SHAMAN };	// Non-bot buff control
+	buff_list[1]->caston_bot_role			= { BOT_ROLE::ROLE_DPS_MELEE };		// Non-bot buff control
+	buff_list[1]->caston_pet_all			= { PBOT_PET_ALL_HYBRID };			// Pet buff control
+
+	buff_list[2] = new PlayerbotBufflist;
+
+	buff_list[2]->spellid.group				= { NULL };							// Group Version
+	buff_list[2]->spellid.single			= { BLESSING_OF_WISDOM };			// Standard Version
+	buff_list[2]->spellid.single_enhanced	= { GREATER_BLESSING_OF_WISDOM };	// Greater Version
+	buff_list[2]->spec_required				= { NULL };							// Spec Required to cast
+	buff_list[2]->caston_non_bot_all		= { PBOT_CLASS_CASTER | PBOT_CLASS_PRIEST }; // Non-bot buff control
+	buff_list[2]->caston_bot_role			= { (BOT_ROLE)(BOT_ROLE::ROLE_HEAL | BOT_ROLE::ROLE_DPS_CASTER) };	// Non-bot buff control
+	buff_list[2]->caston_pet_all			= { PBOT_PET_ALL_MANA };			// Pet buff control
+
+//	buff_list[3] = new PlayerbotBufflist;
+
+//	buff_list[3]->spellid.group				= { NULL };							// Group Version
+//	buff_list[3]->spellid.single			= { BLESSING_OF_SANCTUARY };		// Standard Version
+//	buff_list[3]->spellid.single_enhanced	= { GREATER_BLESSING_OF_SANCTUARY };// Greater Version
+//	buff_list[3]->spec_required				= { NULL };							// Spec Required to cast
+//	buff_list[3]->caston_non_bot_all		= { PBOT_CLASS_ALL };				// Non-bot buff control
+
+	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_TANK);
+
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
 
@@ -408,178 +448,21 @@ bool PlayerbotPaladinAI::CheckSeals()
     return false;
 }
 
-void PlayerbotPaladinAI::DoNonCombatActions()
+
+CombatManeuverReturns PlayerbotPaladinAI::DoManeuver_Idle_SelfBuff(void)
 {
-    if (!m_botdata->GetAI())   return;
-    if (!m_botdata->GetBot())  return;
+	CheckAuras();
 
-    if (!m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel()) return;
-    
-    CheckAuras();
+	//Put up RF if tank
+	if (m_botdata->GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_TANK)
+		m_botdata->GetAI()->SelfBuff(RIGHTEOUS_FURY);
+	//Disable RF if not tank
+	else if (m_botdata->GetBot()->HasAura(RIGHTEOUS_FURY))
+		m_botdata->GetBot()->RemoveAurasDueToSpell(RIGHTEOUS_FURY);
 
-    //Put up RF if tank
-    if (m_botdata->GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_TANK)
-        m_botdata->GetAI()->SelfBuff(RIGHTEOUS_FURY);
-    //Disable RF if not tank
-    else if (m_botdata->GetBot()->HasAura(RIGHTEOUS_FURY))
-        m_botdata->GetBot()->RemoveAurasDueToSpell(RIGHTEOUS_FURY);
-
-    // Revive
-    if (HealPlayer(GetResurrectionTarget()) & RETURN_CONTINUE)
-        return;
-
-    // Heal
-    if (m_botdata->GetAI()->IsHealer())
-    {
-        if (HealPlayer(GetHealTarget()) & RETURN_CONTINUE)
-            return;// RETURN_CONTINUE;
-    }
-    else
-    {
-        // Is this desirable? Debatable.
-        // TODO: In a group/raid with a healer you'd want this bot to focus on DPS (it's not specced/geared for healing either)
-        if (HealPlayer(m_botdata->GetBot()) & RETURN_CONTINUE)
-            return;// RETURN_CONTINUE;
-    }
-
-    // buff group
-    if (Buff(&PlayerbotClassAI::DoManeuver_Idle_Buff_Helper, 1) & RETURN_CONTINUE) // Paladin's BuffHelper takes care of choosing the specific Blessing so just pass along a non-zero value
-        return;
-
-    // hp/mana check
-    if (EatDrinkBandage())
-        return;
-    // m_botdata->GetAI()->TellMaster("DoNonCombatActions() - 10. past EatDrinkBandage()"); // debug
+	return RETURN_NO_ACTION_OK;
 }
 
-/**
- * BuffHelper
- * BuffHelper is a static function, takes an AI, spellId (ignored for paladin) and a target and attempts to buff them as well as their pets as
- * best as possible.
- *
- * Return bool - returns true if a buff took place.
- */
-bool PlayerbotPaladinAI::BuffHelper(PlayerbotAI* ai, uint32 spellId, Unit *target)
-{
-    if (!ai)          return false;
-    if (spellId == 0) return false;
-    if (!target)      return false;
-
-    PlayerbotPaladinAI* c = (PlayerbotPaladinAI*) ai->GetClassAI();
-    uint32 bigSpellId = 0;
-
-    Pet* pet = target->GetPet();
-    uint32 petSpellId = 0, petBigSpellId = 0;
-
-    // See which buff is appropriate according to class
-    // TODO: take into account other paladins in the group
-    switch (target->getClass())
-    {
-        case CLASS_DRUID:
-        case CLASS_SHAMAN:
-        case CLASS_PALADIN:
-            spellId = c->BLESSING_OF_MIGHT;
-            if (!spellId)
-            {
-                spellId = c->BLESSING_OF_KINGS;
-                if (!spellId)
-                {
-                    spellId = c->BLESSING_OF_WISDOM;
-                    if (!spellId)
-                    {
-                        spellId = c->BLESSING_OF_SANCTUARY;
-                        if (!spellId)
-                            return false;
-                    }
-                }
-            }
-            break;
-        case CLASS_DEATH_KNIGHT:
-        case CLASS_HUNTER:
-        case CLASS_ROGUE:
-        case CLASS_WARRIOR:
-            spellId = c->BLESSING_OF_MIGHT;
-            if (!spellId)
-            {
-                spellId = c->BLESSING_OF_KINGS;
-                if (!spellId)
-                {
-                    spellId = c->BLESSING_OF_SANCTUARY;
-                    if (!spellId)
-                        return false;
-                }
-            }
-            break;
-        case CLASS_WARLOCK:
-        case CLASS_PRIEST:
-        case CLASS_MAGE:
-            spellId = c->BLESSING_OF_WISDOM;
-            if (!spellId)
-            {
-                spellId = c->BLESSING_OF_KINGS;
-                if (!spellId)
-                {
-                    spellId = c->BLESSING_OF_SANCTUARY;
-                    if (!spellId)
-                        return false;
-                }
-            }
-            break;
-        default:
-            // PET
-            /** Hunter pet
-            if (pet && ai->CanReceiveSpecificSpell(SPELL_BLESSING, pet) && !pet->HasAuraType(SPELL_AURA_MOD_UNATTACKABLE))
-            {
-                petSpellId = c->BLESSING_OF_MIGHT;
-                if (!petSpellId)
-                {
-                    petSpellId = c->BLESSING_OF_KINGS;
-                    if (!petSpellId)
-                        petSpellId = c->BLESSING_OF_SANCTUARY;
-                }
-            }*/
-            if (/*pet && ai->CanReceiveSpecificSpell(SPELL_BLESSING, pet) && */!target->HasAuraType(SPELL_AURA_MOD_UNATTACKABLE))
-            {
-                if (target->GetPowerType() == POWER_MANA)
-                    spellId = c->BLESSING_OF_WISDOM;
-                else
-                    spellId = c->BLESSING_OF_MIGHT;
-
-                if (!spellId)
-                {
-                    spellId = c->BLESSING_OF_KINGS;
-                    if (!spellId)
-                        spellId = c->BLESSING_OF_SANCTUARY;
-                }
-            }
-    }
-
-    /*if (petSpellId == c->BLESSING_OF_MIGHT)
-        petBigSpellId = c->GREATER_BLESSING_OF_MIGHT;
-    else if (petSpellId == c->BLESSING_OF_WISDOM)
-        petBigSpellId = c->GREATER_BLESSING_OF_WISDOM;
-    else if (petSpellId == c->BLESSING_OF_KINGS)
-        petBigSpellId = c->GREATER_BLESSING_OF_KINGS;
-    else if (petSpellId == c->BLESSING_OF_SANCTUARY)
-        petBigSpellId = c->GREATER_BLESSING_OF_SANCTUARY;*/
-
-    if (spellId == c->BLESSING_OF_MIGHT)
-        bigSpellId = c->GREATER_BLESSING_OF_MIGHT;
-    else if (spellId == c->BLESSING_OF_WISDOM)
-        bigSpellId = c->GREATER_BLESSING_OF_WISDOM;
-    else if (spellId == c->BLESSING_OF_KINGS)
-        bigSpellId = c->GREATER_BLESSING_OF_KINGS;
-    else if (spellId == c->BLESSING_OF_SANCTUARY)
-        bigSpellId = c->GREATER_BLESSING_OF_SANCTUARY;
-
-    if (pet && !pet->HasAuraType(SPELL_AURA_MOD_UNATTACKABLE) && ai->HasSpellReagents(petBigSpellId) && ai->Buff(petBigSpellId, pet))
-        return true;
-    if (ai->HasSpellReagents(bigSpellId) && ai->Buff(bigSpellId, target))
-        return true;
-    if ((pet && !pet->HasAuraType(SPELL_AURA_MOD_UNATTACKABLE) && ai->Buff(petSpellId, pet)) || ai->Buff(spellId, target))
-        return true;
-    return false;
-}
 
 // Match up with "Pull()" below
 bool PlayerbotPaladinAI::CanPull()

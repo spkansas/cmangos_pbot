@@ -101,6 +101,8 @@ bool PlayerbotWarlockAI::PlayerbotClassAI_ClassAIInit(void)
     BLOOD_FURY            = m_botdata->GetAI()->initSpell(BLOOD_FURY_WARLOCK); // orc
     WILL_OF_THE_FORSAKEN  = m_botdata->GetAI()->initSpell(WILL_OF_THE_FORSAKEN_ALL); // undead
 
+	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_DPS_CASTER);
+
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
 

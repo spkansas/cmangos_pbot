@@ -46,11 +46,139 @@ enum JOB_TYPE
 
 enum BOT_ROLE
 {
+	ROLE_NONE		 = 0b00000000,
 	ROLE_HEAL		 = 0b00000001,
 	ROLE_TANK		 = 0b00000010,
-	ROLE_DPS		 = 0b00000100,
+	ROLE_DPS_MELEE   = 0b00000100,
+	ROLE_DPS_CASTER  = 0b00001000,
 	ROLE_BUFF		 = 0b10000000,
-	ROLE_ALL		 = 0b10000111
+	ROLE_ALL_DPS	 = 0b00001100,
+	ROLE_ALL_CHAR	 = 0b00001111,
+	ROLE_ALL		 = 0b10001111
+};
+
+#define PBOT_CLASS_NONE		0b0000000000000000
+#define PBOT_CLASS_DK		0b0000000000000001
+#define PBOT_CLASS_DRUID	0b0000000000000010 
+#define PBOT_CLASS_PALADIN	0b0000000000000100
+#define PBOT_CLASS_WARLOCK  0b0000000000001000
+#define PBOT_CLASS_SHAMAN	0b0000000000010000
+#define PBOT_CLASS_PRIEST	0b0000000000100000
+#define PBOT_CLASS_HUNTER	0b0000000001000000
+#define PBOT_CLASS_MAGE		0b0000000010000000
+#define PBOT_CLASS_WARRIOR	0b0000000100000000
+#define PBOT_CLASS_ROGUE	0b0000001000000000
+#define PBOT_CLASS_ALL		0b0000001111111111
+
+#define PBOT_CLASS_MELEEDPS	PBOT_CLASS_HUNTER | PBOT_CLASS_ROGUE
+#define PBOT_CLASS_TANK		PBOT_CLASS_DK | PBOT_CLASS_PALADIN | PBOT_CLASS_WARRIOR
+#define PBOT_CLASS_CASTER	PBOT_CLASS_WARLOCK | PBOT_CLASS_MAGE
+
+#define PBOT_PET_NONE		0b00000000
+#define PBOT_PET_SUMMON		0b00000001
+#define PBOT_PET_HUNTER		0b00000010
+#define PBOT_PET_GUARDIAN	0b00000100
+#define PBOT_PET_MINI		0b00001000
+#define PBOT_PET_PROTECTOR	0b00010000
+#define PBOT_PET_ALL_TANK	0b00000010
+#define PBOT_PET_ALL_MANA	0b00000001
+#define PBOT_PET_ALL_HYBRID	0b00011100
+#define PBOT_PET_ALL		0b00011111
+
+class PlayerbotBufflist
+{
+public:
+	struct spellidlist
+	{
+		uint32 group = 0;
+		uint32 single = 0;
+		uint32 single_enhanced = 0;
+	} spellid;
+
+	uint32 spec_required = 0;
+
+	union
+	{
+		struct class_bitstruct
+		{
+			uint16 death_knight : 1;
+			uint16 druid : 1;
+			uint16 paladin : 1;
+			uint16 warlock : 1;
+			uint16 shaman : 1;
+			uint16 priest : 1;
+			uint16 hunter : 1;
+			uint16 mage : 1;
+			uint16 warrior : 1;
+			uint16 rogue : 1;
+			uint16 padding : 6;
+		} caston_non_bot;
+
+		uint16 caston_non_bot_all = PBOT_CLASS_NONE;
+	};
+
+	union
+	{
+		struct pet_bitstruct
+		{
+			uint8 summon : 1;
+			uint8 hunter : 1;
+			uint8 guardian : 1;
+			uint8 mini : 1;
+			uint8 protector : 1;
+			uint8 padding : 3;
+		} caston_pet;
+
+		uint8 caston_pet_all = PBOT_PET_NONE;
+	};
+
+	BOT_ROLE caston_bot_role = BOT_ROLE::ROLE_ALL_CHAR;
+
+	bool CheckClass(uint8 ui8Class)
+	{
+		switch (ui8Class)
+		{
+			case CLASS_PRIEST:
+				return (bool)(caston_non_bot.priest);
+			case CLASS_PALADIN:
+				return (bool)(caston_non_bot.paladin);
+			case CLASS_WARLOCK:
+				return (bool)(caston_non_bot.warlock);
+			case CLASS_MAGE:
+				return (bool)(caston_non_bot.mage);
+			case CLASS_ROGUE:
+				return (bool)(caston_non_bot.rogue);
+			case CLASS_WARRIOR:
+				return (bool)(caston_non_bot.warrior);
+			case CLASS_DRUID:
+				return (bool)(caston_non_bot.druid);
+			case CLASS_SHAMAN:
+				return (bool)(caston_non_bot.shaman);
+			case CLASS_HUNTER:
+				return (bool)(caston_non_bot.hunter);
+			default:
+				return false;
+		}
+	}
+
+	bool CheckPet(PetType ePetType)
+	{
+		switch (ePetType)
+		{
+		case PetType::SUMMON_PET:
+			return (bool)(caston_pet.summon);
+		case PetType::HUNTER_PET:
+			return (bool)(caston_pet.hunter);
+		case PetType::GUARDIAN_PET:
+			return (bool)(caston_pet.guardian);
+		case PetType::MINI_PET:
+			return (bool)(caston_pet.mini);
+		case PetType::PROTECTOR_PET:
+			return (bool)(caston_pet.protector);
+		default:
+			return false;
+		}
+	}
 };
 
 
@@ -75,7 +203,8 @@ class PlayerbotClassAIData
 {
 private:
   
-    BOT_ROLE	 m_eBotRole = BOT_ROLE::ROLE_ALL;
+    BOT_ROLE	 m_eBotRole		 = BOT_ROLE::ROLE_ALL;
+	BOT_ROLE	 m_eBotPrimeRole = BOT_ROLE::ROLE_NONE;
 
     Player		*m_master;
     Player		*m_bot;
@@ -97,14 +226,17 @@ public:
     }
     virtual ~PlayerbotClassAIData() {};
 
-    Player      * const GetMaster(void) { return m_master; }
-    Player      * const GetBot(void) { return m_bot; }
-    PlayerbotAI * const GetAI(void) { return m_ai; }
+    Player      * const GetMaster(void)					  { return m_master; }
+    Player      * const GetBot(void)					  { return m_bot; }
+    PlayerbotAI * const GetAI(void)						  { return m_ai; }
 
-    uint32		  const GetSpec(void) { return m_uiBotSpec; }
+    uint32		  const GetSpec(void)					  { return m_uiBotSpec; }
 
     BOT_ROLE	  const GetRoles(void)                    { return m_eBotRole; }
     bool				SetRoles(BOT_ROLE eRole)          { m_eBotRole = eRole; return true; }
+
+	BOT_ROLE	  const GetRolePrimary(void)			  { return m_eBotPrimeRole; }
+	bool				SetRolePrimary(BOT_ROLE eRole)	  { m_eBotPrimeRole = eRole; return true; }
 
     uint32        const GetRezSpell(void)                 { return m_uiRezSpellID; }
     bool				SetRezSpell(uint32 uiRezSpellID)  { m_uiRezSpellID = uiRezSpellID; return true; }
@@ -126,7 +258,7 @@ protected:
 	PlayerbotClassAIData *m_botdata;
     
     // first aid
-    uint32               RECENTLY_BANDAGED;
+    uint32               RECENTLY_BANDAGED = 11196;
 
     // These values are used in GetHealTarget and can be overridden per class (to accomodate healing spell health checks)
     uint8                m_MinHealthPercentTank;
@@ -136,7 +268,7 @@ protected:
 
     time_t               m_WaitUntil;
 
-	uint32				 buff_array[10][3] = {{0}};
+	PlayerbotBufflist   *buff_list[10] = { nullptr };
 
 	void (*m_ActionBeforeCast)(Player *) = NULL;
 
@@ -193,10 +325,12 @@ protected:
 
 protected:
 
-    virtual CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
-	virtual CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
-	virtual CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
+	virtual CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
 
+	virtual CombatManeuverReturns DoManeuver_Idle_Cure_Detremental(void);
+	
+	virtual CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
+	
     virtual CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player* target);
     virtual CombatManeuverReturns DoManeuver_Idle_Rez(Player* target);
     virtual CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player* target);
@@ -208,6 +342,12 @@ protected:
     virtual CombatManeuverReturns DoManeuver_Idle_Buff_Prep(void);
     virtual CombatManeuverReturns DoManeuver_Idle_Buff(void);
     virtual CombatManeuverReturns DoManeuver_Idle_Buff_Post(void);
+
+	virtual CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
+
+	virtual CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
+
+	virtual CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
 
 public:
 
@@ -226,12 +366,12 @@ protected:
     virtual CombatManeuverReturns DoFirstCombatManeuverPVP(Unit *pTarget);
     virtual CombatManeuverReturns DoNextCombatManeuverPVP(Unit *pTarget);
 
+
+
     CombatManeuverReturns CastSpellNoRanged(uint32 nextAction, Unit *pTarget);
     CombatManeuverReturns CastSpellWand(uint32 nextAction, Unit *pTarget, uint32 SHOOT);
     virtual CombatManeuverReturns HealPlayer(Player* target);
-    CombatManeuverReturns Buff(CombatManeuverReturns (PlayerbotClassAI::*Buff_Helper)(uint32, Unit*), uint32 spellId, uint32 type = JOB_ALL, bool bMustBeOOC = true);
-    bool NeedGroupBuff(uint32 groupBuffSpellId, uint32 singleBuffSpellId);
-    Player* GetHealTarget(JOB_TYPE type = JOB_ALL);
+     Player* GetHealTarget(JOB_TYPE type = JOB_ALL);
     Player* GetDispelTarget(DispelType dispelType, JOB_TYPE type = JOB_ALL, bool bMustBeOOC = false);
     Player* GetResurrectionTarget(JOB_TYPE type = JOB_ALL, bool bMustBeOOC = true);
     JOB_TYPE GetTargetJob(Player* target);
@@ -245,6 +385,12 @@ protected:
 
     CombatManeuverReturns RessurectTarget(Player* target, uint32 RezSpell);
     CombatManeuverReturns HealTarget(Player* target, uint32 HealSpell);
+
+	bool NeedGroupBuff(uint32 groupBuffSpellId, uint32 singleBuffSpellId, uint32 singleGreaterBuffSpellId = 0);
+private:
+
+//	CombatManeuverReturns Buff(CombatManeuverReturns(PlayerbotClassAI::*Buff_Helper)(uint32, Unit*), uint32 spellId, BOT_ROLE eCastOnRole = BOT_ROLE::ROLE_ALL, uint32 type = JOB_ALL, bool bMustBeOOC = true);
+
 };
 
 #endif

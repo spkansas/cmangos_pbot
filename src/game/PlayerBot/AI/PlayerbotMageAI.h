@@ -92,107 +92,132 @@ enum MageSpells
 class PlayerbotMageAI : PlayerbotClassAI
 {
 public:
-    PlayerbotMageAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
+
+	// ARCANE
+	uint32	ARCANE_MISSILES,
+			ARCANE_EXPLOSION,
+			COUNTERSPELL,
+			SLOW,
+			ARCANE_BARRAGE,
+			ARCANE_BLAST,
+			MIRROR_IMAGE,
+			ARCANE_POWER;
+	// ranged
+	uint32	SHOOT;
+
+	// FIRE
+	uint32	FIREBALL,
+			FIRE_BLAST,
+			FLAMESTRIKE,
+			SCORCH,
+			PYROBLAST,
+			BLAST_WAVE,
+			COMBUSTION,
+			DRAGONS_BREATH,
+			LIVING_BOMB,
+			FROSTFIRE_BOLT,
+			FIRE_WARD;
+
+	// FROST
+	uint32	DEEP_FREEZE,
+			FROSTBOLT,
+			FROST_NOVA,
+			BLIZZARD,
+			ICY_VEINS,
+			CONE_OF_COLD,
+			ICE_BARRIER,
+			SUMMON_WATER_ELEMENTAL,
+			ICE_LANCE,
+			FROST_WARD,
+			ICE_BLOCK,
+			COLD_SNAP;
+
+	// buffs
+	uint32	FROST_ARMOR,
+			ICE_ARMOR,
+			MAGE_ARMOR,
+			MOLTEN_ARMOR,
+			ARCANE_INTELLECT,
+			ARCANE_BRILLIANCE,
+			DALARAN_INTELLECT,
+			DALARAN_BRILLIANCE,
+			MANA_SHIELD,
+			DAMPEN_MAGIC,
+			AMPLIFY_MAGIC,
+			MAGE_REMOVE_CURSE;
+
+	// racial
+	uint32	ARCANE_TORRENT,
+			GIFT_OF_THE_NAARU,
+			STONEFORM,
+			ESCAPE_ARTIST,
+			EVERY_MAN_FOR_HIMSELF,
+			SHADOWMELD,
+			BLOOD_FURY,
+			WAR_STOMP,
+			BERSERKING,
+			WILL_OF_THE_FORSAKEN;
+
+	uint32	CONJURE_WATER,
+			CONJURE_FOOD;
+
+public:
+
+	PlayerbotMageAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
     virtual ~PlayerbotMageAI();
 
-    // all combat actions go here
-//    CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
-//    CombatManeuverReturns DoManeuver_Combat_Exec(Unit* pTarget);
+	CombatManeuverReturns CastSpell(uint32 nextAction, Unit *pTarget = nullptr) { return CastSpellWand(nextAction, pTarget, SHOOT); }
 
-    // all non combat actions go here, ex buffs, heals, rezzes
-    void DoNonCombatActions();
+protected:
+
+	bool PBotNewAI(void) { return true; }
 
 private:
 
 	bool PlayerbotClassAI_ClassAIInit(void);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
+//	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
 
-    CombatManeuverReturns DoFirstCombatManeuverPVE(Unit* pTarget);
-    CombatManeuverReturns DoNextCombatManeuverPVE(Unit* pTarget);
-    CombatManeuverReturns DoFirstCombatManeuverPVP(Unit* pTarget);
-    CombatManeuverReturns DoNextCombatManeuverPVP(Unit* pTarget);
+    CombatManeuverReturns DoFirstCombatManeuverPVE(Unit *pTarget);
+    CombatManeuverReturns DoNextCombatManeuverPVE(Unit *pTarget);
+    CombatManeuverReturns DoFirstCombatManeuverPVP(Unit *pTarget);
+    CombatManeuverReturns DoNextCombatManeuverPVP(Unit *pTarget);
 
-    CombatManeuverReturns CastSpell(uint32 nextAction, Unit *pTarget = nullptr) { return CastSpellWand(nextAction, pTarget, SHOOT); }
+private:
 
-    static bool BuffHelper(PlayerbotAI* ai, uint32 spellId, Unit *target);
+//	CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
 
-    // ARCANE
-    uint32 ARCANE_MISSILES,
-           ARCANE_EXPLOSION,
-           COUNTERSPELL,
-           SLOW,
-           ARCANE_BARRAGE,
-           ARCANE_BLAST,
-           MIRROR_IMAGE,
-           ARCANE_POWER;
-    // ranged
-    uint32 SHOOT;
+	CombatManeuverReturns DoManeuver_Idle_Cure_Detremental(void);
 
-    // FIRE
-    uint32 FIREBALL,
-           FIRE_BLAST,
-           FLAMESTRIKE,
-           SCORCH,
-           PYROBLAST,
-           BLAST_WAVE,
-           COMBUSTION,
-           DRAGONS_BREATH,
-           LIVING_BOMB,
-           FROSTFIRE_BOLT,
-           FIRE_WARD;
+	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
 
-    // FROST
-    uint32 DEEP_FREEZE,
-           FROSTBOLT,
-           FROST_NOVA,
-           BLIZZARD,
-           ICY_VEINS,
-           CONE_OF_COLD,
-           ICE_BARRIER,
-           SUMMON_WATER_ELEMENTAL,
-           ICE_LANCE,
-           FROST_WARD,
-           ICE_BLOCK,
-           COLD_SNAP;
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player *target);
 
-    // buffs
-    uint32 FROST_ARMOR,
-           ICE_ARMOR,
-           MAGE_ARMOR,
-           MOLTEN_ARMOR,
-           ARCANE_INTELLECT,
-           ARCANE_BRILLIANCE,
-           DALARAN_INTELLECT,
-           DALARAN_BRILLIANCE,
-           MANA_SHIELD,
-           DAMPEN_MAGIC,
-           AMPLIFY_MAGIC,
-           MAGE_REMOVE_CURSE;
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player *target);
 
-    // racial
-    uint32 ARCANE_TORRENT,
-           GIFT_OF_THE_NAARU,
-           STONEFORM,
-           ESCAPE_ARTIST,
-           EVERY_MAN_FOR_HIMSELF,
-           SHADOWMELD,
-           BLOOD_FURY,
-           WAR_STOMP,
-           BERSERKING,
-           WILL_OF_THE_FORSAKEN;
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Prep(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Post(void);
 
-    uint32 CONJURE_WATER,
-           CONJURE_FOOD;
+//	CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
+
 };
 
 #endif

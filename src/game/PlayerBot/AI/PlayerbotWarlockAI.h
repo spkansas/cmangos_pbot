@@ -273,6 +273,10 @@ public:
 	PlayerbotWarlockAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
     virtual ~PlayerbotWarlockAI();
 
+protected:
+
+	bool PBotNewAI(void) { return true; }
+
 private:
 
 	bool PlayerbotClassAI_ClassAIInit(void);
@@ -295,17 +299,29 @@ private:
 
 private:
 
+//	CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Cure_Detremental(void);
+
 	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player *target);
+
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player *target);
+
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Prep(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Post(void);
+
 	CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
+
 	CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
 
-//  CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player* target);
-//  CombatManeuverReturns DoManeuver_Idle_Rez(Player* target);
-//  CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player* target);
-
-//  CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player* target);
-//  CombatManeuverReturns DoManeuver_Idle_Heal(Player* target);
-//  CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player* target);
+//	CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
 
 private:
 
