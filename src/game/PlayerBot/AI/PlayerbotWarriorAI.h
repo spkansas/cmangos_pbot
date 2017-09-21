@@ -91,6 +91,96 @@ enum WarriorSpells
     SUDDEN_DEATH_1                  = 52437
 };
 
+
+enum TalentsWarrior  // 0x001
+{
+	WARRIOR_IMPROVED_HEROIC_STRIKE = 124,   // TabId = 161, Tab = 0, Row = 0, Column = 0
+	WARRIOR_DEFLECTION = 130,   // TabId = 161, Tab = 0, Row = 0, Column = 1
+	WARRIOR_IMPROVED_REND = 127,   // TabId = 161, Tab = 0, Row = 0, Column = 2
+	WARRIOR_IMPROVED_CHARGE = 126,   // TabId = 161, Tab = 0, Row = 1, Column = 0
+	WARRIOR_IRON_WILL = 641,   // TabId = 161, Tab = 0, Row = 1, Column = 1
+	WARRIOR_TACTICAL_MASTERY = 128,   // TabId = 161, Tab = 0, Row = 1, Column = 2
+	WARRIOR_IMPROVED_OVERPOWER = 131,   // TabId = 161, Tab = 0, Row = 2, Column = 0
+	WARRIOR_ANGER_MANAGEMENT = 137,   // TabId = 161, Tab = 0, Row = 2, Column = 1
+	WARRIOR_IMPALE = 662,   // TabId = 161, Tab = 0, Row = 2, Column = 2
+	WARRIOR_DEEP_WOUNDS = 121,   // TabId = 161, Tab = 0, Row = 2, Column = 3
+	WARRIOR_TWOHANDED_WEAPON_SPECIALIZATION = 136,   // TabId = 161, Tab = 0, Row = 3, Column = 1
+	WARRIOR_TASTE_FOR_BLOOD = 2232,  // TabId = 161, Tab = 0, Row = 3, Column = 2
+	WARRIOR_POLEAXE_SPECIALIZATION = 132,   // TabId = 161, Tab = 0, Row = 4, Column = 0
+	WARRIOR_SWEEPING_STRIKES = 133,   // TabId = 161, Tab = 0, Row = 4, Column = 1
+	WARRIOR_MACE_SPECIALIZATION = 125,   // TabId = 161, Tab = 0, Row = 4, Column = 2
+	WARRIOR_SWORD_SPECIALIZATION = 123,   // TabId = 161, Tab = 0, Row = 4, Column = 3
+	WARRIOR_WEAPON_MASTERY = 134,   // TabId = 161, Tab = 0, Row = 5, Column = 0
+	WARRIOR_IMPROVED_HAMSTRING = 129,   // TabId = 161, Tab = 0, Row = 5, Column = 2
+	WARRIOR_TRAUMA = 1859,  // TabId = 161, Tab = 0, Row = 5, Column = 3
+	WARRIOR_SECOND_WIND = 1663,  // TabId = 161, Tab = 0, Row = 6, Column = 0
+	WARRIOR_MORTAL_STRIKE = 135,   // TabId = 161, Tab = 0, Row = 6, Column = 1
+	WARRIOR_STRENGTH_OF_ARMS = 1862,  // TabId = 161, Tab = 0, Row = 6, Column = 2
+	WARRIOR_IMPROVED_SLAM = 2233,  // TabId = 161, Tab = 0, Row = 6, Column = 3
+	WARRIOR_JUGGERNAUT = 2283,  // TabId = 161, Tab = 0, Row = 7, Column = 0
+	WARRIOR_IMPROVED_MORTAL_STRIKE = 1824,  // TabId = 161, Tab = 0, Row = 7, Column = 1
+	WARRIOR_UNRELENTING_ASSAULT = 1860,  // TabId = 161, Tab = 0, Row = 7, Column = 2
+	WARRIOR_SUDDEN_DEATH = 1662,  // TabId = 161, Tab = 0, Row = 8, Column = 0
+	WARRIOR_ENDLESS_RAGE = 1661,  // TabId = 161, Tab = 0, Row = 8, Column = 1
+	WARRIOR_BLOOD_FRENZY = 1664,  // TabId = 161, Tab = 0, Row = 8, Column = 2
+	WARRIOR_WRECKING_CREW = 2231,  // TabId = 161, Tab = 0, Row = 9, Column = 1
+	WARRIOR_BLADESTORM = 1863,  // TabId = 161, Tab = 0, Row = 10, Column = 1
+	WARRIOR_IMPROVED_BLOODRAGE = 142,   // TabId = 163, Tab = 2, Row = 0, Column = 0
+	WARRIOR_SHIELD_SPECIALIZATION = 1601,  // TabId = 163, Tab = 2, Row = 0, Column = 1
+	WARRIOR_IMPROVED_THUNDER_CLAP = 141,   // TabId = 163, Tab = 2, Row = 0, Column = 2
+	WARRIOR_INCITE = 144,   // TabId = 163, Tab = 2, Row = 1, Column = 1
+	WARRIOR_ANTICIPATION = 138,   // TabId = 163, Tab = 2, Row = 1, Column = 2
+	WARRIOR_LAST_STAND = 153,   // TabId = 163, Tab = 2, Row = 2, Column = 0
+	WARRIOR_IMPROVED_REVENGE = 147,   // TabId = 163, Tab = 2, Row = 2, Column = 1
+	WARRIOR_SHIELD_MASTERY = 1654,  // TabId = 163, Tab = 2, Row = 2, Column = 2
+	WARRIOR_TOUGHNESS = 140,   // TabId = 163, Tab = 2, Row = 2, Column = 3
+	WARRIOR_IMPROVED_SPELL_REFLECTION = 2247,  // TabId = 163, Tab = 2, Row = 3, Column = 0
+	WARRIOR_IMPROVED_DISARM = 151,   // TabId = 163, Tab = 2, Row = 3, Column = 1
+	WARRIOR_PUNCTURE = 146,   // TabId = 163, Tab = 2, Row = 3, Column = 2
+	WARRIOR_IMPROVED_DISCIPLINES = 150,   // TabId = 163, Tab = 2, Row = 4, Column = 0
+	WARRIOR_CONCUSSION_BLOW = 152,   // TabId = 163, Tab = 2, Row = 4, Column = 1
+	WARRIOR_GAG_ORDER = 149,   // TabId = 163, Tab = 2, Row = 4, Column = 2
+	WARRIOR_ONEHANDED_WEAPON_SPECIALIZATION = 702,   // TabId = 163, Tab = 2, Row = 5, Column = 2
+	WARRIOR_IMPROVED_DEFENSIVE_STANCE = 1652,  // TabId = 163, Tab = 2, Row = 6, Column = 0
+	WARRIOR_VIGILANCE = 148,   // TabId = 163, Tab = 2, Row = 6, Column = 1
+	WARRIOR_FOCUSED_RAGE = 1660,  // TabId = 163, Tab = 2, Row = 6, Column = 2
+	WARRIOR_VITALITY = 1653,  // TabId = 163, Tab = 2, Row = 7, Column = 1
+	WARRIOR_SAFEGUARD = 1870,  // TabId = 163, Tab = 2, Row = 7, Column = 2
+	WARRIOR_WARBRINGER = 2236,  // TabId = 163, Tab = 2, Row = 8, Column = 0
+	WARRIOR_DEVASTATE = 1666,  // TabId = 163, Tab = 2, Row = 8, Column = 1
+	WARRIOR_CRITICAL_BLOCK = 1893,  // TabId = 163, Tab = 2, Row = 8, Column = 2
+	WARRIOR_SWORD_AND_BOARD = 1871,  // TabId = 163, Tab = 2, Row = 9, Column = 1
+	WARRIOR_DAMAGE_SHIELD = 2246,  // TabId = 163, Tab = 2, Row = 9, Column = 2
+	WARRIOR_SHOCKWAVE = 1872,  // TabId = 163, Tab = 2, Row = 10, Column = 1
+	WARRIOR_ARMORED_TO_THE_TEETH = 2250,  // TabId = 164, Tab = 1, Row = 0, Column = 0
+	WARRIOR_BOOMING_VOICE = 158,   // TabId = 164, Tab = 1, Row = 0, Column = 1
+	WARRIOR_CRUELTY = 157,   // TabId = 164, Tab = 1, Row = 0, Column = 2
+	WARRIOR_IMPROVED_DEMORALIZING_SHOUT = 161,   // TabId = 164, Tab = 1, Row = 1, Column = 1
+	WARRIOR_UNBRIDLED_WRATH = 159,   // TabId = 164, Tab = 1, Row = 1, Column = 2
+	WARRIOR_IMPROVED_CLEAVE = 166,   // TabId = 164, Tab = 1, Row = 2, Column = 0
+	WARRIOR_PIERCING_HOWL = 160,   // TabId = 164, Tab = 1, Row = 2, Column = 1
+	WARRIOR_BLOOD_CRAZE = 661,   // TabId = 164, Tab = 1, Row = 2, Column = 2
+	WARRIOR_COMMANDING_PRESENCE = 154,   // TabId = 164, Tab = 1, Row = 2, Column = 3
+	WARRIOR_DUAL_WIELD_SPECIALIZATION = 1581,  // TabId = 164, Tab = 1, Row = 3, Column = 0
+	WARRIOR_IMPROVED_EXECUTE = 1542,  // TabId = 164, Tab = 1, Row = 3, Column = 1
+	WARRIOR_ENRAGE = 155,   // TabId = 164, Tab = 1, Row = 3, Column = 2
+	WARRIOR_PRECISION = 1657,  // TabId = 164, Tab = 1, Row = 4, Column = 0
+	WARRIOR_DEATH_WISH = 165,   // TabId = 164, Tab = 1, Row = 4, Column = 1
+	WARRIOR_IMPROVED_INTERCEPT = 1543,  // TabId = 164, Tab = 1, Row = 4, Column = 2
+	WARRIOR_IMPROVED_BERSERKER_RAGE = 1541,  // TabId = 164, Tab = 1, Row = 5, Column = 0
+	WARRIOR_FLURRY = 156,   // TabId = 164, Tab = 1, Row = 5, Column = 2
+	WARRIOR_INTENSIFY_RAGE = 1864,  // TabId = 164, Tab = 1, Row = 6, Column = 0
+	WARRIOR_BLOODTHIRST = 167,   // TabId = 164, Tab = 1, Row = 6, Column = 1
+	WARRIOR_IMPROVED_WHIRLWIND = 1655,  // TabId = 164, Tab = 1, Row = 6, Column = 3
+	WARRIOR_FURIOUS_ATTACKS = 1865,  // TabId = 164, Tab = 1, Row = 7, Column = 0
+	WARRIOR_IMPROVED_BERSERKER_STANCE = 1658,  // TabId = 164, Tab = 1, Row = 7, Column = 3
+	WARRIOR_HEROIC_FURY = 1868,  // TabId = 164, Tab = 1, Row = 8, Column = 0
+	WARRIOR_RAMPAGE = 1659,  // TabId = 164, Tab = 1, Row = 8, Column = 1
+	WARRIOR_BLOODSURGE = 1866,  // TabId = 164, Tab = 1, Row = 8, Column = 2
+	WARRIOR_UNENDING_FURY = 2234,  // TabId = 164, Tab = 1, Row = 9, Column = 1
+	WARRIOR_TITANS_GRIP = 1867   // TabId = 164, Tab = 1, Row = 10, Column = 1
+};
+
 //class Player;
 
 class PlayerbotWarriorAI : PlayerbotClassAI
@@ -182,9 +272,6 @@ public:
 
     bool Pull();
 
-    //Buff/rebuff shouts
-    void CheckShouts();
-
     // Utility Functions
     bool CanPull();
 
@@ -238,6 +325,10 @@ private:
 
 //	CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
 
+private:
+	
+	//Buff/rebuff shouts
+	void CheckShouts();
 };
 
 #endif

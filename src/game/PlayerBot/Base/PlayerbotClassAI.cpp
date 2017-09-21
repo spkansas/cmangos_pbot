@@ -348,7 +348,10 @@ void PlayerbotClassAI::DoNonCombatActions()
         return;
     }
 
-    if (!m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel()) return;
+
+	if (!m_botdata->GetBot()->isAlive()  || 
+		 m_botdata->GetBot()->IsInDuel() || 
+		 m_botdata->GetBot()->isInCombat()) return;
 
 	// Form control - Start of process
 	if (DoManeuver_Idle_Forms_Start() & RETURN_CONTINUE) return;
@@ -402,6 +405,57 @@ void PlayerbotClassAI::DoNonCombatActions()
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Cure_Detremental(void)
 {
+	if (m_botdata->GetCanCure())
+	{
+		// Remove curse on group members
+		if (Player* pCursedTarget = GetDispelTarget(DISPEL_CURSE))
+		{
+			Unit::SpellAuraHolderMap const& auras = pCursedTarget->GetSpellAuraHolderMap();
+
+			for (Unit::SpellAuraHolderMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+			{
+				SpellAuraHolder *holder = itr->second;
+
+				if ((holder->GetSpellProto()->Dispel == DISPEL_DISEASE) && m_botdata->GetDispellDiseaseSpell())
+				{
+					if (m_botdata->GetAI()->CastSpell(m_botdata->GetDispellDiseaseSpell(), *pCursedTarget))
+					{
+						return RETURN_CONTINUE;
+					}
+
+					return RETURN_NO_ACTION_ERROR;
+				}
+				else if ((holder->GetSpellProto()->Dispel == DISPEL_POISON) && m_botdata->GetDispellPosionSpell())
+				{
+					if (m_botdata->GetAI()->CastSpell(m_botdata->GetDispellPosionSpell(), *pCursedTarget))
+					{
+						return RETURN_CONTINUE;
+					}
+
+					return RETURN_NO_ACTION_ERROR;
+				}
+				else if ((holder->GetSpellProto()->Dispel == DISPEL_MAGIC) && m_botdata->GetDispellMagicSpell())
+				{
+					if (m_botdata->GetAI()->CastSpell(m_botdata->GetDispellMagicSpell(), *pCursedTarget))
+					{
+						return RETURN_CONTINUE;
+					}
+
+					return RETURN_NO_ACTION_ERROR;
+				}
+				else if ((holder->GetSpellProto()->Dispel == DISPEL_CURSE) && m_botdata->GetDispellCurseSpell())
+				{
+					if (m_botdata->GetAI()->CastSpell(m_botdata->GetDispellCurseSpell(), *pCursedTarget))
+					{
+						return RETURN_CONTINUE;
+					}
+
+					return RETURN_NO_ACTION_ERROR;
+				}
+			}
+		}
+	}
+
 	return RETURN_NO_ACTION_OK;
 }
 
@@ -1211,9 +1265,8 @@ bool PlayerbotClassAI::FleeFromPointIfCan(uint32 radius, Unit* pTarget, float x0
  */
 Player* PlayerbotClassAI::GetDispelTarget(DispelType dispelType, JOB_TYPE type, bool bMustBeOOC)
 {
-    if (!m_botdata->GetAI())  return nullptr;
-    if (!m_botdata->GetBot()) return nullptr;
     if (!m_botdata->GetBot()->isAlive() || m_botdata->GetBot()->IsInDuel()) return nullptr;
+
     if (bMustBeOOC && m_botdata->GetBot()->isInCombat()) return nullptr;
 
     // First, fill the list of targets
@@ -1255,6 +1308,9 @@ Player* PlayerbotClassAI::GetDispelTarget(DispelType dispelType, JOB_TYPE type, 
 
     return nullptr;
 }
+
+
+
 
 Player* PlayerbotClassAI::GetResurrectionTarget(JOB_TYPE type, bool bMustBeOOC)
 {
@@ -1426,3 +1482,125 @@ CombatManeuverReturns PlayerbotClassAI::HealTarget(Player* target, uint32 HealSp
 	return RETURN_NO_ACTION_ERROR; // not error per se - possibly just OOM
 }
 
+
+Player* PlayerbotClassAI::Cure_Detremental_Target(DispelType dispelType, BOT_ROLE tgtRole, bool bMustBeOOC)
+{
+
+	if (m_botdata->GetBot()->GetGroup())
+	{
+		std::vector<role_priority> targets;
+
+		Group::MemberSlotList const& groupSlot = m_botdata->GetBot()->GetGroup()->GetMemberSlots();
+
+		for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+		{
+			Player *groupMember = sObjectMgr.GetPlayer(itr->guid);
+
+			if (!groupMember || !groupMember->isAlive()) continue;
+
+			BOT_ROLE Role = GetTargetRole(groupMember);
+
+			if (Role & tgtRole)
+			{
+				uint32 dispelMask = GetDispellMask(dispelType);
+
+				Unit::SpellAuraHolderMap const& auras = groupMember->GetSpellAuraHolderMap();
+
+				for (Unit::SpellAuraHolderMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+				{
+					SpellAuraHolder *holder = itr->second;
+
+					if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_DISEASE))
+					{
+						if (m_botdata->GetDispellDiseaseSpell() && holder->GetSpellProto()->Dispel == DISPEL_DISEASE)
+						{
+							targets.push_back(role_priority(groupMember, 0, Role));
+						}
+					}
+					else if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_POISON))
+					{
+						if (m_botdata->GetDispellPosionSpell() && holder->GetSpellProto()->Dispel == DISPEL_POISON)
+						{
+							targets.push_back(role_priority(groupMember, 0, Role));
+						}
+					}
+					else if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_MAGIC))
+					{
+						if (m_botdata->GetDispellMagicSpell() && holder->GetSpellProto()->Dispel == DISPEL_MAGIC)
+						{
+							targets.push_back(role_priority(groupMember, 0, Role));
+						}
+					}
+					else if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_CURSE))
+					{
+						if (m_botdata->GetDispellCurseSpell() && holder->GetSpellProto()->Dispel == DISPEL_CURSE)
+						{
+							targets.push_back(role_priority(groupMember, 0, Role));
+						}
+					}
+
+					// Only return group members with negative magic effect
+					if (dispelType == DISPEL_MAGIC && holder->IsPositive())		continue;
+
+					// poison, disease and curse are always negative: return everyone
+					if ((1 << holder->GetSpellProto()->Dispel) & dispelMask)
+					{
+						targets.push_back(role_priority(groupMember, 0, Role));
+					}
+				}
+			}
+		}
+
+		// Sorts according to type: Healers first, tanks next, then master followed by DPS, thanks to the order of the TYPE enum
+		std::sort(targets.begin(), targets.end());
+
+		if (targets.size()) 	return targets.at(0).pPlayer;
+	}
+
+	return nullptr;
+}
+
+
+BOT_ROLE PlayerbotClassAI::GetTargetRole(Player* target)
+{
+	if (target->GetPlayerbotAI())
+	{
+		return m_botdata->GetRolePrimary();
+	}
+
+	// figure out what to do with human players - i.e. figure out if they're tank, DPS or healer
+	uint32 uSpec = target->GetSpec();
+
+	switch (target->getClass())
+	{
+		case CLASS_PALADIN:
+			if (uSpec == PALADIN_SPEC_HOLY)			return ROLE_HEAL;
+			if (uSpec == PALADIN_SPEC_PROTECTION)	return ROLE_TANK;
+			return ROLE_DPS_MELEE;
+		case CLASS_DRUID:
+			if (uSpec == DRUID_SPEC_RESTORATION)	return ROLE_HEAL;
+			if (uSpec == DRUID_SPEC_FERAL)			return ROLE_TANK;
+			return ROLE_DPS_MELEE;
+		case CLASS_PRIEST:
+			if (uSpec == PRIEST_SPEC_HOLY)			return ROLE_HEAL;
+			return ROLE_DPS_CASTER;
+		case CLASS_SHAMAN:
+			if (uSpec == SHAMAN_SPEC_RESTORATION)	return ROLE_HEAL;
+			return ROLE_DPS_CASTER;
+		case CLASS_WARRIOR:
+			if (uSpec == WARRIOR_SPEC_PROTECTION)	return ROLE_TANK;
+			return ROLE_DPS_MELEE;
+		case CLASS_DEATH_KNIGHT:
+			if (uSpec == DEATHKNIGHT_SPEC_FROST)	return ROLE_TANK;
+			return ROLE_DPS_MELEE;
+		case CLASS_MAGE:
+		case CLASS_WARLOCK:
+			return ROLE_DPS_CASTER;
+		case CLASS_ROGUE:
+		case CLASS_HUNTER:
+		default:
+			return ROLE_DPS_MELEE;
+	}
+
+	return ROLE_DPS_MELEE;
+}

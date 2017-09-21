@@ -129,6 +129,8 @@ bool PlayerbotShamanAI::PlayerbotClassAI_ClassAIInit(void)
     IMPROVED_ICY_TALONS     = m_botdata->GetAI()->initSpell(IMPROVED_ICY_TALONS_1);
     HORN_OF_WINTER          = m_botdata->GetAI()->initSpell(HORN_OF_WINTER_1);
 
+	m_botdata->SetRezSpell(ANCESTRAL_SPIRIT);
+
 	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_HEAL);
 
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
@@ -245,17 +247,6 @@ CombatManeuverReturns PlayerbotShamanAI::HealPlayer(Player* target)
     if (r != RETURN_NO_ACTION_OK)
         return r;
 
-    if (!target->isAlive())
-    {
-        if (ANCESTRAL_SPIRIT && m_botdata->GetAI()->CastSpell(ANCESTRAL_SPIRIT, *target))
-        {
-            std::string msg = "Resurrecting ";
-            msg += target->GetName();
-            m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
-            return RETURN_CONTINUE;
-        }
-        return RETURN_NO_ACTION_ERROR; // not error per se - possibly just OOM
-    }
 
     // Dispel if necessary
     if (CURE_TOXINS > 0 && (m_botdata->GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_NODISPEL) == 0)

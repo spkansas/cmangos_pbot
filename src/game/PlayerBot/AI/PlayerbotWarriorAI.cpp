@@ -396,24 +396,6 @@ CombatManeuverReturns PlayerbotWarriorAI::DoNextCombatManeuverPVP(Unit* pTarget)
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
 }
 
-//Buff and rebuff shouts
-void PlayerbotWarriorAI::CheckShouts()
-{
-    if (!m_botdata->GetAI())  return;
-    if (!m_botdata->GetBot()) return;
-
-    if (m_botdata->GetBot()->GetSpec() == WARRIOR_SPEC_PROTECTION && COMMANDING_SHOUT > 0)
-    {
-        if (!m_botdata->GetBot()->HasAura(COMMANDING_SHOUT, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(COMMANDING_SHOUT))
-            return;
-    }
-    else // Not prot, or prot but no Commanding Shout yet
-    {
-        if (!m_botdata->GetBot()->HasAura(BATTLE_SHOUT, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(BATTLE_SHOUT))
-            return;
-    }
-}
-
 
 CombatManeuverReturns PlayerbotWarriorAI::DoManeuver_Idle_Forms_Start(void)
 {
@@ -447,7 +429,7 @@ CombatManeuverReturns PlayerbotWarriorAI::DoManeuver_Idle_Heal_Prep(Player* targ
 
 	if (m_botdata->GetBot()->getRace() == RACE_DRAENEI && !target->HasAura(GIFT_OF_THE_NAARU, EFFECT_INDEX_0) && target->GetHealthPercent() < 70)
 	{
-		ret_val = m_botdata->SetHealSpell(GIFT_OF_THE_NAARU) ? RETURN_NO_ACTION_OK : RETURN_CONTINUE);
+		ret_val = (m_botdata->SetHealSpell(GIFT_OF_THE_NAARU) ? RETURN_NO_ACTION_OK : RETURN_CONTINUE);
 	}
 	else
 	{
@@ -463,9 +445,6 @@ CombatManeuverReturns PlayerbotWarriorAI::DoManeuver_Idle_Heal_Prep(Player* targ
 // Match up with "Pull()" below
 bool PlayerbotWarriorAI::CanPull()
 {
-    if (!m_botdata->GetBot()) return false;
-    if (!m_botdata->GetAI()) return false;
-
     if (m_botdata->GetBot()->GetUInt32Value(PLAYER_AMMO_ID)) // Having ammo equipped means a weapon is equipped as well. Probably. [TODO: does this work with throwing knives? Can a playerbot 'cheat' ammo into the slot without a proper weapon?]
     {
         // Can't do this, CanPull CANNOT check for anything that requires a target
@@ -508,4 +487,21 @@ bool PlayerbotWarriorAI::Pull()
     }
 
     return false;
+}
+
+
+//Buff and rebuff shouts
+void PlayerbotWarriorAI::CheckShouts()
+{
+
+	if (m_botdata->GetBot()->GetSpec() == WARRIOR_SPEC_PROTECTION && COMMANDING_SHOUT > 0)
+	{
+		if (!m_botdata->GetBot()->HasAura(COMMANDING_SHOUT, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(COMMANDING_SHOUT))
+			return;
+	}
+	else // Not prot, or prot but no Commanding Shout yet
+	{
+		if (!m_botdata->GetBot()->HasAura(BATTLE_SHOUT, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(BATTLE_SHOUT))
+			return;
+	}
 }

@@ -108,6 +108,8 @@ bool PlayerbotPaladinAI::PlayerbotClassAI_ClassAIInit(void)
     //The check doesn't work for now
     //PRAYER_OF_SHADOW_PROTECTION   = m_botdata->GetAI()->initSpell(PriestSpells::PRAYER_OF_SHADOW_PROTECTION_1);
 
+	m_botdata->SetRezSpell(REDEMPTION);
+
 	buff_list[0] = new PlayerbotBufflist;
 
 	buff_list[0]->spellid.group				= { NULL };							// Group Version
@@ -147,6 +149,10 @@ bool PlayerbotPaladinAI::PlayerbotClassAI_ClassAIInit(void)
 //	buff_list[3]->caston_non_bot_all		= { PBOT_CLASS_ALL };				// Non-bot buff control
 
 	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_TANK);
+
+	m_botdata->SetDispellMagicSpell(CLEANSE);
+	m_botdata->SetDispellDiseaseSpell(CLEANSE > 0 ? CLEANSE : PURIFY);
+	m_botdata->SetDispellPosionSpell(CLEANSE > 0 ? CLEANSE : PURIFY);
 
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
@@ -282,63 +288,11 @@ CombatManeuverReturns PlayerbotPaladinAI::DoNextCombatManeuverPVP(Unit* pTarget)
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
 }
 
+
+/*
 CombatManeuverReturns PlayerbotPaladinAI::HealPlayer(Player* target)
 {
-    CombatManeuverReturns r = PlayerbotClassAI::HealPlayer(target);
-    if (r != RETURN_NO_ACTION_OK)
-        return r;
 
-    if (!target->isAlive())
-    {
-        if (REDEMPTION && m_botdata->GetAI()->CastSpell(REDEMPTION, *target))
-        {
-            std::string msg = "Resurrecting ";
-            msg += target->GetName();
-            m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
-            return RETURN_CONTINUE;
-        }
-        return RETURN_NO_ACTION_ERROR; // not error per se - possibly just OOM
-    }
-
-    if (PURIFY > 0 && (m_botdata->GetAI()->GetCombatOrder() & PlayerbotAI::ORDERS_NODISPEL) == 0)
-    {
-        uint32 DISPEL = CLEANSE > 0 ? CLEANSE : PURIFY;
-        uint32 dispelMask  = GetDispellMask(DISPEL_DISEASE);
-        uint32 dispelMask2 = GetDispellMask(DISPEL_POISON);
-        uint32 dispelMask3 = GetDispellMask(DISPEL_MAGIC);
-        Unit::SpellAuraHolderMap const& auras = target->GetSpellAuraHolderMap();
-        for (Unit::SpellAuraHolderMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
-        {
-            SpellAuraHolder *holder = itr->second;
-            if ((1 << holder->GetSpellProto()->Dispel) & dispelMask)
-            {
-                if (holder->GetSpellProto()->Dispel == DISPEL_DISEASE)
-                {
-                    if (m_botdata->GetAI()->CastSpell(DISPEL, *target))
-                        return RETURN_CONTINUE;
-                    return RETURN_NO_ACTION_ERROR;
-                }
-            }
-            else if ((1 << holder->GetSpellProto()->Dispel) & dispelMask2)
-            {
-                if (holder->GetSpellProto()->Dispel == DISPEL_POISON)
-                {
-                    if (m_botdata->GetAI()->CastSpell(DISPEL, *target))
-                        return RETURN_CONTINUE;
-                    return RETURN_NO_ACTION_ERROR;
-                }
-            }
-            else if ((1 << holder->GetSpellProto()->Dispel) & dispelMask3 & (DISPEL == CLEANSE))
-            {
-                if (holder->GetSpellProto()->Dispel == DISPEL_MAGIC)
-                {
-                    if (m_botdata->GetAI()->CastSpell(DISPEL, *target))
-                        return RETURN_CONTINUE;
-                    return RETURN_NO_ACTION_ERROR;
-                }
-            }
-        }
-    }
 
     uint8 hp = target->GetHealthPercent();
 
@@ -368,6 +322,8 @@ CombatManeuverReturns PlayerbotPaladinAI::HealPlayer(Player* target)
 
     return RETURN_NO_ACTION_UNKNOWN;
 } // end HealTarget
+
+*/
 
 void PlayerbotPaladinAI::CheckAuras()
 {
@@ -416,8 +372,8 @@ void PlayerbotPaladinAI::CheckAuras()
             m_botdata->GetAI()->CastSpell(RETRIBUTION_AURA);
         return;
     }
-
 }
+
 
 bool PlayerbotPaladinAI::CheckSeals()
 {

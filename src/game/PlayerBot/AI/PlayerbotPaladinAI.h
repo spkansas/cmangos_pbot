@@ -210,36 +210,35 @@ private:
 
 private:
 
-//	CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
+//  CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Cure_Detremental(void);
 
 	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
 
-//	CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player *target);
 
-//	CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player* target);
-//	CombatManeuverReturns DoManeuver_Idle_Rez(Player* target);
-//	CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player* target);
-
-//	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player* target);
-//	CombatManeuverReturns DoManeuver_Idle_Heal(Player* target);
-//	CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player* target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player *target);
 
 //	CombatManeuverReturns DoManeuver_Idle_Buff_Prep(void);
 //	CombatManeuverReturns DoManeuver_Idle_Buff(void);
 //	CombatManeuverReturns DoManeuver_Idle_Buff_Post(void);
 
+//	CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
+
 //	CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
 
 //	CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
 
-private:
-
-    // Heals the target based off its hps
-    CombatManeuverReturns HealPlayer(Player* target);
-    Player* GetHealTarget() { return PlayerbotClassAI::GetHealTarget(); }
+	private:
 
     //Changes aura according to spec/orders
     void CheckAuras();
+
     //Changes Seal according to spec
     bool CheckSeals();
 

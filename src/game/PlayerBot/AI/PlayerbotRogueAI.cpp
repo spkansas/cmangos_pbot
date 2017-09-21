@@ -316,49 +316,63 @@ CombatManeuverReturns PlayerbotRogueAI::DoNextCombatManeuverPVP(Unit* pTarget)
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
 }
 
-void PlayerbotRogueAI::DoNonCombatActions()
+
+CombatManeuverReturns  PlayerbotRogueAI::DoManeuver_Idle_Forms_Start(void)
 {
-    if (!m_botdata->GetAI())  return;
-    if (!m_botdata->GetBot()) return;
+	// remove stealth
+	if (m_botdata->GetBot()->HasAura(STEALTH))
+	{
+		m_botdata->GetBot()->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
+		return RETURN_CONTINUE;
+	}
 
-    // remove stealth
-    if (m_botdata->GetBot()->HasAura(STEALTH))
-        m_botdata->GetBot()->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
+	return RETURN_NO_ACTION_OK;
+}
 
-    // hp check
-    if (EatDrinkBandage(false))
-        return;
 
-    // Search and apply poisons to weapons
-    // Mainhand ...
-    Item * poison, * weapon;
-    weapon = m_botdata->GetBot()->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND);
-    if (weapon && weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0)
-    {
-        poison = m_botdata->GetAI()->FindConsumable(INSTANT_POISON_DISPLAYID);
-        if (!poison)
-            poison = m_botdata->GetAI()->FindConsumable(WOUND_POISON_DISPLAYID);
-        if (!poison)
-            poison = m_botdata->GetAI()->FindConsumable(DEADLY_POISON_DISPLAYID);
-        if (poison)
-        {
-            m_botdata->GetAI()->UseItem(poison, EQUIPMENT_SLOT_MAINHAND);
-            m_botdata->GetAI()->SetIgnoreUpdateTime(5);
-        }
-    }
-    //... and offhand
-    weapon = m_botdata->GetBot()->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
-    if (weapon && weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0)
-    {
-        poison = m_botdata->GetAI()->FindConsumable(DEADLY_POISON_DISPLAYID);
-        if (!poison)
-            poison = m_botdata->GetAI()->FindConsumable(WOUND_POISON_DISPLAYID);
-        if (!poison)
-            poison = m_botdata->GetAI()->FindConsumable(INSTANT_POISON_DISPLAYID);
-        if (poison)
-        {
-            m_botdata->GetAI()->UseItem(poison, EQUIPMENT_SLOT_OFFHAND);
-            m_botdata->GetAI()->SetIgnoreUpdateTime(5);
-        }
-    }
-} // end DoNonCombatActions
+CombatManeuverReturns  PlayerbotRogueAI::DoManeuver_Idle_Forms_End(void)
+{
+	Item * poison, *weapon;
+
+	// Search and apply poisons to weapons
+	// Mainhand ...
+	weapon = m_botdata->GetBot()->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND);
+
+	if (weapon && weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0)
+	{
+		poison = m_botdata->GetAI()->FindConsumable(INSTANT_POISON_DISPLAYID);
+
+		if (!poison)
+			poison = m_botdata->GetAI()->FindConsumable(WOUND_POISON_DISPLAYID);
+
+		if (!poison)
+			poison = m_botdata->GetAI()->FindConsumable(DEADLY_POISON_DISPLAYID);
+
+		if (poison)
+		{
+			m_botdata->GetAI()->UseItem(poison, EQUIPMENT_SLOT_MAINHAND);
+			m_botdata->GetAI()->SetIgnoreUpdateTime(5);
+			return RETURN_CONTINUE;
+		}
+	}
+
+	//... and offhand
+	weapon = m_botdata->GetBot()->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
+
+	if (weapon && weapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT) == 0)
+	{
+		poison = m_botdata->GetAI()->FindConsumable(DEADLY_POISON_DISPLAYID);
+		if (!poison)
+			poison = m_botdata->GetAI()->FindConsumable(WOUND_POISON_DISPLAYID);
+		if (!poison)
+			poison = m_botdata->GetAI()->FindConsumable(INSTANT_POISON_DISPLAYID);
+		if (poison)
+		{
+			m_botdata->GetAI()->UseItem(poison, EQUIPMENT_SLOT_OFFHAND);
+			m_botdata->GetAI()->SetIgnoreUpdateTime(5);
+			return RETURN_CONTINUE;
+		}
+	}
+
+	return RETURN_NO_ACTION_OK;
+} 

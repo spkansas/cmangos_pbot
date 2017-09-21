@@ -166,8 +166,6 @@ public:
 	PlayerbotMageAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
     virtual ~PlayerbotMageAI();
 
-	CombatManeuverReturns CastSpell(uint32 nextAction, Unit *pTarget = nullptr) { return CastSpellWand(nextAction, pTarget, SHOOT); }
-
 protected:
 
 	bool PBotNewAI(void) { return true; }
@@ -196,7 +194,7 @@ private:
 
 //	CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
 
-	CombatManeuverReturns DoManeuver_Idle_Cure_Detremental(void);
+//	CombatManeuverReturns DoManeuver_Idle_Cure_Detremental(void);
 
 	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
 
@@ -217,6 +215,10 @@ private:
 //	CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
 
 //	CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
+
+private:
+
+	CombatManeuverReturns CastSpell(uint32 nextAction, Unit *pTarget = nullptr) { return CastSpellWand(nextAction, pTarget, SHOOT); }
 
 };
 

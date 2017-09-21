@@ -49,8 +49,8 @@ enum BOT_ROLE
 	ROLE_NONE		 = 0b00000000,
 	ROLE_HEAL		 = 0b00000001,
 	ROLE_TANK		 = 0b00000010,
-	ROLE_DPS_MELEE   = 0b00000100,
-	ROLE_DPS_CASTER  = 0b00001000,
+	ROLE_DPS_CASTER  = 0b00000100, 
+	ROLE_DPS_MELEE   = 0b00001000,
 	ROLE_BUFF		 = 0b10000000,
 	ROLE_ALL_DPS	 = 0b00001100,
 	ROLE_ALL_CHAR	 = 0b00001111,
@@ -182,6 +182,19 @@ public:
 };
 
 
+struct role_priority
+{
+	Player*	 pPlayer;
+	uint8	 uiHP;
+	BOT_ROLE eRole;
+
+	role_priority(Player* pin, uint8 hpin, BOT_ROLE t) : pPlayer(pin), uiHP(hpin), eRole(t) {}
+
+	// overriding the operator like this is not recommended for general use - however we won't use this struct for anything else
+	bool operator<(const role_priority& a) const { return eRole < a.eRole; }
+};
+
+
 struct heal_priority
 {
     Player* p;
@@ -218,6 +231,11 @@ private:
     uint32       m_uiRezSpellID  = 0;
     uint32       m_uiHealSpellID = 0;
 
+	uint32       m_uiDispellMagicSpellID = 0;
+	uint32       m_uiDispellDiseaseSpellID = 0;
+	uint32       m_uiDispellPosionSpellID = 0;
+	uint32       m_uiDispellCurseSpellID = 0;
+
 public:
 
     PlayerbotClassAIData(Player * const master, Player * const bot, PlayerbotAI * const ai) : m_master(master), m_bot(bot), m_ai(ai)
@@ -238,11 +256,25 @@ public:
 	BOT_ROLE	  const GetRolePrimary(void)			  { return m_eBotPrimeRole; }
 	bool				SetRolePrimary(BOT_ROLE eRole)	  { m_eBotPrimeRole = eRole; return true; }
 
+	bool		  const GetCanCure(void)				  { return (m_uiDispellMagicSpellID || m_uiDispellDiseaseSpellID ||
+																    m_uiDispellPosionSpellID || m_uiDispellCurseSpellID); }
     uint32        const GetRezSpell(void)                 { return m_uiRezSpellID; }
     bool				SetRezSpell(uint32 uiRezSpellID)  { m_uiRezSpellID = uiRezSpellID; return true; }
 
     uint32        const GetHealSpell(void)                 { return m_uiHealSpellID; }
     bool				SetHealSpell(uint32 uiHealSpellID) { m_uiHealSpellID = uiHealSpellID; return true; }
+
+	uint32        const GetDispellMagicSpell(void)						   { return m_uiDispellMagicSpellID; }
+	bool				SetDispellMagicSpell(uint32 uiDispellMagicSpellID) { m_uiDispellMagicSpellID = uiDispellMagicSpellID; return true; }
+
+	uint32        const GetDispellDiseaseSpell(void)						{ return m_uiDispellDiseaseSpellID; }
+	bool				SetDispellDiseaseSpell(uint32 uiDispellDisease)		{ m_uiDispellDiseaseSpellID = uiDispellDisease; return true; }
+
+	uint32        const GetDispellPosionSpell(void)							{ return m_uiDispellPosionSpellID; }
+	bool				SetDispellPosionSpell(uint32 uiDispellPosionSpellID) { m_uiDispellPosionSpellID = uiDispellPosionSpellID; return true; }
+
+	uint32        const GetDispellCurseSpell(void)							{ return m_uiDispellCurseSpellID; }
+	bool				SetDispellCurseSpell(uint32 uiDispellCurseSpellID)  { m_uiDispellCurseSpellID = uiDispellCurseSpellID; return true; }
 
 protected:
 	
@@ -269,6 +301,7 @@ protected:
     time_t               m_WaitUntil;
 
 	PlayerbotBufflist   *buff_list[10] = { nullptr };
+	uint32				 debuff_list[5] = { 0 };
 
 	void (*m_ActionBeforeCast)(Player *) = NULL;
 
@@ -371,7 +404,8 @@ protected:
     CombatManeuverReturns CastSpellNoRanged(uint32 nextAction, Unit *pTarget);
     CombatManeuverReturns CastSpellWand(uint32 nextAction, Unit *pTarget, uint32 SHOOT);
     virtual CombatManeuverReturns HealPlayer(Player* target);
-     Player* GetHealTarget(JOB_TYPE type = JOB_ALL);
+	
+	Player* GetHealTarget(JOB_TYPE type = JOB_ALL);
     Player* GetDispelTarget(DispelType dispelType, JOB_TYPE type = JOB_ALL, bool bMustBeOOC = false);
     Player* GetResurrectionTarget(JOB_TYPE type = JOB_ALL, bool bMustBeOOC = true);
     JOB_TYPE GetTargetJob(Player* target);
@@ -387,8 +421,13 @@ protected:
     CombatManeuverReturns HealTarget(Player* target, uint32 HealSpell);
 
 	bool NeedGroupBuff(uint32 groupBuffSpellId, uint32 singleBuffSpellId, uint32 singleGreaterBuffSpellId = 0);
+
 private:
 
+	Player	*Cure_Detremental_Target(DispelType dispelType, BOT_ROLE tgtRole = ROLE_ALL, bool bMustBeOOC = false);
+	BOT_ROLE GetTargetRole(Player* target);
+
+	
 //	CombatManeuverReturns Buff(CombatManeuverReturns(PlayerbotClassAI::*Buff_Helper)(uint32, Unit*), uint32 spellId, BOT_ROLE eCastOnRole = BOT_ROLE::ROLE_ALL, uint32 type = JOB_ALL, bool bMustBeOOC = true);
 
 };

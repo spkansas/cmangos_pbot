@@ -101,6 +101,7 @@ bool PlayerbotMageAI::PlayerbotClassAI_ClassAIInit(void)
 	buff_list[0]->caston_pet_all			= { PBOT_PET_ALL };							// Pet buff control
 
 	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_DPS_CASTER);
+	m_botdata->SetDispellCurseSpell(MAGE_REMOVE_CURSE);
 
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
@@ -270,18 +271,6 @@ CombatManeuverReturns PlayerbotMageAI::DoNextCombatManeuverPVP(Unit* pTarget)
         return RETURN_CONTINUE;
 
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
-}
-
-CombatManeuverReturns PlayerbotMageAI::DoManeuver_Idle_Cure_Detremental(void)
-{
-	// Remove curse on group members
-	if (Player* pCursedTarget = GetDispelTarget(DISPEL_CURSE))
-	{
-		if (MAGE_REMOVE_CURSE > 0 && CastSpell(MAGE_REMOVE_CURSE, pCursedTarget))
-			return RETURN_CONTINUE;
-	}
-
-	return RETURN_NO_ACTION_OK;
 }
 
 
