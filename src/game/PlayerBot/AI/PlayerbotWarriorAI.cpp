@@ -462,9 +462,6 @@ bool PlayerbotWarriorAI::CanPull()
 // Match up with "CanPull()" above
 bool PlayerbotWarriorAI::Pull()
 {
-    if (!m_botdata->GetBot()) return false;
-    if (!m_botdata->GetAI())  return false;
-
     if (m_botdata->GetBot()->GetCombatDistance(m_botdata->GetAI()->GetCurrentTarget(), true) > ATTACK_DISTANCE)
     {
         if (!m_botdata->GetAI()->In_Range(m_botdata->GetAI()->GetCurrentTarget(), AUTO_SHOT))

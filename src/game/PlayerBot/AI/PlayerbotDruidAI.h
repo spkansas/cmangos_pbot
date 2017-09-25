@@ -174,7 +174,7 @@ private:
 private:
     // Heals the target based off its hps
     CombatManeuverReturns HealPlayer (Player* target);
-    Player* GetHealTarget() { return PlayerbotClassAI::GetHealTarget(); }
+    Player* GetHealTarget() { return PlayerbotClassAI::Get_Prioritized_Heal_Target(); }
 
     CombatManeuverReturns BuffHelper(uint32 spellId, Unit *target);
     // Callback method to reset shapeshift forms blocking buffs and heals

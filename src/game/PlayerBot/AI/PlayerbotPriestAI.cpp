@@ -142,7 +142,7 @@ CombatManeuverReturns PlayerbotPriestAI::DoFirstCombatManeuverPVE(Unit* /*pTarge
     if (m_botdata->GetAI()->IsHealer())
     {
         // TODO: This must be done with toggles: FullHealth allowed
-        Unit* healTarget = GetHealTarget(JOB_TANK);
+        Unit* healTarget = Get_Prioritized_Heal_Target(ROLE_TANK);
         // This is cast on a target, which activates (and switches to another target within the group) upon receiving+healing damage
         // Mana efficient even at one use
         if (healTarget && PRAYER_OF_MENDING > 0 && m_botdata->GetAI()->In_Reach(healTarget,PRAYER_OF_MENDING) && !healTarget->HasAura(PRAYER_OF_MENDING, EFFECT_INDEX_0) && CastSpell(PRAYER_OF_MENDING, healTarget) & RETURN_CONTINUE)
@@ -224,7 +224,7 @@ CombatManeuverReturns PlayerbotPriestAI::DoNextCombatManeuverPVE(Unit *pTarget)
     // Heal
     if (m_botdata->GetAI()->IsHealer())
     {
-        if (HealPlayer(GetHealTarget()) & RETURN_CONTINUE)
+        if (HealPlayer(Get_Prioritized_Heal_Target()) & RETURN_CONTINUE)
             return RETURN_CONTINUE;
     }
     else

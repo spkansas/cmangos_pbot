@@ -184,26 +184,22 @@ public:
 
 struct role_priority
 {
-	Player*	 pPlayer;
-	uint8	 uiHP;
-	BOT_ROLE eRole;
+	Player*	 pPlayer	= nullptr;
+	uint8	 uiHP		= 0;
+	BOT_ROLE eRole		= ROLE_NONE;
 
 	role_priority(Player* pin, uint8 hpin, BOT_ROLE t) : pPlayer(pin), uiHP(hpin), eRole(t) {}
 
 	// overriding the operator like this is not recommended for general use - however we won't use this struct for anything else
-	bool operator<(const role_priority& a) const { return eRole < a.eRole; }
+	bool operator<(const role_priority& a) const 
+	{ 
+		return (eRole == a.eRole ? (bool)(uiHP <= a.uiHP) : (bool)(eRole < a.eRole));
+	}
 };
 
 
-struct heal_priority
-{
-    Player* p;
-    uint8 hp;
-    JOB_TYPE type;
-    heal_priority(Player* pin, uint8 hpin, JOB_TYPE t) : p(pin), hp(hpin), type(t) {}
-    // overriding the operator like this is not recommended for general use - however we won't use this struct for anything else
-    bool operator<(const heal_priority& a) const { return type < a.type; }
-};
+bool role_sortby(const role_priority& a, const role_priority & b);
+
 
 class PlayerbotClassAIData_LoadFailed : public std::runtime_error 
 {
@@ -405,11 +401,6 @@ protected:
     CombatManeuverReturns CastSpellWand(uint32 nextAction, Unit *pTarget, uint32 SHOOT);
     virtual CombatManeuverReturns HealPlayer(Player* target);
 	
-	Player* GetHealTarget(JOB_TYPE type = JOB_ALL);
-    Player* GetDispelTarget(DispelType dispelType, JOB_TYPE type = JOB_ALL, bool bMustBeOOC = false);
-    Player* GetResurrectionTarget(JOB_TYPE type = JOB_ALL, bool bMustBeOOC = true);
-    JOB_TYPE GetTargetJob(Player* target);
-
     bool FleeFromAoEIfCan(uint32 spellId, Unit* pTarget);
     bool FleeFromTrapGOIfCan(uint32 goEntry, Unit* pTarget);
     bool FleeFromNpcWithAuraIfCan(uint32 NpcEntry, uint32 spellId, Unit* pTarget);
@@ -420,15 +411,16 @@ protected:
     CombatManeuverReturns RessurectTarget(Player* target, uint32 RezSpell);
     CombatManeuverReturns HealTarget(Player* target, uint32 HealSpell);
 
-	bool NeedGroupBuff(uint32 groupBuffSpellId, uint32 singleBuffSpellId, uint32 singleGreaterBuffSpellId = 0);
-
 private:
 
-	Player	*Cure_Detremental_Target(DispelType dispelType, BOT_ROLE tgtRole = ROLE_ALL, bool bMustBeOOC = false);
+	Player	*Get_Prioritized_Cure_Detremental_Target(BOT_ROLE tgtRole = ROLE_ALL);
+	Player  *Get_Resurrection_Target(BOT_ROLE tgtRole = ROLE_ALL);
+
 	BOT_ROLE GetTargetRole(Player* target);
 
-	
-//	CombatManeuverReturns Buff(CombatManeuverReturns(PlayerbotClassAI::*Buff_Helper)(uint32, Unit*), uint32 spellId, BOT_ROLE eCastOnRole = BOT_ROLE::ROLE_ALL, uint32 type = JOB_ALL, bool bMustBeOOC = true);
+protected:
+
+	Player	*Get_Prioritized_Heal_Target(BOT_ROLE tgtRole = ROLE_ALL);
 
 };
 

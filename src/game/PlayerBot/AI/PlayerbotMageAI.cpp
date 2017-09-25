@@ -138,12 +138,12 @@ CombatManeuverReturns PlayerbotMageAI::DoNextCombatManeuverPVE(Unit *pTarget)
     //Used to determine if this bot is highest on threat
     Unit *newTarget = m_botdata->GetAI()->FindAttacker((PlayerbotAI::ATTACKERINFOTYPE) (PlayerbotAI::AIT_VICTIMSELF | PlayerbotAI::AIT_HIGHESTTHREAT), m_botdata->GetBot());
     
-    // Remove curse on group members
-    if (Player* pCursedTarget = GetDispelTarget(DISPEL_CURSE))
-    {
-        if (MAGE_REMOVE_CURSE > 0 && CastSpell(MAGE_REMOVE_CURSE, pCursedTarget))
-            return RETURN_CONTINUE;
-    }
+    // TODO: (Tam) Remove curse on group members
+//    if (Player* pCursedTarget = GetDispelTarget(DISPEL_CURSE))
+//    {
+ //       if (MAGE_REMOVE_CURSE > 0 && CastSpell(MAGE_REMOVE_CURSE, pCursedTarget))
+ //           return RETURN_CONTINUE;
+ //   }
 
     if (newTarget) // TODO: && party has a tank
     {

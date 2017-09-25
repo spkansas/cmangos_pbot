@@ -193,7 +193,7 @@ CombatManeuverReturns PlayerbotPaladinAI::DoNextCombatManeuverPVE(Unit *pTarget)
     // Heal
     if (m_botdata->GetAI()->IsHealer())
     {
-        if (HealPlayer(GetHealTarget()) & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
+        if (HealPlayer(Get_Prioritized_Heal_Target()) & (RETURN_NO_ACTION_OK | RETURN_CONTINUE))
             return RETURN_CONTINUE;
     }
     else if (m_botdata->GetAI()->GetGroupHealer() && m_botdata->GetAI()->GetGroupHealer()->isAlive())
