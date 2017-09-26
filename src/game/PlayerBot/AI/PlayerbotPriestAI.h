@@ -203,7 +203,8 @@ public:
 			RENEW,
 			RESURRECTION,
 			SMITE,
-			CURE_DISEASE;
+			CURE_DISEASE,
+			PRIEST_DISPEL_MAGIC;
 
 	// ranged
 	uint32	SHOOT;

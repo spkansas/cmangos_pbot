@@ -53,6 +53,7 @@ bool PlayerbotPriestAI::PlayerbotClassAI_ClassAIInit(void)
     BINDING_HEAL                  = m_botdata->GetAI()->initSpell(BINDING_HEAL_1);
     PRAYER_OF_MENDING             = m_botdata->GetAI()->initSpell(PRAYER_OF_MENDING_1);
     CURE_DISEASE                  = m_botdata->GetAI()->initSpell(CURE_DISEASE_1);
+	PRIEST_DISPEL_MAGIC			  = m_botdata->GetAI()->initSpell(DISPEL_MAGIC_1);
 
     // SHADOW
     FADE                          = m_botdata->GetAI()->initSpell(FADE_1);
@@ -122,6 +123,10 @@ bool PlayerbotPriestAI::PlayerbotClassAI_ClassAIInit(void)
 	buff_list[2]->spec_required		      = { NULL };					// Spec Required to cast
 	buff_list[2]->caston_non_bot_all	  = { PBOT_CLASS_ALL };			// Non-bot buff control
 	buff_list[2]->caston_pet_all		  = { PBOT_PET_ALL };		    // Pet buff control
+
+
+	m_botdata->SetDispellDiseaseSpell(CURE_DISEASE);
+	m_botdata->SetDispellMagicSpell(MASS_DISPEL ? MASS_DISPEL : PRIEST_DISPEL_MAGIC);
 
 	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_HEAL);
 

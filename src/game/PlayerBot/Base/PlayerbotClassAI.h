@@ -34,16 +34,6 @@
 class Player;
 class PlayerbotAI;
 
-enum JOB_TYPE
-{
-    JOB_HEAL     = 0x01,
-    JOB_TANK     = 0x02,
-    JOB_MASTER   = 0x04, // Not a fan of this distinction but user (or rather, admin) choice
-    JOB_DPS      = 0x08,
-    JOB_ALL      = 0x0F, // all of the above
-    JOB_MANAONLY = 0x10  // for buff checking (NOTE: this means any with powertype mana AND druids (who may be shifted but still have mana)
-};
-
 enum BOT_ROLE
 {
 	ROLE_NONE		 = 0b00000000,
@@ -196,9 +186,6 @@ struct role_priority
 		return (eRole == a.eRole ? (bool)(uiHP <= a.uiHP) : (bool)(eRole < a.eRole));
 	}
 };
-
-
-bool role_sortby(const role_priority& a, const role_priority & b);
 
 
 class PlayerbotClassAIData_LoadFailed : public std::runtime_error 
@@ -384,8 +371,6 @@ public:
 
 protected:
 
-//	virtual CombatManeuverReturns DoNextManeuver_Combat_ClassSetup(Unit *pTarget) = 0;
-
 	virtual CombatManeuverReturns DoNextManeuver_Heal(Unit *pTarget);
 
 
@@ -414,7 +399,7 @@ protected:
 private:
 
 	Player	*Get_Prioritized_Cure_Detremental_Target(BOT_ROLE tgtRole = ROLE_ALL);
-	Player  *Get_Resurrection_Target(BOT_ROLE tgtRole = ROLE_ALL);
+	Player  *Get_Prioritized_Resurrection_Target(BOT_ROLE tgtRole = ROLE_ALL);
 
 	BOT_ROLE GetTargetRole(Player* target);
 

@@ -316,7 +316,7 @@ CombatManeuverReturns PlayerbotClassAI::DoFirstCombatManeuverPVP(Unit *pTarget)
 
 CombatManeuverReturns PlayerbotClassAI::DoNextManeuver_Heal(Unit* pTarget)
 {
-	//	DEBUG_LOG("[PlayerbotClassAI::DoNextManeuver_Heal] - Entered");
+//	DEBUG_LOG("[PlayerbotClassAI::DoNextManeuver_Heal] - Entered");
 
 	CombatManeuverReturns ret_val = DoNextManeuver_Heal_ClassSetup(pTarget);
 
@@ -369,10 +369,16 @@ void PlayerbotClassAI::DoNonCombatActions()
     // Self Buff
     if (DoManeuver_Idle_SelfBuff() & RETURN_CONTINUE) return;
 
+	// Cures
+	if (m_botdata->GetCanCure())
+	{
+		if (DoManeuver_Idle_Cure_Detremental() & RETURN_CONTINUE) return;
+	}
+
     // Ressurect
     if (m_botdata->GetRezSpell())
     {
-        Player *m_Player2Rez = Get_Resurrection_Target();
+        Player *m_Player2Rez = Get_Prioritized_Resurrection_Target();
 
 		if (m_Player2Rez)
         {
@@ -415,17 +421,17 @@ void PlayerbotClassAI::DoNonCombatActions()
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Cure_Detremental(void)
 {
-	if (m_botdata->GetCanCure())
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Cure_Detremental] - Entered");
+	if (Player* pCursedTarget = Get_Prioritized_Cure_Detremental_Target())
 	{
-		// Remove curse on group members
-		if (Player* pCursedTarget = Get_Prioritized_Cure_Detremental_Target())
+		Unit::SpellAuraHolderMap const& auras = pCursedTarget->GetSpellAuraHolderMap();
+
+		for (Unit::SpellAuraHolderMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
 		{
-			Unit::SpellAuraHolderMap const& auras = pCursedTarget->GetSpellAuraHolderMap();
+			SpellAuraHolder *holder = itr->second;
 
-			for (Unit::SpellAuraHolderMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+			if (!IsPositiveSpell(holder->GetSpellProto()->Id))
 			{
-				SpellAuraHolder *holder = itr->second;
-
 				if ((holder->GetSpellProto()->Dispel == DISPEL_DISEASE) && m_botdata->GetDispellDiseaseSpell())
 				{
 					if (m_botdata->GetAI()->CastSpell(m_botdata->GetDispellDiseaseSpell(), *pCursedTarget))
@@ -472,43 +478,51 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Cure_Detremental(void)
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_SelfBuff(void)
 {
-    return RETURN_NO_ACTION_OK;
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_SelfBuff] - Entered");
+	return RETURN_NO_ACTION_OK;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Forms_Start(void)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Forms_Start] - Entered");
 	return RETURN_NO_ACTION_OK;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Forms_End(void)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Forms_End] - Entered");
 	return RETURN_NO_ACTION_OK;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Pet_Summon(void)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Pet_Summon] - Entered");
 	return RETURN_NO_ACTION_OK;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Pet_BuffnHeal(void)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Pet_BuffnHeal] - Entered");
 	return RETURN_NO_ACTION_OK;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Rez_Prep(Player* target)
 {
-    return RETURN_NO_ACTION_OK;
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Rez_Prep] - Entered");
+	return RETURN_NO_ACTION_OK;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Rez(Player* target)
 {
-    CombatManeuverReturns ret_val;
+	CombatManeuverReturns ret_val;
+	
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Rez] - Entered");
 
     ret_val = DoManeuver_Idle_Rez_Prep(target);
 
@@ -528,19 +542,23 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Rez(Player* target)
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Rez_Post(Player* target)
 {
-    return RETURN_CONTINUE;
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Rez_Post] - Entered");
+	return RETURN_CONTINUE;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Heal_Prep(Player* target)
 {
-    return RETURN_NO_ACTION_OK;
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Heal_Prep] - Entered");
+	return RETURN_NO_ACTION_OK;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Heal(Player* target)
 {
     CombatManeuverReturns ret_val;
+
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Heal] - Entered");
 
     ret_val = DoManeuver_Idle_Heal_Prep(target);
 
@@ -567,19 +585,25 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Heal(Player* target)
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Heal_Post(Player* target)
 {
-    return RETURN_CONTINUE;
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Heal_Post] - Entered");
+	
+	return RETURN_CONTINUE;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff_Prep(void)
 {
-    return RETURN_NO_ACTION_OK;
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Buff_Prep] - Entered");
+	
+	return RETURN_NO_ACTION_OK;
 }
 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff(void)
 {
     CombatManeuverReturns ret_val;
+
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Buff] - Entered");
 
     ret_val = DoManeuver_Idle_Buff_Prep();
 
@@ -831,6 +855,8 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff(void)
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff_Helper(uint32 spellId, Unit *target)
 {
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Buff_Helper] - Entered");
+
 	if (spellId == 0) return RETURN_NO_ACTION_ERROR;
 	if (!target)      return RETURN_NO_ACTION_INVALIDTARGET;
 
@@ -852,18 +878,24 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff_Helper(uint32 spell
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff_Post(void)
 {
-    return RETURN_CONTINUE;
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Buff_Post] - Entered");
+	return RETURN_CONTINUE;
 }
 
 
 bool PlayerbotClassAI::EatDrinkBandage(bool bMana, unsigned char foodPercent, unsigned char drinkPercent, unsigned char bandagePercent)
 {
-    Item* drinkItem = nullptr;
+	Item* drinkItem = nullptr;
     Item* foodItem = nullptr;
-    if (bMana && m_botdata->GetAI()->GetManaPercent() < drinkPercent)
+
+//	DEBUG_LOG("[PlayerbotClassAI::EatDrinkBandage] - Entered");
+
+	if (bMana && m_botdata->GetAI()->GetManaPercent() < drinkPercent)
         drinkItem = m_botdata->GetAI()->FindDrink();
+
     if (m_botdata->GetAI()->GetHealthPercent() < foodPercent)
         foodItem = m_botdata->GetAI()->FindFood();
+
     if (drinkItem || foodItem)
     {
         if (drinkItem)
@@ -1175,12 +1207,6 @@ CombatManeuverReturns PlayerbotClassAI::HealTarget(Player* target, uint32 HealSp
 }
 
 
-bool role_sortby(const role_priority& a, const role_priority & b)
-{
-	return a.eRole < b.eRole; (a.eRole == b.eRole ? (a.uiHP <= b.uiHP) : (a.eRole < b.eRole));
-}
-
-
 Player* PlayerbotClassAI::Get_Prioritized_Cure_Detremental_Target(BOT_ROLE tgtRole)
 {
 
@@ -1206,42 +1232,29 @@ Player* PlayerbotClassAI::Get_Prioritized_Cure_Detremental_Target(BOT_ROLE tgtRo
 				{
 					SpellAuraHolder *holder = itr->second;
 
-					if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_DISEASE))
+					if (!IsPositiveSpell(holder->GetSpellProto()->Id))
 					{
-						if (m_botdata->GetDispellDiseaseSpell() && holder->GetSpellProto()->Dispel == DISPEL_DISEASE)
+						if (holder->GetSpellProto()->Dispel == DISPEL_DISEASE && m_botdata->GetDispellDiseaseSpell())
+						{
+							targets.push_back(role_priority(groupMember, 0, Role));
+							continue;
+						}
+						else if (holder->GetSpellProto()->Dispel == DISPEL_POISON && m_botdata->GetDispellPosionSpell())
+						{
+							targets.push_back(role_priority(groupMember, 0, Role));
+							continue;
+						}
+						else if (holder->GetSpellProto()->Dispel == DISPEL_MAGIC && m_botdata->GetDispellMagicSpell())
+						{
+							targets.push_back(role_priority(groupMember, 0, Role));
+							continue;
+						}
+						else if (holder->GetSpellProto()->Dispel == DISPEL_CURSE && m_botdata->GetDispellCurseSpell())
 						{
 							targets.push_back(role_priority(groupMember, 0, Role));
 							continue;
 						}
 					}
-
-					if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_POISON))
-					{
-						if (m_botdata->GetDispellPosionSpell() && holder->GetSpellProto()->Dispel == DISPEL_POISON)
-						{
-							targets.push_back(role_priority(groupMember, 0, Role));
-							continue;
-						}
-					}
-					
-					if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_MAGIC))
-					{
-						if (m_botdata->GetDispellMagicSpell() && holder->GetSpellProto()->Dispel == DISPEL_MAGIC)
-						{
-							targets.push_back(role_priority(groupMember, 0, Role));
-							continue;
-						}
-					}
-					
-					if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_CURSE))
-					{
-						if (m_botdata->GetDispellCurseSpell() && holder->GetSpellProto()->Dispel == DISPEL_CURSE)
-						{
-							targets.push_back(role_priority(groupMember, 0, Role));
-							continue;
-						}
-					}
-
 				}
 			}
 		}
@@ -1295,40 +1308,39 @@ Player* PlayerbotClassAI::Get_Prioritized_Heal_Target(BOT_ROLE tgtRole)
 	{
 		std::sort(targets.begin(), targets.end());
 
-		return targets.at(0).pPlayer;
-	}
+		uint8 i = 0;
 
-	uint8 i = 0;
-
-	// Try to find a healer in need of healing (if multiple, the lowest health one)
-	while (uint32(i) <= uint32(targets.size()))
-	{
-		switch (targets.at(i).eRole)
+		// Try to find a healer in need of healing (if multiple, the lowest health one)
+		while (uint32(i) < uint32(targets.size()))
 		{
-		case ROLE_HEAL:
-			if (targets.at(i).uiHP <= m_MinHealthPercentHealer) return targets.at(i).pPlayer;
-			break;
-		case ROLE_TANK:
-			if (targets.at(i).uiHP <= m_MinHealthPercentTank) return targets.at(i).pPlayer;
-			break;
-		case ROLE_DPS_CASTER:
-			if (targets.at(i).uiHP <= m_MinHealthPercentDPS) return targets.at(i).pPlayer;
-			break;
-		case ROLE_DPS_MELEE:
-			if (targets.at(i).uiHP <= m_MinHealthPercentDPS) return targets.at(i).pPlayer;
-			break;
-		default:
-			return nullptr;
+			switch (targets.at(i).eRole)
+			{
+			case ROLE_HEAL:
+				if (targets.at(i).uiHP <= m_MinHealthPercentHealer) return targets.at(i).pPlayer;
+				break;
+			case ROLE_TANK:
+				if (targets.at(i).uiHP <= m_MinHealthPercentTank) return targets.at(i).pPlayer;
+				break;
+			case ROLE_DPS_CASTER:
+				if (targets.at(i).uiHP <= m_MinHealthPercentDPS) return targets.at(i).pPlayer;
+				break;
+			case ROLE_DPS_MELEE:
+				if (targets.at(i).uiHP <= m_MinHealthPercentDPS) return targets.at(i).pPlayer;
+				break;
+			default:
+				return nullptr;
+			}
+
+			i++;
 		}
 
-		i++;
 	}
 
 	return nullptr;
 }
 
 
-Player *PlayerbotClassAI::Get_Resurrection_Target(BOT_ROLE tgtRole)
+Player *PlayerbotClassAI::Get_Prioritized_Resurrection_Target(BOT_ROLE tgtRole)
 {
 	if (m_botdata->GetBot()->GetGroup())
 	{
