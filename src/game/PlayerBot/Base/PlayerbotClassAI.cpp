@@ -75,13 +75,18 @@ PlayerbotClassAI::PlayerbotClassAI(Player* const master, Player* const bot, Play
 
 PlayerbotClassAI::~PlayerbotClassAI() 
 {
+	//	DEBUG_LOG("[PlayerbotClassAI::~PlayerbotClassAI] - Entered");
+
 	for (int i = 0; i < 10; i++)
 	{
-		if (buff_list[i]) delete buff_list[i];
-		buff_list[i] = nullptr;
+		if (buff_list[i])
+		{
+			delete buff_list[i];
+			buff_list[i] = nullptr;
+		}
 	}
 
-	delete m_botdata;
+	if (m_botdata) delete m_botdata;
 }
 
 
@@ -101,9 +106,11 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Start_Class_Prep(Unit 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Start(Unit *pTarget)
 {
+	CombatManeuverReturns ret_val;
+
 //	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Start] - Entered");
 
-	CombatManeuverReturns ret_val = DoManeuver_Combat_Start_Class_Prep(pTarget);
+	ret_val = DoManeuver_Combat_Start_Class_Prep(pTarget);
 
 	if (ret_val & RETURN_ANY_OK)
 	{
@@ -199,9 +206,9 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Move_Class_Prep(Unit *
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Move(Unit *pTarget)
 {
-//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Move] - Entered");
-
 	CombatManeuverReturns ret_val = RETURN_NO_ACTION_ERROR;
+
+//	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Move] - Entered");
 
 	if (m_botdata->GetAI()->m_targetCombat)
 	{
@@ -259,9 +266,11 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Exec_Class_Prep(Unit* 
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Combat_Exec(Unit *pTarget)
 {
+	CombatManeuverReturns ret_val;
+
 //	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Combat_Exec] - Entered");
 
-	CombatManeuverReturns ret_val = DoManeuver_Combat_Exec_Class_Prep(pTarget);
+	ret_val = DoManeuver_Combat_Exec_Class_Prep(pTarget);
 
 	if (ret_val & RETURN_ANY_OK)
 	{
@@ -316,9 +325,11 @@ CombatManeuverReturns PlayerbotClassAI::DoFirstCombatManeuverPVP(Unit *pTarget)
 
 CombatManeuverReturns PlayerbotClassAI::DoNextManeuver_Heal(Unit* pTarget)
 {
+	CombatManeuverReturns ret_val;
+
 //	DEBUG_LOG("[PlayerbotClassAI::DoNextManeuver_Heal] - Entered");
 
-	CombatManeuverReturns ret_val = DoNextManeuver_Heal_ClassSetup(pTarget);
+	ret_val = DoNextManeuver_Heal_ClassSetup(pTarget);
 
 	if (ret_val == RETURN_CONTINUE)
 	{
@@ -421,8 +432,13 @@ void PlayerbotClassAI::DoNonCombatActions()
 
 CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Cure_Detremental(void)
 {
+	Player* pCursedTarget;
+
 //	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Cure_Detremental] - Entered");
-	if (Player* pCursedTarget = Get_Prioritized_Cure_Detremental_Target())
+
+	pCursedTarget = Get_Prioritized_Cure_Detremental_Target();
+
+	if (pCursedTarget)
 	{
 		Unit::SpellAuraHolderMap const& auras = pCursedTarget->GetSpellAuraHolderMap();
 
@@ -1352,7 +1368,7 @@ Player *PlayerbotClassAI::Get_Prioritized_Resurrection_Target(BOT_ROLE tgtRole)
 		{
 			Player *groupMember = sObjectMgr.GetPlayer(itr->guid);
 
-			if (!groupMember || !groupMember->isAlive() || groupMember->IsInDuel()) continue;
+			if (!groupMember || groupMember->isAlive()) continue;
 
 			BOT_ROLE Role = GetTargetRole(groupMember);
 
