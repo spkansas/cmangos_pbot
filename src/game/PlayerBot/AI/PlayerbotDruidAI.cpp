@@ -695,32 +695,3 @@ bool PlayerbotDruidAI::CastHoTOnTank()
 
     return false;
 }
-
-
-/*
-if (!target->isAlive())
-{
-if (m_botdata->GetBot()->isInCombat())
-{
-// TODO: Add check for cooldown
-if (REBIRTH && m_botdata->GetAI()->In_Reach(target,REBIRTH) && m_botdata->GetAI()->CastSpell(REBIRTH, *target))
-{
-std::string msg = "Resurrecting ";
-msg += target->GetName();
-m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
-return RETURN_CONTINUE;
-}
-}
-else
-{
-if (REVIVE && m_botdata->GetAI()->In_Reach(target,REVIVE) && m_botdata->GetAI()->CastSpell(REVIVE, *target))
-{
-std::string msg = "Resurrecting ";
-msg += target->GetName();
-m_botdata->GetBot()->Say(msg, LANG_UNIVERSAL);
-return RETURN_CONTINUE;
-}
-}
-return RETURN_NO_ACTION_ERROR; // not error per se - possibly just OOM
-}
-*/

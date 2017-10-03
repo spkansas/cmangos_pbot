@@ -620,7 +620,6 @@ CombatManeuverReturns PlayerbotClassAI::DoManeuver_Idle_Buff(void)
     CombatManeuverReturns ret_val;
 
 //	DEBUG_LOG("[PlayerbotClassAI::DoManeuver_Idle_Buff] - Entered");
-
     ret_val = DoManeuver_Idle_Buff_Prep();
 
     if (ret_val & RETURN_ANY_OK)
