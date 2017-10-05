@@ -1290,6 +1290,7 @@ Player* PlayerbotClassAI::Get_Prioritized_Cure_Detremental_Target(BOT_ROLE tgtRo
 Player* PlayerbotClassAI::Get_Prioritized_Heal_Target(BOT_ROLE tgtRole)
 {
 	std::vector<role_priority> targets;
+	uint8 uiHealthPercentage;
 
 	if (m_botdata->GetBot()->GetGroup())
 	{
@@ -1305,7 +1306,9 @@ Player* PlayerbotClassAI::Get_Prioritized_Heal_Target(BOT_ROLE tgtRole)
 
 			if (Role & tgtRole)
 			{
-				targets.push_back(role_priority(groupMember, (groupMember->GetHealth() * 100 / groupMember->GetMaxHealth()), Role));
+				uiHealthPercentage = int(groupMember->GetMaxHealth() != 0 ? groupMember->GetHealth() * 100 / groupMember->GetMaxHealth() : 0);
+
+				targets.push_back(role_priority(groupMember, uiHealthPercentage, Role));
 			}
 		}
 	}
@@ -1315,7 +1318,9 @@ Player* PlayerbotClassAI::Get_Prioritized_Heal_Target(BOT_ROLE tgtRole)
 
 		if (m_botdata->GetMaster() && m_botdata->GetMaster()->isAlive() && !m_botdata->GetMaster()->IsInDuel())
 		{
-			targets.push_back(role_priority(m_botdata->GetMaster(), (m_botdata->GetMaster()->GetHealth() * 100 / m_botdata->GetMaster()->GetMaxHealth()), GetTargetRole(m_botdata->GetMaster())));
+			uiHealthPercentage = int(m_botdata->GetMaster()->GetMaxHealth() != 0 ? m_botdata->GetMaster()->GetHealth() * 100 / m_botdata->GetMaster()->GetMaxHealth() : 0);
+
+			targets.push_back(role_priority(m_botdata->GetMaster(), uiHealthPercentage, GetTargetRole(m_botdata->GetMaster())));
 		}
 	}
 
@@ -1342,8 +1347,6 @@ Player* PlayerbotClassAI::Get_Prioritized_Heal_Target(BOT_ROLE tgtRole)
 			case ROLE_DPS_MELEE:
 				if (targets.at(i).uiHP <= m_MinHealthPercentDPS) return targets.at(i).pPlayer;
 				break;
-			default:
-				return nullptr;
 			}
 
 			i++;

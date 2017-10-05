@@ -174,6 +174,7 @@ public:
 
 struct role_priority
 {
+public:
 	Player*	 pPlayer	= nullptr;
 	uint8	 uiHP		= 0;
 	BOT_ROLE eRole		= ROLE_NONE;
@@ -183,7 +184,7 @@ struct role_priority
 	// overriding the operator like this is not recommended for general use - however we won't use this struct for anything else
 	bool operator<(const role_priority& a) const 
 	{ 
-		return (eRole == a.eRole ? (bool)(uiHP <= a.uiHP) : (bool)(eRole < a.eRole));
+		return (eRole == a.eRole ? (bool)(uiHP < a.uiHP) : (bool)(eRole < a.eRole));
 	}
 };
 
