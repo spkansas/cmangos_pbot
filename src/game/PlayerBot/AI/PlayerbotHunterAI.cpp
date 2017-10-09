@@ -107,6 +107,15 @@ bool PlayerbotHunterAI::PlayerbotClassAI_ClassAIInit(void)
 
 	m_botdata->SetRolePrimary(BOT_ROLE::ROLE_DPS_MELEE);
 
+	buff_list[0] = new PlayerbotBufflist;
+
+	buff_list[0]->spellid.group = { NULL };					// Group Version
+	buff_list[0]->spellid.single = { TRUESHOT_AURA };		// Standard Version
+	buff_list[0]->spellid.single_enhanced = { NULL };		// Greater Version
+	buff_list[0]->spec_required = { NULL };					// Spec Required to cast
+	buff_list[0]->caston_non_bot_all = { PBOT_CLASS_ALL };	// Non-bot buff control
+	buff_list[0]->caston_pet_all = { PBOT_PET_ALL };		// Pet buff control
+
     return PlayerbotClassAI::PlayerbotClassAI_ClassAIInit();
 }
 
@@ -291,139 +300,202 @@ CombatManeuverReturns PlayerbotHunterAI::DoNextCombatManeuverPVP(Unit* pTarget)
     return DoNextCombatManeuverPVE(pTarget); // TODO: bad idea perhaps, but better than the alternative
 }
 
-bool PlayerbotHunterAI::IsTargetEnraged(Unit* pTarget)
+
+
+CombatManeuverReturns PlayerbotHunterAI::DoManeuver_Idle_Forms_Start(void)
 {
-    if (!m_botdata->GetAI())  return false;
-    if (!m_botdata->GetBot()) return false;
-    if (!pTarget) return false;
 
-    Unit::SpellAuraHolderMap const& auras = pTarget->GetSpellAuraHolderMap();
-    for (Unit::SpellAuraHolderMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
-    {
-        SpellAuraHolder *holder = itr->second;
-        // Return true is target unit has aura with DISPEL_ENRAGE dispel type
-        if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_ENRAGE))
-            return true;
-    }
+	if (!m_rangedCombat || m_botdata->GetAI()->GetCombatStyle() == PlayerbotAI::COMBAT_MELEE)
+	{
+		m_rangedCombat = true;
+		m_botdata->GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_RANGED);
+	}
 
-    return false;
+	return RETURN_NO_ACTION_OK;
 }
 
-void PlayerbotHunterAI::DoNonCombatActions()
+
+CombatManeuverReturns PlayerbotHunterAI::DoManeuver_Idle_SelfBuff(void)
 {
-    if (!m_botdata->GetAI())  return;
-    if (!m_botdata->GetBot()) return;
+	if ((ASPECT_OF_THE_HAWK > 0) && !m_botdata->GetBot()->HasAura(ASPECT_OF_THE_HAWK, EFFECT_INDEX_0))
+	{
+		if (m_botdata->GetAI()->SelfBuff(ASPECT_OF_THE_HAWK))
+		{
+			return RETURN_CONTINUE;
+		}
 
-    if (!m_rangedCombat || m_botdata->GetAI()->GetCombatStyle() == PlayerbotAI::COMBAT_MELEE)
-    {
-        m_rangedCombat = true;
-        m_botdata->GetAI()->SetCombatStyle(PlayerbotAI::COMBAT_RANGED);
-    }
+		sLog.outError("[PlayerbotHunterAI::DoManeuver_Idle_SelfBuff]: %s failed to SelflBuff (ASPECT_OF_THE_HAWK)", m_botdata->GetBot()->GetName());
 
-    // buff group
-    if (TRUESHOT_AURA > 0 && !m_botdata->GetBot()->HasAura(TRUESHOT_AURA, EFFECT_INDEX_0))
-        m_botdata->GetAI()->CastSpell(TRUESHOT_AURA, *m_botdata->GetBot());
+		return RETURN_NO_ACTION_ERROR;
+	}
 
-    // buff myself
-    if (ASPECT_OF_THE_HAWK > 0 && !m_botdata->GetBot()->HasAura(ASPECT_OF_THE_HAWK, EFFECT_INDEX_0))
-        m_botdata->GetAI()->CastSpell(ASPECT_OF_THE_HAWK, *m_botdata->GetBot());
+	return RETURN_NO_ACTION_OK;
+}
 
-    // hp/mana check
-    if (EatDrinkBandage())
-        return;
 
-    if (m_botdata->GetBot()->getRace() == RACE_DRAENEI && !m_botdata->GetBot()->HasAura(GIFT_OF_THE_NAARU, EFFECT_INDEX_0) && m_botdata->GetAI()->GetHealthPercent() < 70)
-    {
-        m_botdata->GetAI()->TellMaster("I'm casting gift of the naaru.");
-        m_botdata->GetAI()->CastSpell(GIFT_OF_THE_NAARU, *m_botdata->GetBot());
-        return;
-    }
+CombatManeuverReturns PlayerbotHunterAI::DoManeuver_Idle_Heal_Prep(Player* target)
+{
+	CombatManeuverReturns ret_val;
 
-    // check for pet
-    if (PET_SUMMON > 0 && !m_petSummonFailed && m_botdata->GetBot()->GetPetGuid())
-    {
-        // we can summon pet, and no critical summon errors before
-        Pet *pet = m_botdata->GetBot()->GetPet();
-        if (!pet)
-        {
-            // summon pet
-            if (PET_SUMMON > 0 && m_botdata->GetAI()->CastSpell(PET_SUMMON, *m_botdata->GetBot()))
-                m_botdata->GetAI()->TellMaster("summoning pet.");
-            else
-            {
-                m_petSummonFailed = true;
-                m_botdata->GetAI()->TellMaster("summon pet failed!");
-            }
-        }
-        else if (!(pet->isAlive()))
-        {
-            if (PET_REVIVE > 0 && m_botdata->GetAI()->CastSpell(PET_REVIVE, *m_botdata->GetBot()))
-                m_botdata->GetAI()->TellMaster("reviving pet.");
-        }
-        else if (pet->GetHealthPercent() < 50)
-        {
-            if (PET_MEND > 0 && pet->isAlive() && !pet->HasAura(PET_MEND, EFFECT_INDEX_0) && m_botdata->GetAI()->CastSpell(PET_MEND, *m_botdata->GetBot()))
-                m_botdata->GetAI()->TellMaster("healing pet.");
-        }
-        else if (pet->GetHappinessState() != HAPPY) // if pet is hungry
-        {
-            Unit *caster = (Unit *) m_botdata->GetBot();
-            // list out items in main backpack
-            for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-            {
-                Item* const pItem = m_botdata->GetBot()->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-                if (pItem)
-                {
-                    const ItemPrototype* const pItemProto = pItem->GetProto();
-                    if (!pItemProto)
-                        continue;
+	if (m_botdata->GetBot()->getRace() == RACE_DRAENEI && !target->HasAura(GIFT_OF_THE_NAARU, EFFECT_INDEX_0) && target->GetHealthPercent() < 70)
+	{
+		ret_val = (m_botdata->SetHealSpell(GIFT_OF_THE_NAARU) ? RETURN_NO_ACTION_OK : RETURN_CONTINUE);
+	}
+	else
+	{
+		m_botdata->SetHealSpell(0);
 
-                    if (pet->HaveInDiet(pItemProto)) // is pItem in pets diet
-                    {
-                        // DEBUG_LOG ("[PlayerbotHunterAI]: DoNonCombatActions - Food for pet: %s",pItemProto->Name1);
-                        caster->CastSpell(caster, 51284, TRIGGERED_OLD_TRIGGERED); // pet feed visual
-                        uint32 count = 1; // number of items used
-                        int32 benefit = pet->GetCurrentFoodBenefitLevel(pItemProto->ItemLevel); // nutritional value of food
-                        m_botdata->GetBot()->DestroyItemCount(pItem, count, true); // remove item from inventory
-                        m_botdata->GetBot()->CastCustomSpell(m_botdata->GetBot(), PET_FEED, &benefit, nullptr, nullptr, TRIGGERED_OLD_TRIGGERED); // feed pet
-                        m_botdata->GetAI()->TellMaster("feeding pet.");
-                        m_botdata->GetAI()->SetIgnoreUpdateTime(10);
-                        return;
-                    }
-                }
-            }
-            // list out items in other removable backpacks
-            for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-            {
-                const Bag* const pBag = (Bag *) m_botdata->GetBot()->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-                if (pBag)
-                    for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-                    {
-                        Item* const pItem = m_botdata->GetBot()->GetItemByPos(bag, slot);
-                        if (pItem)
-                        {
-                            const ItemPrototype* const pItemProto = pItem->GetProto();
-                            if (!pItemProto)
-                                continue;
+		ret_val = RETURN_NO_ACTION_OK;
+	}
 
-                            if (pet->HaveInDiet(pItemProto)) // is pItem in pets diet
-                            {
-                                // DEBUG_LOG ("[PlayerbotHunterAI]: DoNonCombatActions - Food for pet: %s",pItemProto->Name1);
-                                caster->CastSpell(caster, 51284, TRIGGERED_OLD_TRIGGERED); // pet feed visual
-                                uint32 count = 1; // number of items used
-                                int32 benefit = pet->GetCurrentFoodBenefitLevel(pItemProto->ItemLevel); // nutritional value of food
-                                m_botdata->GetBot()->DestroyItemCount(pItem, count, true); // remove item from inventory
-                                m_botdata->GetBot()->CastCustomSpell(m_botdata->GetBot(), PET_FEED, &benefit, nullptr, nullptr, TRIGGERED_OLD_TRIGGERED); // feed pet
-                                m_botdata->GetAI()->TellMaster("feeding pet.");
-                                m_botdata->GetAI()->SetIgnoreUpdateTime(10);
-                                return;
-                            }
-                        }
-                    }
-            }
-            if (pet->HasAura(PET_MEND, EFFECT_INDEX_0) && !pet->HasAura(PET_FEED, EFFECT_INDEX_0))
-                m_botdata->GetAI()->TellMaster("..no pet food!");
-            m_botdata->GetAI()->SetIgnoreUpdateTime(7);
-        }
-    }
-} // end DoNonCombatActions
+	return ret_val;
+}
+
+
+CombatManeuverReturns PlayerbotHunterAI::DoManeuver_Idle_Pet_Summon(void)
+{
+	if (PET_SUMMON > 0)
+	{
+		if (!m_petSummonFailed)
+		{
+			Pet *pet = m_botdata->GetBot()->GetPet();
+
+			if (!pet)
+			{
+				if (m_botdata->GetAI()->CastSpell(PET_SUMMON, *m_botdata->GetBot()))
+				{
+					m_botdata->GetAI()->TellMaster("Summoning pet!");
+					return RETURN_CONTINUE;
+				}
+
+				m_petSummonFailed = true;
+
+				sLog.outError("[PlayerbotHunterAI::DoManeuver_Idle_Pet_Summon]: %s failed to summon pet!", m_botdata->GetBot()->GetName());
+
+				return RETURN_NO_ACTION_ERROR;
+			}
+		}
+	}
+
+	return RETURN_NO_ACTION_OK;
+}
+
+
+CombatManeuverReturns PlayerbotHunterAI::Hunter_RevivePet(void)
+{
+	if (PET_REVIVE > 0)
+	{
+		if (m_botdata->GetAI()->CastSpell(PET_REVIVE, *m_botdata->GetBot()))
+		{
+			m_botdata->GetAI()->TellMaster("Reviving pet!");
+			m_petSummonFailed = false;
+			return RETURN_CONTINUE;
+		}
+
+		sLog.outError("[PlayerbotHunterAI::DoManeuver_Idle_Pet_Summon]: %s failed to revive pet!", m_botdata->GetBot()->GetName());
+
+		return RETURN_NO_ACTION_ERROR;
+	}
+
+	return RETURN_NO_ACTION_OK;
+}
+
+
+CombatManeuverReturns PlayerbotHunterAI::DoManeuver_Idle_Pet_BuffnHeal(void)
+{
+	Pet *pet = m_botdata->GetBot()->GetPet();
+	
+	if (!pet)
+	{
+		if ((SpellCastResult)Pet::TryLoadFromDB(m_botdata->GetBot()) == SPELL_FAILED_TARGETS_DEAD)
+		{
+			return Hunter_RevivePet();
+		}
+	}
+	else if (!pet->isAlive())
+	{
+		return Hunter_RevivePet();
+	}
+	else if ((PET_MEND > 0) && (pet->GetHealthPercent() < 50))
+	{
+		if (!pet->HasAura(PET_MEND, EFFECT_INDEX_0))
+		{
+			if (m_botdata->GetAI()->CastSpell(PET_MEND, *m_botdata->GetBot()))
+			{
+				m_botdata->GetAI()->TellMaster("Healing pet.");
+				return RETURN_CONTINUE;
+			}
+			else
+			{
+				m_botdata->GetAI()->TellMaster("Failed healing pet!");
+				return RETURN_NO_ACTION_ERROR;
+			}
+		}
+	}
+	else if (pet->GetHappinessState() != HAPPY) 
+	{
+		Unit *caster = (Unit *)m_botdata->GetBot();
+
+		for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
+		{
+			Item* const pItem = m_botdata->GetBot()->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+
+			if (pItem)
+			{
+				const ItemPrototype* const pItemProto = pItem->GetProto();
+				if (!pItemProto)
+					continue;
+
+				if (pet->HaveInDiet(pItemProto)) // is pItem in pets diet
+				{
+					// DEBUG_LOG ("[PlayerbotHunterAI]: DoNonCombatActions - Food for pet: %s",pItemProto->Name1);
+					caster->CastSpell(caster, 51284, TRIGGERED_OLD_TRIGGERED); // pet feed visual
+					uint32 count = 1; // number of items used
+					int32 benefit = pet->GetCurrentFoodBenefitLevel(pItemProto->ItemLevel); // nutritional value of food
+					m_botdata->GetBot()->DestroyItemCount(pItem, count, true); // remove item from inventory
+					m_botdata->GetBot()->CastCustomSpell(m_botdata->GetBot(), PET_FEED, &benefit, nullptr, nullptr, TRIGGERED_OLD_TRIGGERED); // feed pet
+					m_botdata->GetAI()->TellMaster("feeding pet.");
+					m_botdata->GetAI()->SetIgnoreUpdateTime(10);
+					return RETURN_CONTINUE;
+				}
+			}
+		}
+
+		// list out items in other removable backpacks
+		for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
+		{
+			const Bag* const pBag = (Bag *)m_botdata->GetBot()->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
+			if (pBag)
+				for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
+				{
+					Item* const pItem = m_botdata->GetBot()->GetItemByPos(bag, slot);
+					if (pItem)
+					{
+						const ItemPrototype* const pItemProto = pItem->GetProto();
+						if (!pItemProto)
+							continue;
+
+						if (pet->HaveInDiet(pItemProto)) // is pItem in pets diet
+						{
+							// DEBUG_LOG ("[PlayerbotHunterAI]: DoNonCombatActions - Food for pet: %s",pItemProto->Name1);
+							caster->CastSpell(caster, 51284, TRIGGERED_OLD_TRIGGERED); // pet feed visual
+							uint32 count = 1; // number of items used
+							int32 benefit = pet->GetCurrentFoodBenefitLevel(pItemProto->ItemLevel); // nutritional value of food
+							m_botdata->GetBot()->DestroyItemCount(pItem, count, true); // remove item from inventory
+							m_botdata->GetBot()->CastCustomSpell(m_botdata->GetBot(), PET_FEED, &benefit, nullptr, nullptr, TRIGGERED_OLD_TRIGGERED); // feed pet
+							m_botdata->GetAI()->TellMaster("feeding pet.");
+							m_botdata->GetAI()->SetIgnoreUpdateTime(10);
+							return RETURN_CONTINUE;
+						}
+					}
+				}
+		}
+		if (pet->HasAura(PET_MEND, EFFECT_INDEX_0) && !pet->HasAura(PET_FEED, EFFECT_INDEX_0))
+			m_botdata->GetAI()->TellMaster("..no pet food!");
+		m_botdata->GetAI()->SetIgnoreUpdateTime(7);
+	}
+
+	return RETURN_NO_ACTION_OK; 
+}
+
+

@@ -104,55 +104,133 @@ enum HunterSpells
 
 class PlayerbotHunterAI : PlayerbotClassAI
 {
+private:
+
+	uint32	PET_SUMMON, 
+			PET_DISMISS, 
+			PET_REVIVE, 
+			PET_MEND, 
+			PET_FEED, 
+			BAD_ATTITUDE, 
+			SONIC_BLAST, 
+			NETHER_SHOCK, 
+			DEMORALIZING_SCREECH, 
+			INTIMIDATION;
+
+	uint32	AUTO_SHOT, 
+			HUNTERS_MARK, 
+			ARCANE_SHOT, 
+			CONCUSSIVE_SHOT, 
+			DISTRACTING_SHOT, 
+			MULTI_SHOT, 
+			EXPLOSIVE_SHOT, 
+			SERPENT_STING, 
+			SCORPID_STING, 
+			VIPER_STING, 
+			WYVERN_STING, 
+			AIMED_SHOT, 
+			STEADY_SHOT, 
+			CHIMERA_SHOT, 
+			VOLLEY, 
+			BLACK_ARROW, 
+			KILL_SHOT;
+
+	uint32	RAPTOR_STRIKE, 
+			WING_CLIP, 
+			MONGOOSE_BITE, 
+			DISENGAGE, 
+			DETERRENCE;
+
+	uint32	BEAR_TRAP, 
+			FREEZING_TRAP, 
+			IMMOLATION_TRAP, 
+			FROST_TRAP, 
+			EXPLOSIVE_TRAP, 
+			ARCANE_TRAP, 
+			SNAKE_TRAP;
+
+	uint32	ASPECT_OF_THE_HAWK, 
+			ASPECT_OF_THE_MONKEY, 
+			RAPID_FIRE, 
+			TRUESHOT_AURA, 
+			MISDIRECTION;
+
+	// racial
+	uint32	ARCANE_TORRENT, 
+			GIFT_OF_THE_NAARU, 
+			STONEFORM,
+			ESCAPE_ARTIST, 
+			EVERY_MAN_FOR_HIMSELF, 
+			SHADOWMELD, 
+			BLOOD_FURY, 
+			WAR_STOMP, 
+			BERSERKING, 
+			WILL_OF_THE_FORSAKEN;
+
+	// Hunter
+	bool m_petSummonFailed	= false;
+	bool m_rangedCombat		= false;
+	bool m_has_ammo			= false;
+
 public:
+
     PlayerbotHunterAI(Player * const master, Player * const bot, PlayerbotAI * const ai);
     virtual ~PlayerbotHunterAI();
-    bool HasPet(Player* bot);
 
-    // all combat actions go here
-//    CombatManeuverReturns DoFirstCombatManeuver(Unit* pTarget);
-//    CombatManeuverReturns DoManeuver_Combat_Exec(Unit* pTarget);
+protected:
 
-    // all non combat actions go here, ex buffs, heals, rezzes
-    void DoNonCombatActions();
-
-    // buff a specific player, usually a real PC who is not in group
-    //void BuffPlayer(Player *target);
+	bool PBotNewAI(void) { return true; }
 
 private:
 
 	bool PlayerbotClassAI_ClassAIInit(void);
-	
+
 	CombatManeuverReturns DoManeuver_Combat_Start_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Start_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Move_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
-	//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Prep(Unit *pTarget);
+//	CombatManeuverReturns DoManeuver_Combat_Exec_Class_Post(Unit *pTarget);
 
-	//	CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
+// CombatManeuverReturns DoNextManeuver_Heal_ClassSetup(Unit *pTarget);
 
-    CombatManeuverReturns DoFirstCombatManeuverPVE(Unit* pTarget);
-    CombatManeuverReturns DoNextCombatManeuverPVE(Unit* pTarget);
-    CombatManeuverReturns DoFirstCombatManeuverPVP(Unit* pTarget);
-    CombatManeuverReturns DoNextCombatManeuverPVP(Unit* pTarget);
+	CombatManeuverReturns DoFirstCombatManeuverPVE(Unit* pTarget);
+	CombatManeuverReturns DoNextCombatManeuverPVE(Unit* pTarget);
+	CombatManeuverReturns DoFirstCombatManeuverPVP(Unit* pTarget);
+	CombatManeuverReturns DoNextCombatManeuverPVP(Unit* pTarget);
 
-    // Hunter
-    bool IsTargetEnraged(Unit* pTarget);
-    bool m_petSummonFailed;
-    bool m_rangedCombat;
-    bool m_has_ammo;
+private:
 
-    uint32 PET_SUMMON, PET_DISMISS, PET_REVIVE, PET_MEND, PET_FEED, BAD_ATTITUDE, SONIC_BLAST, NETHER_SHOCK, DEMORALIZING_SCREECH, INTIMIDATION;
-    uint32 AUTO_SHOT, HUNTERS_MARK, ARCANE_SHOT, CONCUSSIVE_SHOT, DISTRACTING_SHOT, MULTI_SHOT, EXPLOSIVE_SHOT, SERPENT_STING, SCORPID_STING, VIPER_STING, WYVERN_STING, AIMED_SHOT, STEADY_SHOT, CHIMERA_SHOT, VOLLEY, BLACK_ARROW, KILL_SHOT;
-    uint32 RAPTOR_STRIKE, WING_CLIP, MONGOOSE_BITE, DISENGAGE, DETERRENCE;
-    uint32 BEAR_TRAP, FREEZING_TRAP, IMMOLATION_TRAP, FROST_TRAP, EXPLOSIVE_TRAP, ARCANE_TRAP, SNAKE_TRAP;
-    uint32 ASPECT_OF_THE_HAWK, ASPECT_OF_THE_MONKEY, RAPID_FIRE, TRUESHOT_AURA, MISDIRECTION;
+	CombatManeuverReturns DoManeuver_Idle_Forms_Start(void);
 
-    // racial
-    uint32 ARCANE_TORRENT, GIFT_OF_THE_NAARU, STONEFORM, ESCAPE_ARTIST, EVERY_MAN_FOR_HIMSELF, SHADOWMELD, BLOOD_FURY, WAR_STOMP, BERSERKING, WILL_OF_THE_FORSAKEN;
+//	CombatManeuverReturns DoManeuver_Idle_Cure_Detremental(void);
+
+	CombatManeuverReturns DoManeuver_Idle_SelfBuff(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Rez_Post(Player *target);
+
+	CombatManeuverReturns DoManeuver_Idle_Heal_Prep(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal(Player *target);
+//	CombatManeuverReturns DoManeuver_Idle_Heal_Post(Player *target);
+
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Prep(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff(void);
+//	CombatManeuverReturns DoManeuver_Idle_Buff_Post(void);
+
+	CombatManeuverReturns DoManeuver_Idle_Pet_Summon(void);
+
+	CombatManeuverReturns DoManeuver_Idle_Pet_BuffnHeal(void);
+
+//	CombatManeuverReturns DoManeuver_Idle_Forms_End(void);
+
+private:
+
+	CombatManeuverReturns Hunter_RevivePet(void);
+
 };
 
 #endif

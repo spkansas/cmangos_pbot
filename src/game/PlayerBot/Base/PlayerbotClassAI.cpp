@@ -1441,3 +1441,21 @@ BOT_ROLE PlayerbotClassAI::GetTargetRole(Player* target)
 
 	return ROLE_DPS_MELEE;
 }
+
+bool PlayerbotClassAI::IsTargetEnraged(Unit* pTarget)
+{
+	if (pTarget)
+	{
+		Unit::SpellAuraHolderMap const& auras = pTarget->GetSpellAuraHolderMap();
+
+		for (Unit::SpellAuraHolderMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+		{
+			SpellAuraHolder *holder = itr->second;
+			// Return true is target unit has aura with DISPEL_ENRAGE dispel type
+			if ((1 << holder->GetSpellProto()->Dispel) & GetDispellMask(DISPEL_ENRAGE))
+				return true;
+		}
+	}
+
+	return false;
+}

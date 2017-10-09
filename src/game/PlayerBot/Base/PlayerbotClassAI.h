@@ -317,6 +317,7 @@ public:
     void            SetWait(uint8 t)    { m_WaitUntil = m_botdata->GetAI()->CurrentTime() + t; }
     void            ClearWait()		    { m_WaitUntil = 0; }
     //void SetWaitUntil(time_t t)	    { m_WaitUntil = t; }
+	bool			IsTargetEnraged(Unit* pTarget);
 
 protected:
 

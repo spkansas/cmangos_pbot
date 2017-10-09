@@ -5760,7 +5760,7 @@ bool PlayerbotAI::SelfBuff(uint32 spellId)
     if (spellId == 0)
         return false;
 
-    if (m_bot->HasAura(spellId))
+    if (m_bot->HasAura(spellId)) // , EFFECT_INDEX_0)
         return false;
 
     return CastSpell(spellId, *m_bot);
