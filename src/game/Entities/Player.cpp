@@ -2300,19 +2300,10 @@ Creature* Player::GetNPCIfCanInteractWith(ObjectGuid guid, uint32 npcflagmask)
             return nullptr;
     }
 
-    // if a dead unit should be able to talk - the creature must be alive and have special flags
-    if (!unit->isAlive())
+    if (!CanInteractNow(unit))
         return nullptr;
 
     if (isAlive() && unit->isInvisibleForAlive())
-        return nullptr;
-
-    // not allow interaction under control, but allow with own pets
-    if (unit->GetCharmerGuid())
-        return nullptr;
-
-    // not enemy
-    if (unit->IsHostileTo(this))
         return nullptr;
 
     // not too far
@@ -4711,6 +4702,10 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     m_camera.UpdateVisibilityForOwner();
     // update visibility of player for nearby cameras
     UpdateObjectVisibility();
+
+    if (IsInWorld())
+        if (InstanceData* data = GetMap()->GetInstanceData())
+            data->OnPlayerResurrect(this);
 
     if (!applySickness)
         return;
@@ -15274,7 +15269,7 @@ void Player::SendQuestGiverStatusMultiple() const
             // need also pet quests case support
             Creature* questgiver = GetMap()->GetAnyTypeCreature(*itr);
 
-            if (!questgiver || questgiver->IsHostileTo(this))
+            if (!questgiver || !CanInteract(questgiver))
                 continue;
 
             if (!questgiver->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER))
@@ -18487,7 +18482,7 @@ void Player::PetSpellInitialize() const
     data << pet->GetObjectGuid();
     data << uint16(pet->GetCreatureInfo()->Family);         // creature family (required for pet talents)
     data << uint32(0);
-    data << uint8(charmInfo->GetReactState()) << uint8(charmInfo->GetCommandState()) << uint16(0);
+    data << uint8(pet->AI()->GetReactState()) << uint8(charmInfo->GetCommandState()) << uint16(0);
 
     // action bar loop
     charmInfo->BuildActionBar(data);
@@ -18625,7 +18620,7 @@ void Player::CharmSpellInitialize() const
     data << charm->GetObjectGuid();
     data << uint16(0);
     data << uint32(0);
-    data << uint8(charmInfo->GetReactState()) << uint8(charmInfo->GetCommandState()) << uint16(0);
+    data << uint8(charm->AI()->GetReactState()) << uint8(charmInfo->GetCommandState()) << uint16(0);
 
     charmInfo->BuildActionBar(data);
 
@@ -21344,7 +21339,7 @@ Player* Player::GetNextRaidMemberWithLowestLifePercentage(float radius, AuraType
 
             // IsHostileTo check duel and controlled by enemy
             if (IsWithinDistInMap(target, radius) &&
-                !target->HasInvisibilityAura() && !IsHostileTo(target) && !target->HasAuraType(noAuraType))
+                !target->HasInvisibilityAura() && CanAssist(target) && !target->HasAuraType(noAuraType))
             {
                 if (target->GetHealthPercent() < lowestPercentage)
                 {

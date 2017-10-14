@@ -47,7 +47,8 @@ GameObject::GameObject() : WorldObject(),
     m_captureSlider(0),
     m_captureState(),
     m_goInfo(nullptr),
-    m_displayInfo(nullptr)
+    m_displayInfo(nullptr),
+    m_AI(nullptr)
 {
     m_objectType |= TYPEMASK_GAMEOBJECT;
     m_objectTypeId = TYPEID_GAMEOBJECT;
@@ -87,7 +88,7 @@ void GameObject::AddToWorld()
     if (m_model)
         GetMap()->InsertGameObjectModel(*m_model);
 
-    Object::AddToWorld();
+    WorldObject::AddToWorld();
 
     // After Object::AddToWorld so that for initial state the GO is added to the world (and hence handled correctly)
     UpdateCollisionState();
@@ -543,6 +544,9 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
             break;
         }
     }
+
+    if (m_AI)
+        m_AI->UpdateAI(update_diff);
 }
 
 void GameObject::Refresh()
@@ -701,6 +705,8 @@ bool GameObject::LoadFromDB(uint32 guid, Map* map)
             m_respawnTime = 0;
         }
     }
+
+    AIM_Initialize();
 
     return true;
 }
@@ -981,6 +987,7 @@ void GameObject::SummonLinkedTrapIfAny() const
     }
 
     GetMap()->Add(linkedGO);
+    linkedGO->AIM_Initialize();
 }
 
 void GameObject::TriggerLinkedGameObject(Unit* target) const
@@ -2469,4 +2476,14 @@ void GameObject::SetInUse(bool use)
         SetGoState(GO_STATE_ACTIVE);
     else
         SetGoState(GO_STATE_READY);
+}
+
+uint32 GameObject::GetScriptId() const
+{
+    return ObjectMgr::GetGameObjectInfo(GetEntry())->ScriptId;
+}
+
+void GameObject::AIM_Initialize()
+{
+    m_AI.reset(sScriptDevAIMgr.GetGameObjectAI(this));
 }

@@ -232,6 +232,11 @@ class Map : public GridRefManager<NGridType>
         // must called with RemoveFromWorld
         void RemoveFromActive(WorldObject* obj);
 
+        // Game Event notification system
+        void AddToOnEventNotified(WorldObject * obj);
+        void RemoveFromOnEventNotified(WorldObject * obj);
+        void OnEventHappened(uint16 event_id, bool activate, bool resume);
+
         Player* GetPlayer(ObjectGuid guid);
         Creature* GetCreature(ObjectGuid guid);
         Pet* GetPet(ObjectGuid guid);
@@ -302,6 +307,10 @@ class Map : public GridRefManager<NGridType>
         bool GetRandomPointInTheAir(uint32 phaseMask, float& x, float& y, float& z, float radius) const;
         bool GetRandomPointUnderWater(uint32 phaseMask, float& x, float& y, float& z, float radius, GridMapLiquidData& liquid_status) const;
 
+        uint32 SpawnedCountForEntry(uint32 entry);
+        void AddToSpawnCount(const ObjectGuid & guid);
+        void RemoveFromSpawnCount(const ObjectGuid & guid);
+
         TimePoint GetCurrentClockTime();
     private:
         void LoadMapAndVMap(int gx, int gy);
@@ -355,6 +364,9 @@ class Map : public GridRefManager<NGridType>
         ActiveNonPlayers::iterator m_activeNonPlayersIter;
         MapStoredObjectTypesContainer m_objectsStore;
 
+        std::set<WorldObject*> m_onEventNotifiedObjects;
+        std::set<WorldObject*>::iterator m_onEventNotifiedIter;
+
     private:
         time_t i_gridExpiry;
 
@@ -395,6 +407,8 @@ class Map : public GridRefManager<NGridType>
 
         // WeatherSystem
         WeatherSystem* m_weatherSystem;
+
+        std::unordered_map<uint32, std::set<ObjectGuid>> m_spawnedCount;
 };
 
 class WorldMap : public Map

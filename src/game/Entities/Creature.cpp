@@ -164,13 +164,22 @@ void Creature::AddToWorld()
     // Make active if required
     if (sWorld.isForceLoadMap(GetMapId()) || (GetCreatureInfo()->ExtraFlags & CREATURE_EXTRA_FLAG_ACTIVE))
         SetActiveObjectState(true);
+
+    if (GetCreatureInfo()->ExtraFlags & CREATURE_EXTRA_FLAG_COUNT_SPAWNS)
+        GetMap()->AddToSpawnCount(GetObjectGuid());
 }
 
 void Creature::RemoveFromWorld()
 {
     ///- Remove the creature from the accessor
-    if (IsInWorld() && GetObjectGuid().IsCreatureOrVehicle())
-        GetMap()->GetObjectsStore().erase<Creature>(GetObjectGuid(), (Creature*)nullptr);
+    if (IsInWorld())
+    {
+        if (GetObjectGuid().IsCreatureOrVehicle())
+            GetMap()->GetObjectsStore().erase<Creature>(GetObjectGuid(), (Creature*)nullptr);
+
+        if (GetCreatureInfo()->ExtraFlags & CREATURE_EXTRA_FLAG_COUNT_SPAWNS)
+            GetMap()->RemoveFromSpawnCount(GetObjectGuid());
+    }
 
     Unit::RemoveFromWorld();
 }
@@ -400,9 +409,7 @@ bool Creature::UpdateEntry(uint32 Entry, Team team, const CreatureData* data /*=
         unitFlags |= UNIT_FLAG_IN_COMBAT;
 
     if (m_movementInfo.HasMovementFlag(MOVEFLAG_SWIMMING) && (GetCreatureInfo()->ExtraFlags & CREATURE_EXTRA_FLAG_HAVE_NO_SWIM_ANIMATION) == 0)
-        unitFlags |= UNIT_FLAG_UNK_15;
-    else
-        unitFlags &= ~UNIT_FLAG_UNK_15;
+        unitFlags |= UNIT_FLAG_SWIMMING;
 
     SetUInt32Value(UNIT_FIELD_FLAGS, unitFlags);
 
@@ -1929,9 +1936,6 @@ bool Creature::CanInitiateAttack() const
     if (HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE))
         return false;
 
-    if (isPassiveToHostile())
-        return false;
-
     if (m_aggroDelay != 0)
         return false;
 
@@ -1960,7 +1964,7 @@ bool Creature::IsOutOfThreatArea(Unit* pVictim) const
     if (!pVictim->IsInMap(this))
         return true;
 
-    if (!pVictim->isTargetableForAttack())
+    if (!CanAttack(pVictim))
         return true;
 
     if (!pVictim->isInAccessablePlaceFor(this))

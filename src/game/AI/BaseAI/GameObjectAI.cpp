@@ -15,31 +15,15 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#include "AI/BaseAI/GameObjectAI.h"
+#include "Entities/GameObject.h"
 
-#ifndef MANGOS_POSSESSEDAI_H
-#define MANGOS_POSSESSEDAI_H
 
-#include "AI/BaseAI/CreatureAI.h"
-#include "Entities/ObjectGuid.h"
-#include "Timer.h"
-
-class Creature;
-class Spell;
-
-class PossessedAI : public CreatureAI
+GameObjectAI::GameObjectAI(GameObject* go) : m_go(go)
 {
-public:
+}
 
-    explicit PossessedAI(Creature* creature) : CreatureAI(creature) {}
-    explicit PossessedAI(Unit* unit) : CreatureAI(unit) {}
 
-    static int Permissible(const Creature* /*creature*/) { return PERMIT_BASE_NO; }
-
-    //void GetAIInformation(ChatHandler& reader) override;
-
-    void UpdateAI(const uint32 diff) override
-    {
-        DoMeleeAttackIfReady();
-    }
-};
-#endif
+GameObjectAI::~GameObjectAI()
+{
+}

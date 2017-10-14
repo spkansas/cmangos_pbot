@@ -802,25 +802,55 @@ namespace MaNGOS
     class MostHPMissingInRangeCheck
     {
         public:
-            MostHPMissingInRangeCheck(Unit const* obj, float range, uint32 hp, bool onlyInCombat = true) : i_obj(obj), i_range(range), i_hp(hp), i_onlyInCombat(onlyInCombat) {}
+            MostHPMissingInRangeCheck(Unit const* obj, float range, float hp, bool onlyInCombat = true) : i_obj(obj), i_range(range), i_hp(hp), i_onlyInCombat(onlyInCombat) {}
             WorldObject const& GetFocusObject() const { return *i_obj; }
             bool operator()(Unit* u)
             {
                 if (!u->isAlive() || (i_onlyInCombat && !u->isInCombat()))
                     return false;
 
-                if (!i_obj->IsHostileTo(u) && i_obj->IsWithinDistInMap(u, i_range) && u->GetMaxHealth() - u->GetHealth() > i_hp)
+                if (!i_obj->IsHostileTo(u) && i_obj->IsWithinDistInMap(u, i_range))
                 {
-                    i_hp = u->GetMaxHealth() - u->GetHealth();
-                    return true;
+                    if (u->GetMaxHealth() - u->GetHealth() > i_hp)
+                    {
+                        i_hp = u->GetMaxHealth() - u->GetHealth();
+                        return true;
+                    }
                 }
                 return false;
             }
         private:
             Unit const* i_obj;
             float i_range;
-            uint32 i_hp;
+            float i_hp;
             bool i_onlyInCombat;
+    };
+
+    class MostHPPercentMissingInRangeCheck
+    {
+    public:
+        MostHPPercentMissingInRangeCheck(Unit const* obj, float range, float hp, bool onlyInCombat = true) : i_obj(obj), i_range(range), i_hp(hp), i_onlyInCombat(onlyInCombat) {}
+        WorldObject const& GetFocusObject() const { return *i_obj; }
+        bool operator()(Unit* u)
+        {
+            if (!u->isAlive() || (i_onlyInCombat && !u->isInCombat()))
+                return false;
+
+            if (!i_obj->IsHostileTo(u) && i_obj->IsWithinDistInMap(u, i_range))
+            {
+                if (100.f - u->GetHealthPercent() > i_hp)
+                {
+                    i_hp = 100.f - u->GetHealthPercent();
+                    return true;
+                }
+            }
+            return false;
+        }
+    private:
+        Unit const* i_obj;
+        float i_range;
+        float i_hp;
+        bool i_onlyInCombat;
     };
 
     class FriendlyCCedInRangeCheck
@@ -946,8 +976,8 @@ namespace MaNGOS
             WorldObject const& GetFocusObject() const { return *i_obj; }
             bool operator()(Unit* u)
             {
-                if (u->isTargetableForAttack() && i_obj->IsWithinDistInMap(u, i_range) &&
-                    i_funit->IsHostileTo(u) && u->isVisibleForOrDetect(i_funit, i_funit, false))
+                if (i_obj->CanAttackSpell(u) && i_obj->IsWithinDistInMap(u, i_range) &&
+                        i_funit->IsHostileTo(u) && u->isVisibleForOrDetect(i_funit, i_funit, false))
                 {
                     i_range = i_obj->GetDistance(u);        // use found unit range as new range limit for next check
                     return true;
@@ -977,7 +1007,7 @@ namespace MaNGOS
             bool operator()(Unit* u)
             {
                 // Check contains checks for: live, non-selectable, non-attackable flags, flight check and GM check, ignore totems
-                if (!u->isTargetableForAttack())
+                if (!i_obj->CanAttackSpell(u))
                     return false;
 
                 // ignore totems as AoE targets
@@ -1013,7 +1043,7 @@ namespace MaNGOS
             bool operator()(Unit* u)
             {
                 // Check contains checks for: live, non-selectable, non-attackable flags, flight check and GM check, ignore totems
-                if (!u->isTargetableForAttack())
+                if (!i_obj->CanAttackSpell(u))
                     return false;
 
                 if (u->GetTypeId() == TYPEID_UNIT && ((Creature*)u)->IsTotem())

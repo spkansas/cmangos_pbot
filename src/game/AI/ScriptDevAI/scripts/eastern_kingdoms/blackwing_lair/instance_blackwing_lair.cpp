@@ -16,7 +16,7 @@
 
 /* ScriptData
 SDName: Instance_Blackwing_Lair
-SD%Complete: 90
+SD%Complete: 95
 SDComment:
 SDCategory: Blackwing Lair
 EndScriptData */
@@ -27,6 +27,8 @@ EndScriptData */
 instance_blackwing_lair::instance_blackwing_lair(Map* pMap) : ScriptedInstance(pMap),
     m_uiResetTimer(0),
     m_uiDefenseTimer(0),
+    m_uiScepterEpicTimer(0),
+    m_uiScepterQuestStep(0),
     m_uiDragonspawnCount(0),
     m_uiBlackwingDefCount(0)
 {
@@ -72,7 +74,7 @@ void instance_blackwing_lair::OnCreatureCreate(Creature* pCreature)
         case NPC_BLACKWING_ORB_TRIGGER:
         case NPC_VAELASTRASZ:
         case NPC_LORD_VICTOR_NEFARIUS:
-            m_mNpcEntryGuidStore[pCreature->GetEntry()] = pCreature->GetObjectGuid();
+            m_npcEntryGuidStore[pCreature->GetEntry()] = pCreature->GetObjectGuid();
             break;
     }
 }
@@ -111,7 +113,7 @@ void instance_blackwing_lair::OnObjectCreate(GameObject* pGo)
         default:
             return;
     }
-    m_mGoEntryGuidStore[pGo->GetEntry()] = pGo->GetObjectGuid();
+    m_goEntryGuidStore[pGo->GetEntry()] = pGo->GetObjectGuid();
 }
 
 void instance_blackwing_lair::SetData(uint32 uiType, uint32 uiData)
@@ -130,6 +132,11 @@ void instance_blackwing_lair::SetData(uint32 uiType, uint32 uiData)
 
                 // Reset the Orb of Domination and the eggs
                 DoToggleGameObjectFlags(GO_ORB_OF_DOMINATION, GO_FLAG_NO_INTERACT, true);
+                if (Creature* pOrb = GetSingleCreatureFromStorage(NPC_BLACKWING_ORB_TRIGGER))
+                {
+                    if (pOrb->isAlive())
+                        pOrb->AI()->EnterEvadeMode();
+                }
 
                 // Reset defenders
                 for (GuidList::const_iterator itr = m_lDefendersGuids.begin(); itr != m_lDefendersGuids.end(); ++itr)
@@ -168,9 +175,14 @@ void instance_blackwing_lair::SetData(uint32 uiType, uint32 uiData)
                 DoUseDoorOrButton(GO_DOOR_CHROMAGGUS_EXIT);
             break;
         case TYPE_NEFARIAN:
+            // If epic quest for Scepter of the Shifting Sands is in progress when Nefarian is defeated mark it as complete
+            if (uiData == DONE && GetData(TYPE_QUEST_SCEPTER) == IN_PROGRESS)
+                SetData(TYPE_QUEST_SCEPTER, DONE);
+
             // Don't store the same thing twice
             if (m_auiEncounter[uiType] == uiData)
                 break;
+
             if (uiData == SPECIAL)
             {
                 // handle missing spell 23362
@@ -201,6 +213,18 @@ void instance_blackwing_lair::SetData(uint32 uiType, uint32 uiData)
                 m_lDrakonidBonesGuids.clear();
             }
             break;
+        case TYPE_QUEST_SCEPTER:
+            m_auiEncounter[uiType] = uiData;
+            // Start 5 hours timer (various steps are handled in Update()
+            if (uiData == IN_PROGRESS)
+            {
+                m_uiScepterEpicTimer = 2000;
+                m_uiScepterQuestStep = 0;
+            }
+            // Stop timer
+            if (uiData == DONE)
+                m_uiScepterEpicTimer = 0;
+            break;
     }
 
     if (uiData == DONE)
@@ -210,7 +234,7 @@ void instance_blackwing_lair::SetData(uint32 uiType, uint32 uiData)
         std::ostringstream saveStream;
         saveStream << m_auiEncounter[0] << " " << m_auiEncounter[1] << " " << m_auiEncounter[2] << " "
                    << m_auiEncounter[3] << " " << m_auiEncounter[4] << " " << m_auiEncounter[5] << " "
-                   << m_auiEncounter[6] << " " << m_auiEncounter[7];
+                   << m_auiEncounter[6] << " " << m_auiEncounter[7] << " " << m_auiEncounter[8];
 
         m_strInstData = saveStream.str();
 
@@ -231,7 +255,8 @@ void instance_blackwing_lair::Load(const char* chrIn)
 
     std::istringstream loadStream(chrIn);
     loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2] >> m_auiEncounter[3]
-               >> m_auiEncounter[4] >> m_auiEncounter[5] >> m_auiEncounter[6] >> m_auiEncounter[7];
+               >> m_auiEncounter[4] >> m_auiEncounter[5] >> m_auiEncounter[6] >> m_auiEncounter[7]
+               >> m_auiEncounter[8];
 
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
@@ -274,7 +299,7 @@ void instance_blackwing_lair::SetData64(uint32 uiData, uint64 uiGuid)
             if (Creature* pRazorgore = GetSingleCreatureFromStorage(NPC_RAZORGORE))
             {
                 pRazorgore->RemoveAllAuras();
-                pRazorgore->SetHealth(pRazorgore->GetMaxHealth());
+                pRazorgore->CastSpell(pRazorgore, SPELL_WARMING_FLAMES, TRIGGERED_OLD_TRIGGERED);
             }
 
             // All defenders evade and despawn
@@ -312,6 +337,30 @@ void instance_blackwing_lair::OnCreatureDeath(Creature* pCreature)
             if (Creature* pOrbTrigger = GetSingleCreatureFromStorage(NPC_BLACKWING_ORB_TRIGGER))
                 pOrbTrigger->InterruptNonMeleeSpells(false);
             break;
+        case NPC_RAZORGORE:
+            // Only set the event as done if Razorgore dies in last phase
+            if (GetData(TYPE_RAZORGORE) == SPECIAL)
+            {
+                SetData(TYPE_RAZORGORE, DONE);
+                break;
+            }
+
+            // If the event is not already failed in Razorgore script, then force group wipe by making the boss trigger an AoE
+            // this is basically a duplicate of what is in Razorgore script because when the boss is Mind Controlled the AI is overriden
+            // So we have to handle it in the instance script instead to prevent the event to be stucked or exploited
+            if (GetData(TYPE_RAZORGORE) != FAIL)
+            {
+                if (Creature* pRazorgore = GetSingleCreatureFromStorage(NPC_RAZORGORE))
+                {
+                    pRazorgore->CastSpell(pRazorgore, SPELL_FIREBALL, TRIGGERED_OLD_TRIGGERED);
+                    SetData(TYPE_RAZORGORE, FAIL);
+                    DoScriptText(SAY_RAZORGORE_DEATH, pRazorgore);
+                    pRazorgore->ForcedDespawn();
+                }
+                if (Creature* pOrbTrigger = GetSingleCreatureFromStorage(NPC_BLACKWING_ORB_TRIGGER))
+                    pOrbTrigger->CastSpell(pOrbTrigger, SPELL_EXPLODE_ORB, TRIGGERED_IGNORE_UNATTACKABLE_FLAG);
+            }
+            break;
         case NPC_BLACKWING_LEGIONNAIRE:
         case NPC_BLACKWING_MAGE:
             m_uiBlackwingDefCount--;
@@ -322,8 +371,81 @@ void instance_blackwing_lair::OnCreatureDeath(Creature* pCreature)
     }
 }
 
+bool instance_blackwing_lair::CheckConditionCriteriaMeet(Player const* pPlayer, uint32 uiInstanceConditionId, WorldObject const* pConditionSource, uint32 conditionSourceType) const
+{
+    switch (uiInstanceConditionId)
+    {
+        case INSTANCE_CONDITION_ID_HARD_MODE:               // Event failed
+            return (GetData(TYPE_QUEST_SCEPTER) == FAIL);
+        case INSTANCE_CONDITION_ID_HARD_MODE_2:             // Event succeeded
+            return (GetData(TYPE_QUEST_SCEPTER) == DONE);
+    }
+
+    script_error_log("instance_dire_maul::CheckConditionCriteriaMeet called with unsupported Id %u. Called with param plr %s, src %s, condition source type %u",
+                     uiInstanceConditionId, pPlayer ? pPlayer->GetGuidStr().c_str() : "NULL", pConditionSource ? pConditionSource->GetGuidStr().c_str() : "NULL", conditionSourceType);
+    return false;
+}
+
 void instance_blackwing_lair::Update(uint32 uiDiff)
 {
+    // Scepter of the Shifting Sand epic quest line
+    if (m_uiScepterEpicTimer)
+    {
+        if (m_uiScepterEpicTimer <= uiDiff)
+        {
+            switch (m_uiScepterQuestStep)
+            {
+                case 0:     // On quest acceptance
+                    DoOrSimulateScriptTextForThisInstance(YELL_REDSHARD_TAUNT_1, NPC_LORD_VICTOR_NEFARIUS);
+                    m_uiScepterEpicTimer = 2 * HOUR * IN_MILLISECONDS;
+                    break;
+                case 1:     // 2 hours time mark
+                    switch (urand(0, 1))
+                    {
+                        case 0:
+                            DoOrSimulateScriptTextForThisInstance(YELL_REDSHARD_TAUNT_2, NPC_LORD_VICTOR_NEFARIUS);
+                            DoOrSimulateScriptTextForThisInstance(EMOTE_REDSHARD_TAUNT_1, NPC_LORD_VICTOR_NEFARIUS);
+                            break;
+                        case 1:
+                            DoOrSimulateScriptTextForThisInstance(YELL_REDSHARD_TAUNT_3, NPC_LORD_VICTOR_NEFARIUS);
+                            break;
+                    }
+                    m_uiScepterEpicTimer = 2 * HOUR * IN_MILLISECONDS;
+                    break;
+                case 2:     // 1 hour left
+                    switch (urand(0, 1))
+                    {
+                        case 0:
+                            DoOrSimulateScriptTextForThisInstance(YELL_REDSHARD_TAUNT_4, NPC_LORD_VICTOR_NEFARIUS);
+                            break;
+                        case 1:
+                            DoOrSimulateScriptTextForThisInstance(YELL_REDSHARD_TAUNT_5, NPC_LORD_VICTOR_NEFARIUS);
+                            break;
+                    }
+                    m_uiScepterEpicTimer = 30 * MINUTE * IN_MILLISECONDS;
+                    break;
+                case 3:     // 30 min left
+                    DoOrSimulateScriptTextForThisInstance(YELL_REDSHARD_TAUNT_6, NPC_LORD_VICTOR_NEFARIUS);
+                    m_uiScepterEpicTimer = 30 * MINUTE * IN_MILLISECONDS;
+                    break;
+                case 4:     // Failure
+                    SetData(TYPE_QUEST_SCEPTER, FAIL);
+                    if (GetData(TYPE_NEFARIAN) == NOT_STARTED)
+                    {
+                        DoOrSimulateScriptTextForThisInstance(EMOTE_REDSHARD_TAUNT_2, NPC_LORD_VICTOR_NEFARIUS);
+                        DoOrSimulateScriptTextForThisInstance(YELL_REDSHARD_TAUNT_7, NPC_LORD_VICTOR_NEFARIUS);
+                    }
+                default:    // Something weird happened: stop timer and fail the event
+                    m_uiScepterEpicTimer = 0;
+                    SetData(TYPE_QUEST_SCEPTER, FAIL);
+                    break;
+            }
+            m_uiScepterQuestStep++;
+        }
+        else
+            m_uiScepterEpicTimer -= uiDiff;
+    }
+
     // Reset Razorgore in case of wipe
     if (m_uiResetTimer)
     {

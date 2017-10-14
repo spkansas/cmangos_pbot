@@ -1081,6 +1081,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     pGameObj->SetSpellId(m_spellInfo->Id);
 
                     map->Add(pGameObj);
+                    pGameObj->AIM_Initialize();
                     return;
                 }
                 case 19869:                                 // Dragon Orb
@@ -1157,36 +1158,16 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                 }
                 case 23019:                                 // Crystal Prison Dummy DND
                 {
-                    if (!unitTarget || !unitTarget->isAlive() || unitTarget->GetTypeId() != TYPEID_UNIT)
-                        return;
-
-                    Creature* creatureTarget = (Creature*)unitTarget;
-                    if (creatureTarget->IsPet())
-                        return;
-
-                    GameObject* pGameObj = new GameObject;
-
-                    Map* map = creatureTarget->GetMap();
-
-                    // create before death for get proper coordinates
-                    if (!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), 179644, map, m_caster->GetPhaseMask(),
-                                          creatureTarget->GetPositionX(), creatureTarget->GetPositionY(), creatureTarget->GetPositionZ(),
-                                          creatureTarget->GetOrientation()))
+                    if (unitTarget && unitTarget->GetTypeId() == TYPEID_UNIT && unitTarget->isAlive())
                     {
-                        delete pGameObj;
-                        return;
+                        Creature* creatureTarget = (Creature*)unitTarget;
+                        if (!creatureTarget->IsPet())
+                        {
+                            creatureTarget->CastSpell(creatureTarget, 23022, TRIGGERED_OLD_TRIGGERED);
+                            creatureTarget->ForcedDespawn();
+                        }
                     }
-
-                    pGameObj->SetRespawnTime(creatureTarget->GetRespawnTime() - time(nullptr));
-                    pGameObj->SetOwnerGuid(m_caster->GetObjectGuid());
-                    pGameObj->SetUInt32Value(GAMEOBJECT_LEVEL, m_caster->getLevel());
-                    pGameObj->SetSpellId(m_spellInfo->Id);
-
-                    creatureTarget->ForcedDespawn();
-
-                    DEBUG_LOG("AddObject at SpellEfects.cpp EffectDummy");
-                    map->Add(pGameObj);
-
+                    
                     return;
                 }
                 case 23074:                                 // Arcanite Dragonling
@@ -3730,7 +3711,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                             return;
                     }
 
-                    if (m_caster->IsFriendlyTo(unitTarget))
+                    if (m_caster->CanAssist(unitTarget))
                         m_caster->CastSpell(unitTarget, heal, TRIGGERED_OLD_TRIGGERED);
                     else
                         m_caster->CastSpell(unitTarget, hurt, TRIGGERED_OLD_TRIGGERED);
@@ -5990,16 +5971,7 @@ bool Spell::DoSummonGuardian(CreatureSummonPositions& list, SummonPropertiesEntr
             spawnCreature->SetPvPSanctuary(true);
 
         if (CharmInfo* charmInfo = spawnCreature->GetCharmInfo())
-        {
             charmInfo->SetPetNumber(pet_number, false);
-
-            if (spawnCreature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC))
-                charmInfo->SetReactState(REACT_PASSIVE);
-            else if ((cInfo->ExtraFlags & CREATURE_EXTRA_FLAG_NO_MELEE) || petType == PROTECTOR_PET)
-                charmInfo->SetReactState(REACT_DEFENSIVE);
-            else
-                charmInfo->SetReactState(REACT_AGGRESSIVE);
-        }
 
         m_caster->AddGuardian(spawnCreature);
 
@@ -6209,7 +6181,7 @@ bool Spell::DoSummonPet(SpellEffectIndex eff_idx)
 
     if (m_caster->GetTypeId() == TYPEID_PLAYER)
     {
-        spawnCreature->GetCharmInfo()->SetReactState(REACT_DEFENSIVE);
+        spawnCreature->AI()->SetReactState(REACT_DEFENSIVE);
         ((Player*)m_caster)->PetSpellInitialize();
         if (m_caster->getClass() != CLASS_PRIEST)
             spawnCreature->SavePetToDB(PET_SAVE_AS_CURRENT);
@@ -6860,8 +6832,6 @@ void Spell::EffectTameCreature(SpellEffectIndex /*eff_idx*/)
 
     pet->GetCharmInfo()->SetPetNumber(sObjectMgr.GeneratePetNumber(), true);
 
-    pet->GetCharmInfo()->SetReactState(REACT_DEFENSIVE);
-
     // level of hunter pet can't be less owner level at 5 levels
     uint32 cLevel = creatureTarget->getLevel();
     uint32 plLevel = plr->getLevel();
@@ -6883,6 +6853,8 @@ void Spell::EffectTameCreature(SpellEffectIndex /*eff_idx*/)
     // add pet object to the world
     pet->GetMap()->Add((Creature*)pet);
     pet->AIM_Initialize();
+
+    pet->AI()->SetReactState(REACT_DEFENSIVE);
 
     // visual effect for levelup
     pet->SetUInt32Value(UNIT_FIELD_LEVEL, level);
@@ -6962,8 +6934,6 @@ void Spell::EffectSummonPet(SpellEffectIndex eff_idx)
 
     // Level of pet summoned
     uint32 level = std::max(m_caster->getLevel() + m_spellInfo->EffectMultipleValue[eff_idx], 1.0f);
-
-    NewSummon->GetCharmInfo()->SetReactState(REACT_DEFENSIVE);
     NewSummon->SetOwnerGuid(m_caster->GetObjectGuid());
     NewSummon->setFaction(m_caster->getFaction());
     NewSummon->SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, uint32(time(nullptr)));
@@ -6982,6 +6952,8 @@ void Spell::EffectSummonPet(SpellEffectIndex eff_idx)
 
     map->Add((Creature*)NewSummon);
     NewSummon->AIM_Initialize();
+
+    NewSummon->AI()->SetReactState(REACT_DEFENSIVE);
 
     m_caster->SetPet(NewSummon);
     DEBUG_LOG("New Pet has guid %u", NewSummon->GetGUIDLow());
@@ -7462,6 +7434,7 @@ void Spell::EffectSummonObjectWild(SpellEffectIndex eff_idx)
 
     // Wild object not have owner and check clickable by players
     map->Add(pGameObj);
+    pGameObj->AIM_Initialize();
 
     // Store the GO to the caster
     m_caster->AddWildGameObject(pGameObj);
@@ -10618,6 +10591,8 @@ void Spell::EffectDuel(SpellEffectIndex eff_idx)
 
     m_caster->AddGameObject(pGameObj);
     map->Add(pGameObj);
+    pGameObj->AIM_Initialize();
+
     // END
 
     // Send request
@@ -11088,6 +11063,7 @@ void Spell::EffectSummonObject(SpellEffectIndex eff_idx)
     m_caster->AddGameObject(pGameObj);
 
     map->Add(pGameObj);
+    pGameObj->AIM_Initialize();
 
     m_caster->m_ObjectSlotGuid[slot] = pGameObj->GetObjectGuid();
 
@@ -11708,6 +11684,7 @@ void Spell::EffectTransmitted(SpellEffectIndex eff_idx)
     // m_ObjToDel.push_back(pGameObj);
 
     cMap->Add(pGameObj);
+    pGameObj->AIM_Initialize();
 
     pGameObj->SummonLinkedTrapIfAny();
 
