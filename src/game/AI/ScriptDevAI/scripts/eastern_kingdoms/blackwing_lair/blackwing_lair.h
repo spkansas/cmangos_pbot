@@ -36,6 +36,7 @@ enum
     NPC_BLACKWING_ORB_TRIGGER   = 14449,
     NPC_NEFARIANS_TROOPS        = 14459,
     NPC_MONSTER_GENERATOR       = 12434,
+    NPC_ORB_DOMINATION          = 14453,
     NPC_BLACKWING_LEGIONNAIRE   = 12416,                    // one spawn per turn
     NPC_BLACKWING_MAGE          = 12420,                    // one spawn per turn
     NPC_DRAGONSPAWN             = 12422,                    // two spawns per turn
@@ -51,6 +52,7 @@ enum
     GO_ORB_OF_DOMINATION        = 177808,                   // trigger 19832 on Razorgore
     GO_BLACK_DRAGON_EGG         = 177807,
     GO_DRAKONID_BONES           = 179804,
+    GO_SUPPRESSION_DEVICE       = 179784,                   // Traps in Suppression Room
 
     EMOTE_ORB_SHUT_OFF          = -1469035,
     EMOTE_TROOPS_FLEE           = -1469033,                 // emote by Nefarian's Troops npc
@@ -123,6 +125,8 @@ class instance_blackwing_lair : public ScriptedInstance
         uint8 m_uiScepterQuestStep;
         uint32 m_uiDragonspawnCount;
         uint32 m_uiBlackwingDefCount;
+
+        bool m_bIsMainGateOpen;
 
         GuidList m_lDragonEggsGuids;
         GuidList m_lDrakonidBonesGuids;

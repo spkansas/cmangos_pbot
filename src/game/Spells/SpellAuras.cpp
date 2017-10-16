@@ -2087,6 +2087,12 @@ void Aura::TriggerSpell()
                 target->CastSpell(target->getVictim(), trigger_spell_id, TRIGGERED_OLD_TRIGGERED, nullptr, this);
                 return;
             }
+            case 33419:                                     // Arcane Missiles - TODO: Review other spells with TARGET_CHAIN_DAMAGE
+            case 42483:                                     // Ooze Channel
+            {
+                triggerCaster = GetCaster();
+                break;
+            }
             case 44883:                                     // Encapsulate
             case 56505:                                     // Surge of Power
             {
@@ -9049,7 +9055,7 @@ SpellAuraHolder::SpellAuraHolder(SpellEntry const* spellproto, Unit* target, Wor
     m_applyTime      = time(nullptr);
     m_isPassive      = IsPassiveSpell(spellproto);
     m_isDeathPersist = IsDeathPersistentSpell(spellproto);
-    m_trackedAuraType = IsSingleTargetSpell(spellproto) ? TRACK_AURA_TYPE_SINGLE_TARGET : IsSpellHaveAura(spellproto, SPELL_AURA_CONTROL_VEHICLE) ? TRACK_AURA_TYPE_CONTROL_VEHICLE : TRACK_AURA_TYPE_NOT_TRACKED;
+    m_trackedAuraType = sSpellMgr.IsSingleTargetSpell(spellproto) ? TRACK_AURA_TYPE_SINGLE_TARGET : IsSpellHaveAura(spellproto, SPELL_AURA_CONTROL_VEHICLE) ? TRACK_AURA_TYPE_CONTROL_VEHICLE : TRACK_AURA_TYPE_NOT_TRACKED;
     m_procCharges    = spellproto->procCharges;
 
     m_isRemovedOnShapeLost = (GetCasterGuid() == m_target->GetObjectGuid() &&
@@ -9574,6 +9580,11 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                         return;
                     break;
                 }
+                case 33896:                                 // Desperate Defense
+                {
+                    spellId1 = 33897;
+                    break;
+                }
                 case 55053:                                 // Deathbloom (25 man)
                 {
                     if (!apply && m_removeMode == AURA_REMOVE_BY_EXPIRE)
@@ -9820,7 +9831,6 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 }
                 return;
             }
-
             switch (GetId())
             {
                 // Abolish Disease (remove 1 more poison effect with Body and Soul)
