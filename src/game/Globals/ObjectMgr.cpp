@@ -5955,6 +5955,7 @@ AreaTrigger const* ObjectMgr::GetGoBackTrigger(uint32 map_id) const
 
 /**
  * Searches for the areatrigger which teleports players to the given map
+ * TODO: Requirements should be propably Map bound not Areatrigger bound
  */
 AreaTrigger const* ObjectMgr::GetMapEntranceTrigger(uint32 Map) const
 {
@@ -10075,16 +10076,22 @@ bool DoDisplayText(WorldObject* source, int32 entry, Unit const* target /*=nullp
 
     if (data->SoundId)
     {
-        if (data->Type == CHAT_TYPE_ZONE_YELL)
-            source->GetMap()->PlayDirectSoundToMap(data->SoundId, source->GetZoneId());
-        else if (data->Type == CHAT_TYPE_WHISPER || data->Type == CHAT_TYPE_BOSS_WHISPER)
+        switch (data->Type)
         {
-            // An error will be displayed for the text
-            if (target && target->GetTypeId() == TYPEID_PLAYER)
-                source->PlayDirectSound(data->SoundId, (Player const*)target);
+            case CHAT_TYPE_ZONE_YELL:
+            case CHAT_TYPE_ZONE_EMOTE:
+                source->PlayDirectSound(data->SoundId, PlayPacketParameters(PLAY_ZONE, source->GetZoneId()));
+                break;
+            case CHAT_TYPE_WHISPER:
+            case CHAT_TYPE_BOSS_WHISPER:
+                // An error will be displayed for the text
+                if (target && target->GetTypeId() == TYPEID_PLAYER)
+                    source->PlayDirectSound(data->SoundId, PlayPacketParameters(PLAY_TARGET, (Player const*)target));
+                break;
+            default:
+                source->PlayDirectSound(data->SoundId);
+                break;
         }
-        else
-            source->PlayDirectSound(data->SoundId);
     }
 
     if (data->Emote)

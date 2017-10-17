@@ -8003,7 +8003,7 @@ void Player::CastItemUseSpell(Item* item, SpellCastTargets const& targets, uint8
             return;
         }
 
-        Spell* spell = new Spell(this, spellInfo, false);
+        Spell* spell = new Spell(this, spellInfo, TRIGGERED_NONE);
         spell->m_CastItem = item;
         spell->m_cast_count = cast_count;                   // set count of casts
         spell->m_currentBasePoints[EFFECT_INDEX_0] = learning_spell_id;
@@ -8037,7 +8037,7 @@ void Player::CastItemUseSpell(Item* item, SpellCastTargets const& targets, uint8
             continue;
         }
 
-        Spell* spell = new Spell(this, spellInfo, (count > 0));
+        Spell* spell = new Spell(this, spellInfo, (count > 0) ? TRIGGERED_OLD_TRIGGERED : TRIGGERED_NONE);
         spell->m_CastItem = item;
         spell->m_cast_count = cast_count;                   // set count of casts
         spell->m_glyphIndex = glyphIndex;                   // glyph index
@@ -8076,7 +8076,7 @@ void Player::CastItemUseSpell(Item* item, SpellCastTargets const& targets, uint8
                 continue;
             }
 
-            Spell* spell = new Spell(this, spellInfo, (count > 0));
+            Spell* spell = new Spell(this, spellInfo, (count > 0) ? TRIGGERED_OLD_TRIGGERED : TRIGGERED_NONE);
             spell->m_CastItem = item;
             spell->m_cast_count = cast_count;               // set count of casts
             spell->m_glyphIndex = glyphIndex;               // glyph index
@@ -23643,10 +23643,10 @@ void Player::AddCooldown(SpellEntry const& spellEntry, ItemPrototype const* item
     if (!recTime && !categoryRecTime && (spellCategory == 76 || (IsAutoRepeatRangedSpell(&spellEntry) && spellEntry.Id != SPELL_ID_AUTOSHOT)))
         recTime = GetAttackTime(RANGED_ATTACK);
 
+    // blizzlike code for choosing which is recTime > categoryRecTime after spellmod application
     if (recTime)
         ApplySpellMod(spellEntry.Id, SPELLMOD_COOLDOWN, recTime);
-
-    if (spellCategory && categoryRecTime)
+    else if (spellCategory && categoryRecTime)
         ApplySpellMod(spellEntry.Id, SPELLMOD_COOLDOWN, categoryRecTime);
 
     if (recTime || categoryRecTime)

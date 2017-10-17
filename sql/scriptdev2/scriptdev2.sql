@@ -103,6 +103,9 @@ UPDATE gameobject_template SET ScriptName='go_scourge_enclosure' WHERE entry=191
 UPDATE gameobject_template SET ScriptName='go_lab_work_reagents' WHERE entry IN (190462, 190473, 190478, 190459);
 UPDATE gameobject_template SET ScriptName='go_bells' WHERE entry IN(182064,175885,176573);
 UPDATE gameobject_template SET ScriptName='go_darkmoon_faire_music' WHERE entry=180335;
+UPDATE gameobject_template SET ScriptName='go_pirate_day_music' WHERE entry=190363;
+UPDATE gameobject_template SET ScriptName='go_midsummer_music' WHERE entry=188174;
+UPDATE gameobject_template SET ScriptName='go_brewfest_music' WHERE entry=186221;
 
 /* GUARD */
 UPDATE creature_template SET ScriptName='guard_azuremyst' WHERE entry=18038;
@@ -370,6 +373,7 @@ UPDATE creature_template SET ScriptName='npc_vimgol_visual_bunny' WHERE entry=23
 UPDATE creature_template SET ScriptName='npc_vimgol_middle_bunny' WHERE entry=23081;
 UPDATE creature_template SET ScriptName='npc_vimgol' WHERE entry=22911;
 UPDATE creature_template SET ScriptName='npc_spirit_prisoner_of_bladespire' WHERE entry IN(22460);
+UPDATE creature_template SET ScriptName='npc_deadsoul_orb' WHERE entry=20845;
 
 /* BLASTED LANDS */
 UPDATE creature_template SET ScriptName='npc_fallen_hero_of_horde' WHERE entry=7572;
@@ -3761,9 +3765,9 @@ INSERT INTO script_texts (entry,content_default,sound,type,language,emote,commen
 (-1532131,'The halls of Karazhan shake, as the curse binding the doors of the Gamemaster\'s Hall is lifted.',0,2,0,0,'echo_of_medivh EMOTE_LIFT_CURSE'),
 (-1532132,'%s cheats!',0,3,0,0,'echo_of_medivh EMOTE_CHEAT'),
 
-(-1532133,'%s flaps down from the ceiling...',0,2,0,0,'shadikith_the_glider EMOTE_BAT_SPAWN'),
-(-1532134,'%s howls through the halls...',0,2,0,0,'rokad_the_ravager EMOTE_DOG_SPAWN'),
-(-1532135,'%s emerges from the shadows...',0,2,0,0,'hyakiss_the_lurker EMOTE_SPIDER_SPAWN');
+(-1532133,'%s flaps down from the ceiling...',0,7,0,0,'shadikith_the_glider EMOTE_BAT_SPAWN'),
+(-1532134,'%s howls through the halls...',0,7,0,0,'rokad_the_ravager EMOTE_DOG_SPAWN'),
+(-1532135,'%s emerges from the shadows...',0,7,0,0,'hyakiss_the_lurker EMOTE_SPIDER_SPAWN');
 
 -- -1 533 000 NAXXRAMAS
 INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
