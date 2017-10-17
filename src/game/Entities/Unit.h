@@ -2387,6 +2387,7 @@ class Unit : public WorldObject
         void ResetControlState(bool attackCharmer = true);
 
         float GetAttackDistance(Unit const* pl) const;
+        virtual uint32 GetDetectionRange() const { return 20.f; }
 
         virtual CreatureAI* AI() { return nullptr; }
         virtual CombatData* GetCombatData() { return m_combatData; }
@@ -2451,6 +2452,13 @@ class Unit : public WorldObject
         bool m_isSpawningLinked;
 
         CombatData* m_combatData;
+
+        virtual void SetBaseWalkSpeed(float speed) { m_baseSpeedWalk = speed; }
+        virtual void SetBaseRunSpeed(float speed) { m_baseSpeedRun = speed; }
+
+        // base speeds set by model/template
+        float m_baseSpeedWalk;
+        float m_baseSpeedRun;
 
     private:
         void CleanupDeletedAuras();
